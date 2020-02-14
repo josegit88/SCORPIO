@@ -9,4 +9,4 @@ This project is written in Python 3 (to use in Python 2, slight modifications mu
   conda install -c astropy astroquery
   pip install astroquery
 
-https://raw.githubusercontent.com/josegit88/SCORPIO/master/web_images/tenor.png
+https://raw.githubusercontent.com/josegit88/SCORPIO/master/web_images/tenor.gif
