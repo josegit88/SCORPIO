@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 plt.close()
 
-data_pares = np.genfromtxt("small_sample_data_galaxy_pairs.dat")
+data_pares = np.genfromtxt("data_pares_galaxias.dat")
 list_galA = range(1, len(data_pares)+1, 2)
 list_galB = range(0, len(data_pares), 2)
 

@@ -30,25 +30,36 @@ import os
 """
 1237662225682006144 196.62870697000000 39.844405905521903 0.10972299000000001
 1237662225682006156 196.63408457000000 39.849490595521900 0.10918017000000001
+
+AA = [196.63408457000000, 39.849490595521900, 0.10918017000000001]
+BB = [196.62870697000000, 39.844405905521903, 0.10972299000000001]
+import scorpio_indv_img as scorpio
+scorpio.indv_pair(AA,BB, plx=500)
 """
 
 # ### Load data galaxies:
 
-# glx1 = [196.63408457000000, 39.849490595521900, 0.10918017000000001]
-# glx2 = [196.62870697000000, 39.844405905521903, 0.10972299000000001]
+glx1 = [196.63408457000000, 39.849490595521900, 0.10918017000000001]
+glx2 = [196.62870697000000, 39.844405905521903, 0.10972299000000001]
 # glx_array = np.array([glx1, glx2])
 # df = glx_array
 # plx = 1500
 
-def indv_pair(glx1,glx2, plx=1500):
+def indv_pair(glx1, glx2, plx=1000, SURVEY=None, filters=None):
     """
     generate a individual image from list (RA, DEC, z) data of galaxy pair
-    for defaul pixles: plx = 1500
+    for defaul pixles: plx = 1000
     """
     glx_array = np.array([glx1, glx2])
     df = glx_array
-    # plx = 1500
     plx = plx
+    SURVEY = 'SDSS' if SURVEY is None else SURVEY
+    filters = ["g", "i"] if filters is None else filters
+    optional_filters = ["u", "g", "r", "i", "z"]
+
+    for ff in filters:
+        if ff not in optional_filters:
+            raise ValueError
 
     # ### function to extract coordinates in Aladin format
     def aladin_coords(pos):
@@ -63,7 +74,7 @@ def indv_pair(glx1,glx2, plx=1500):
     @retry(stop_max_attempt_number=4)
     def download_dss(pos):
         path = SkyView.get_images(
-            position=pos, survey='SDSS'+str(filters[ff]),
+            position=pos, survey=SURVEY+str(filters[ff]),
             radius=2*apu.arcmin, pixels=(plx, plx),
             coordinates='J2000', show_progress=True
             )
@@ -91,15 +102,15 @@ def indv_pair(glx1,glx2, plx=1500):
             pass
 
     if not os.path.exists(dir_images):
-        os.popen('mkdir -p ' + dir_images)
+        os.makedirs(dir_images)
 
     dir_images_fits = './individual_images/images_fits'
     if not os.path.exists(dir_images_fits):
-        os.popen('mkdir -p ' + dir_images_fits)
+        os.makedirs(dir_images_fits)
 
     dir_images_png = './individual_images/images_png'
     if not os.path.exists(dir_images_png):
-        os.popen('mkdir -p ' + dir_images_png)
+        os.makedirs(dir_images_png)
 
     targets_dir_fits = 'individual_images/images_fits'
 
@@ -113,7 +124,7 @@ def indv_pair(glx1,glx2, plx=1500):
     # ############ loop for download images data fits: ################
 
     N = len(df)
-    filters = ["u", "g", "r", "i"]
+    # filters = ["u", "g", "r", "i"]
     state_download = []
 
     for ff in range(len(filters)):
@@ -126,7 +137,7 @@ def indv_pair(glx1,glx2, plx=1500):
                 stamp = download_dss(pos)
                 fits_file = os.path.join(
                     targets_dir_fits,
-                    'SDSS_image_'+str(ii)+'_filter_'+str(filters[ff])+'.fits')
+                    SURVEY+'_image_'+str(ii)+'_filter_'+str(filters[ff])+'.fits')
                 stamp[0].writeto(fits_file)
                 image_data = stamp[0][0].data
                 m = image_data.copy()
@@ -134,7 +145,7 @@ def indv_pair(glx1,glx2, plx=1500):
                 m = np.log(m)
                 png_file = os.path.join(
                     targets_dir_png,
-                    'SDSS_image_'+str(ii)+'_filter_'+str(filters[ff])+'.png')
+                    SURVEY+'_image_'+str(ii)+'_filter_'+str(filters[ff])+'.png')
                 img.imsave(png_file, m)
                 state_download.append((ii, filters[ff], RA, DEC, "ok"))
             except Exception:
@@ -198,14 +209,14 @@ def indv_pair(glx1,glx2, plx=1500):
     for ff in filters:
         # ============= reading and files and stacking: =================
         try:
-            img_A = base+"SDSS_image_0_filter_"+str(ff)+".fits"
+            img_A = base+SURVEY+"_image_0_filter_"+str(ff)+".fits"
             imageA_concat.append(fits.getdata(img_A))
         except Exception:
             print("falta el filtro:", ff, " en la imagen Numero 0")
             imagenes_incompletas.append((0, 1, ff))
 
         try:
-            img_B = base+"SDSS_image_1_filter_"+str(ff)+".fits"
+            img_B = base+SURVEY+"_image_1_filter_"+str(ff)+".fits"
             imageB_concat.append(fits.getdata(img_B))
         except Exception:
             print("falta el filtro:", ff, " en la imagen Numero 1")
@@ -214,7 +225,7 @@ def indv_pair(glx1,glx2, plx=1500):
 
     # ===================== sizes at pixels: ========================
     for ff in filters:
-        img_test = base+"SDSS_image_0_filter_"+str(ff)+".fits"
+        img_test = base+SURVEY+"_image_0_filter_"+str(ff)+".fits"
         if not os.path.isfile(img_test):  # if not exist the file
             continue
         elif os.path.isfile(img_test):  # if exist the file
@@ -283,9 +294,11 @@ def indv_pair(glx1,glx2, plx=1500):
 
     # lscale bar length:
     len_bar = 50.*dis_c1_c2/S_AB
-    ax.broken_barh([(-600, len_bar+200)], (-600, 200), facecolors='w')
-    ax.hlines(y=-550, xmin=-500, xmax=-500+len_bar, color="k", linewidth=3)
-    ax.text(-500, -500, "50 kpc", fontsize=20, color="k")
+    ax.broken_barh([(-plx/2.5, len_bar+plx/7.5)], (-plx/2.5, plx/7.5),
+                   facecolors='w')
+    ax.hlines(y=-plx/2.72, xmin=-plx/3.0, xmax=-plx/3.0+len_bar, color="k",
+              linewidth=3)
+    ax.text(-plx/3.0, -plx/3.0, "50 kpc", fontsize=20, color="k")
 
     imgNum = input("please input Number for image:")
     dir_base = "individual_pairs_stacked"
@@ -310,3 +323,5 @@ def indv_pair(glx1,glx2, plx=1500):
     elif select == "n":
         pass
     # -------------------------------------
+    
+indv_pair(glx1, glx2, plx=1000, SURVEY=None, filters=None)

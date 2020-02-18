@@ -27,9 +27,11 @@ dir_images_stacked = './images_pairs_stacked'
 if not os.path.exists(dir_images_stacked):
     os.popen('mkdir -p ' + dir_images_stacked)
 
-data_pares = np.genfromtxt("small_sample_data_galaxy_pairs.dat")
+#data_pares = np.genfromtxt("small_sample_data_galaxy_pairs.dat")
+data_pares = np.genfromtxt("data_pares_galaxias.dat")
 
-N_pair_generation = 100
+N_pair_generation = 2
+plx = 1500
 
 list_galA = range(1, (2*N_pair_generation) + 1, 2)
 list_galB = range(0, (2*N_pair_generation), 2)
@@ -68,8 +70,8 @@ for pair in range(N_pair_generation):
     tMl = 5
     tml = 3
 
-    xx = 750
-    yy = 750
+    xx = plx/2.
+    yy = plx/2.
 
     ax.axis([-xx*0.8, xx*0.8, -yy*0.8, yy*0.8])
     ax.xaxis.set_major_locator(ticker.NullLocator())
@@ -178,9 +180,11 @@ for pair in range(N_pair_generation):
 
     # lscale bar length:
     len_bar = 50.*dis_c1_c2/S_AB
-    ax.broken_barh([(-600, len_bar+200)], (-600, 200), facecolors='w')
-    ax.hlines(y=-550, xmin=-500, xmax=-500+len_bar, color="k", linewidth=3)
-    ax.text(-500, -500, "50 kpc", fontsize=20, color="k")
+    ax.broken_barh([(-plx/2.5, len_bar+plx/7.5)], (-plx/2.5, plx/7.5),
+                   facecolors='w')
+    ax.hlines(y=-plx/2.72, xmin=-plx/3.0, xmax=-plx/3.0+len_bar, color="k",
+              linewidth=3)
+    ax.text(-plx/3.0, -plx/3.0, "50 kpc", fontsize=20, color="k")
 
     name_image = "images_pairs_stacked/galaxy_pair_Number_"+str(pair+1)+".png"
     plt.savefig(name_image, bbox_inches='tight', dpi=200)

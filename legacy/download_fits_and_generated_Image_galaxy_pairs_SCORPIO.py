@@ -27,26 +27,16 @@ from shutil import rmtree
 import os
 plt.close()
 
-"""
-1237662225682006144 196.62870697000000 39.844405905521903 0.10972299000000001
-1237662225682006156 196.63408457000000 39.849490595521900 0.10918017000000001
-"""
 
-# ### Load data galaxies:
-
+# ### Load data galaxies [RA,DEC,redshift]:
 glx1 = [196.63408457000000, 39.849490595521900, 0.10918017000000001]
 glx2 = [196.62870697000000, 39.844405905521903, 0.10972299000000001]
 glx_array = np.array([glx1, glx2])
 df = glx_array
-plx = 1500
+plx = 1000
+filters = ["u", "g", "r", "i"]
+SURVEY = 'SDSS'
 
-#def indv_pair(glx1,glx2, plx=1500)
-    """
-    """
-    glx_array = np.array([glx1, glx2])
-    df = glx_array
-    # plx = 1500
-    plx = plx
 
 # ### function to extract coordinates in Aladin format
 def aladin_coords(pos):
@@ -59,9 +49,9 @@ def aladin_coords(pos):
 
 # ### Function for downloading images:
 @retry(stop_max_attempt_number=4)
-def download_dss(pos):
+def download_data(pos):
     path = SkyView.get_images(
-        position=pos, survey='SDSS'+str(filters[ff]),
+        position=pos, survey=SURVEY+str(filters[ff]),
         radius=2*apu.arcmin, pixels=(plx, plx),
         coordinates='J2000', show_progress=True
         )
@@ -88,15 +78,15 @@ if os.path.exists(dir_images):
         pass
 
 if not os.path.exists(dir_images):
-    os.popen('mkdir -p ' + dir_images)
+    os.makedirs(dir_images)
 
 dir_images_fits = './individual_images/images_fits'
 if not os.path.exists(dir_images_fits):
-    os.popen('mkdir -p ' + dir_images_fits)
+    os.makedirs(dir_images_fits)
 
 dir_images_png = './individual_images/images_png'
 if not os.path.exists(dir_images_png):
-    os.popen('mkdir -p ' + dir_images_png)
+    os.makedirs(dir_images_png)
 
 targets_dir_fits = 'individual_images/images_fits'
 
@@ -110,7 +100,6 @@ targets_dir_png = os.path.join(base_dir, targets_dir_png)
 # ############ loop for download images data fits: ################
 
 N = len(df)
-filters = ["u", "g", "r", "i"]
 state_download = []
 
 for ff in range(len(filters)):
@@ -120,10 +109,11 @@ for ff in range(len(filters)):
         RA = float("{0:.4f}".format(df[ii, 0]))
         DEC = float("{0:.4f}".format(df[ii, 1]))
         try:
-            stamp = download_dss(pos)
+            stamp = download_data(pos)
             fits_file = os.path.join(
                 targets_dir_fits,
-                'SDSS_image_'+str(ii)+'_filter_'+str(filters[ff])+'.fits')
+                SURVEY+'_image_'+str(ii)+'_filter_'+str(filters[ff])+'.fits')
+            print(fits_file)
             stamp[0].writeto(fits_file)
             image_data = stamp[0][0].data
             m = image_data.copy()
@@ -131,7 +121,7 @@ for ff in range(len(filters)):
             m = np.log(m)
             png_file = os.path.join(
                 targets_dir_png,
-                'SDSS_image_'+str(ii)+'_filter_'+str(filters[ff])+'.png')
+                SURVEY+'_image_'+str(ii)+'_filter_'+str(filters[ff])+'.png')
             img.imsave(png_file, m)
             state_download.append((ii, filters[ff], RA, DEC, "ok"))
         except Exception:
@@ -146,10 +136,9 @@ print("\nResume:\n   N filter   RA        DEC   state")
 print(state_download)
 
 # ..................... generation of final image: ..........................
-base = "individual_images/images_fits/"
-dir_images_stacked = './individual_pairs_stacked'
-if not os.path.exists(dir_images_stacked):
-    os.popen('mkdir -p ' + dir_images_stacked)
+dir_ImStack = './individual_pairs_stacked'
+if not os.path.exists(dir_ImStack):
+    os.makedirs(dir_ImStack)
 
 N_pair_generation = 100
 
@@ -165,22 +154,14 @@ dist_comv = planck.comoving_distance(np.mean(df[:, 2])).value
 
 imagenes_incompletas = []
 
-# for pair in range(N_pair_generation):
-# print("pair", pair+1)
 # =============== Estima de distancia entre el par: ===================
-
 coord_A = SkyCoord(ra=df[0, 0]*apu.deg, dec=df[0, 1]*apu.deg)
 coord_B = SkyCoord(ra=df[1, 0]*apu.deg, dec=df[1, 1]*apu.deg)
 
 theta_rad = coord_A.separation(coord_B).rad
 S_AB = (dist_comv*theta_rad)*1000.
-
 # =====================================================================
 f, ax = plt.subplots(figsize=(8, 8))
-
-llss = 10
-tMl = 5
-tml = 3
 
 xx = plx/2.
 yy = plx/2.
@@ -195,18 +176,18 @@ extent = [-xx, xx, -yy, yy]
 imageA_concat = []
 imageB_concat = []
 
-filters = ["u", "g", "r", "i"]
+base_fits = "individual_images/images_fits/"
 for ff in filters:
     # ============= reading and files and stacking: =================
     try:
-        img_A = base+"SDSS_image_0_filter_"+str(ff)+".fits"
+        img_A = base_fits+SURVEY+"_image_0_filter_"+str(ff)+".fits"
         imageA_concat.append(fits.getdata(img_A))
     except Exception:
         print("falta el filtro:", ff, " en la imagen Numero 0")
         imagenes_incompletas.append((0, 1, ff))
 
     try:
-        img_B = base+"SDSS_image_1_filter_"+str(ff)+".fits"
+        img_B = base_fits+SURVEY+"_image_1_filter_"+str(ff)+".fits"
         imageB_concat.append(fits.getdata(img_B))
     except Exception:
         print("falta el filtro:", ff, " en la imagen Numero 1")
@@ -215,7 +196,7 @@ for ff in filters:
 
 # ===================== sizes at pixels: ========================
 for ff in filters:
-    img_test = base+"SDSS_image_0_filter_"+str(ff)+".fits"
+    img_test = base_fits+SURVEY+"_image_0_filter_"+str(ff)+".fits"
     if not os.path.isfile(img_test):  # if not exist the file
         continue
     elif os.path.isfile(img_test):  # if exist the file
@@ -284,26 +265,34 @@ ax.plot(c2[0]-yy, -(c2[1]-xx), color="cyan", marker="o", markersize=20,
 
 # lscale bar length:
 len_bar = 50.*dis_c1_c2/S_AB
-ax.broken_barh([(-600, len_bar+200)], (-600, 200), facecolors='w')
-ax.hlines(y=-550, xmin=-500, xmax=-500+len_bar, color="k", linewidth=3)
-ax.text(-500, -500, "50 kpc", fontsize=20, color="k")
+ax.broken_barh([(-plx/2.5, len_bar+plx/7.5)], (-plx/2.5, plx/7.5),
+               facecolors='w')
+ax.hlines(y=-plx/2.72, xmin=-plx/3.0, xmax=-plx/3.0+len_bar, color="k",
+          linewidth=3)
+ax.text(-plx/3.0, -plx/3.0, "50 kpc", fontsize=20, color="k")
 
-imgNum = input("please input Number for image:")
-name_image = "individual_pairs_stacked/galaxy_pair_Number_"+str(imgNum)+".png"
-plt.savefig(name_image, bbox_inches='tight', dpi=200)
-# plt.show()
-plt.close()
+save_Img = input("\nYou wish save this image? [y/n]: ")
+while save_Img not in erase_options:
+    save_Img = input("\nYou wish save this image? [y/n]: ")
+
+if save_Img == "y":
+    imgNum = input("please input Number for image: ")
+    name_image = dir_ImStack+str(imgNum)+".png"
+    plt.savefig(name_image, bbox_inches='tight', dpi=200)
+    plt.close()
+elif save_Img == "n":
+    pass
+
 
 # ..........................................................................
 
 
 # ---- erase directory options: ------
-print("\nYou wish erase fits and png individual files? [y/n]")
-select = input()
+select = input("\nYou wish erase fits and png individual files? [y/n]: ")
 
 while select not in erase_options:
-    print("\nYou wish erase fits and png individual files? [y/n]")
-    select = input()
+    # print("\nYou wish erase fits and png individual files? [y/n]")
+    select = input("\nYou wish erase fits and png individual files? [y/n]: ")
 
 if select == "y":
     rmtree(dir_images)

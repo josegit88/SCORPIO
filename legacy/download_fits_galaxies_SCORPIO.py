@@ -26,15 +26,16 @@ def aladin_coords(pos):
 
 
 # ### Load and filter galaxy catalogue:
-data_pares = np.genfromtxt('small_sample_data_galaxy_pairs.dat')
+data_pares = np.genfromtxt('data_pares_galaxias.dat')
 df = data_pares  # with some mask
+SURVEY = 'SDSS'
 
 # ### Function for downloading images:
 @retry(stop_max_attempt_number=4)
-def download_dss(pos):
+def download_data(pos):
     path = SkyView.get_images(
-        position=pos, survey='SDSS'+str(filters[ff]),
-        radius=2*apu.arcmin, pixels=(1500, 1500),
+        position=pos, survey=SURVEY+str(filters[ff]),
+        radius=2*apu.arcmin, pixels=(plx, plx),
         coordinates='J2000', show_progress=True
         )
     return path
@@ -46,15 +47,15 @@ base_dir = './'
 dir_images = './images'
 
 if not os.path.exists(dir_images):
-    os.popen('mkdir -p ' + dir_images)
+    os.makedirs(dir_images)
 
 dir_images_fits = './images/images_fits'
 if not os.path.exists(dir_images_fits):
-    os.popen('mkdir -p ' + dir_images_fits)
+    os.makedirs(dir_images_fits)
 
 dir_images_png = './images/images_png'
 if not os.path.exists(dir_images_png):
-    os.popen('mkdir -p ' + dir_images_png)
+    os.makedirs(dir_images_png)
 
 targets_dir_fits = 'images/images_fits'
 
@@ -69,19 +70,55 @@ targets_dir_png = os.path.join(base_dir, targets_dir_png)
 
 # N=len(df)
 
-N = 20
-filters = ["u", "g", "r", "i"]
+N = 2
+plx = 1000
+# filters = ["u", "g", "r", "i"]
+filters_options = ["u", "g", "r", "i", "z"]
+continue_options = ["y", "n"]
+filters = []
+add_filter = input("select one filter of the list: u, g, r, i, z:\n")
+while add_filter not in filters_options:
+    print("\nThe filter is not in the options ",
+          "u, g, r, i, z")
+    add_filter = input("select one filter of the list: u, g, r, i, z:\n")
+
+filters.append(add_filter)
+print(filters)
+select_opt = input("Do you want to add another filter?[y/n]:\n")
+while select_opt not in continue_options:
+    select_opt = input("Do you want to add another filter?[y/n]:\n")
+
+while select_opt == "y":
+    add_filter = input("select one filter of the list: u, g, r, i, z:\n")
+    while add_filter not in filters_options:
+        print("\nThe filter is not in the options",
+              "u, g, r, i, z")
+    if add_filter in filters:
+        print("The filter is in the list")
+        pass
+    elif add_filter not in filters:
+        filters.append(add_filter)
+    print(filters)
+    select_opt = input("Do you want to add another filter?[y/n]:\n")
+    while select_opt not in continue_options:
+        select_opt = input("Do you want to add another filter?[y/n]:\n")
+        if select_opt == "n":
+            break
+
+# filters = []
 missing = []
+
+image_array = []
 
 for ff in range(len(filters)):
     for ii in range(N):
         pos = SkyCoord(ra=df[ii, 1]*apu.degree, dec=df[ii, 2]*apu.degree)
         aladin_coords(pos)
         try:
-            stamp = download_dss(pos)
-            fits_file = os.path.join(
-                targets_dir_fits,
-                'SDSS_image_'+str(ii)+'_filter_'+str(filters[ff])+'.fits')
+            stamp = download_data(pos)
+            base_name = SURVEY+'_image_'+str(ii)
+            name_fits = '_filter_'+str(filters[ff])+'.fits'
+            fits_file = os.path.join(targets_dir_fits, base_name, name_fits)
             stamp[0].writeto(fits_file)
             image_data = stamp[0][0].data
             m = image_data.copy()
@@ -89,11 +126,12 @@ for ff in range(len(filters)):
             m = np.log(m)
             png_file = os.path.join(
                 targets_dir_png,
-                'SDSS_image_'+str(ii)+'_filter_'+str(filters[ff])+'.png')
+                SURVEY+'_image_'+str(ii)+'_filter_'+str(filters[ff])+'.png')
             img.imsave(png_file, m)
         except Exception:
             missing.append((ii, filters[ff], df[ii, 1], df[ii, 2]))
-            print("No image data ii:"+str(ii)+" of filter: "+str(ff))
+            print("Data exist in the directory or",
+                  "No image data ii:"+str(ii)+" of filter: "+str(filters[ff]))
             pass
 
         print("complete the filter:", filters[ff], "of image N:", ii)

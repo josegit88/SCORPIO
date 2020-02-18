@@ -11,10 +11,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 plt.close()
 
-data_pares = np.genfromtxt("small_sample_data_galaxy_pairs.dat")
+data_pares = np.genfromtxt("data_pares_galaxias.dat")
 
 
-def plotSkyLoc(RA, Dec, redshift, org=0, title='None', projection='mollweide',
+def plotSkyLoc(RA, Dec, redshift, org=0, title=None, projection=None,
                colormap="rainbow"):
     """RA, Dec are arrays of the same length.
     RA takes values in [0,360), Dec in [-90,90], which represent angles in
@@ -24,6 +24,7 @@ def plotSkyLoc(RA, Dec, redshift, org=0, title='None', projection='mollweide',
     assings the color code for redshift colorbar. We can select: "rainbow",
     viridis, plasma, inferno, magma.
     """
+    projection = 'mollweide' if projection is None else projection
     x = np.remainder(RA+360.-org, 360.)  # shift RA values
     ind = x > 180.
     x[ind] -= 360.  # scale conversion to [-180, 180]
@@ -56,7 +57,7 @@ def plotSkyLoc(RA, Dec, redshift, org=0, title='None', projection='mollweide',
     cb.set_label(r"redshift", fontsize=14)
     im.set_clim(0, 0.2)
     ax.set_xticklabels(tick_labels)  # we add the scale on the x axis
-    if title == 'None':
+    if title == None:
         title = ""
     ax.set_title(title)
     ax.title.set_fontsize(11)
@@ -72,8 +73,8 @@ def plotSkyLoc(RA, Dec, redshift, org=0, title='None', projection='mollweide',
 cc = "magma"
 plotSkyLoc(
     data_pares[:2001:2, 1], data_pares[:2001:2, 2], data_pares[:2001:2, 3],
-    title='Sky projection of Galaxy pairs', projection='mollweide',
+    title='Sky projection of Galaxy pairs',org=0., projection='mollweide',
     colormap=cc)
-plt.savefig("projection_sky_sample_y_cbar_horizontal_"+str(cc)+".png",
+plt.savefig("projection_sky_sample_y_cbar_horizontal_"+str(cc)+"_mollweide.png",
             bbox_inches='tight', dpi=200)
 plt.show()
