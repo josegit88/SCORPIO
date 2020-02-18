@@ -1,2 +1,0 @@
-NrGal NrPair Filter
-2 2 g
