@@ -1,0 +1,37 @@
+action: py37, msg: installpkg
+cwd: /home/jbenavides/Documentos/documentos_de_estudio/Diseno_de_software_para_computo_cientifico/PROJECT_SCORPIO/git_SCORPIO/SCORPIO
+cmd: /home/jbenavides/Documentos/documentos_de_estudio/Diseno_de_software_para_computo_cientifico/PROJECT_SCORPIO/git_SCORPIO/SCORPIO/.tox/py37/bin/python -m pip install --exists-action w .tox/.tmp/package/1/scorpio-0.0.1.zip
+Processing ./.tox/.tmp/package/1/scorpio-0.0.1.zip
+Requirement already satisfied: numpy in ./.tox/py37/lib/python3.7/site-packages (from scorpio==0.0.1) (1.18.1)
+Requirement already satisfied: astropy in ./.tox/py37/lib/python3.7/site-packages (from scorpio==0.0.1) (4.0)
+Requirement already satisfied: astroquery in ./.tox/py37/lib/python3.7/site-packages (from scorpio==0.0.1) (0.4)
+Requirement already satisfied: html5lib>=0.999 in ./.tox/py37/lib/python3.7/site-packages (from astroquery->scorpio==0.0.1) (1.0.1)
+Requirement already satisfied: six in ./.tox/py37/lib/python3.7/site-packages (from astroquery->scorpio==0.0.1) (1.14.0)
+Requirement already satisfied: keyring>=4.0 in ./.tox/py37/lib/python3.7/site-packages (from astroquery->scorpio==0.0.1) (21.1.0)
+Requirement already satisfied: beautifulsoup4>=4.3.2 in ./.tox/py37/lib/python3.7/site-packages (from astroquery->scorpio==0.0.1) (4.8.2)
+Requirement already satisfied: requests>=2.4.3 in ./.tox/py37/lib/python3.7/site-packages (from astroquery->scorpio==0.0.1) (2.23.0)
+Requirement already satisfied: webencodings in ./.tox/py37/lib/python3.7/site-packages (from html5lib>=0.999->astroquery->scorpio==0.0.1) (0.5.1)
+Requirement already satisfied: jeepney>=0.4.2; sys_platform == "linux" in ./.tox/py37/lib/python3.7/site-packages (from keyring>=4.0->astroquery->scorpio==0.0.1) (0.4.2)
+Requirement already satisfied: importlib-metadata; python_version < "3.8" in ./.tox/py37/lib/python3.7/site-packages (from keyring>=4.0->astroquery->scorpio==0.0.1) (1.5.0)
+Requirement already satisfied: SecretStorage>=3; sys_platform == "linux" in ./.tox/py37/lib/python3.7/site-packages (from keyring>=4.0->astroquery->scorpio==0.0.1) (3.1.2)
+Requirement already satisfied: soupsieve>=1.2 in ./.tox/py37/lib/python3.7/site-packages (from beautifulsoup4>=4.3.2->astroquery->scorpio==0.0.1) (1.9.5)
+Requirement already satisfied: urllib3!=1.25.0,!=1.25.1,<1.26,>=1.21.1 in ./.tox/py37/lib/python3.7/site-packages (from requests>=2.4.3->astroquery->scorpio==0.0.1) (1.25.8)
+Requirement already satisfied: chardet<4,>=3.0.2 in ./.tox/py37/lib/python3.7/site-packages (from requests>=2.4.3->astroquery->scorpio==0.0.1) (3.0.4)
+Requirement already satisfied: certifi>=2017.4.17 in ./.tox/py37/lib/python3.7/site-packages (from requests>=2.4.3->astroquery->scorpio==0.0.1) (2019.11.28)
+Requirement already satisfied: idna<3,>=2.5 in ./.tox/py37/lib/python3.7/site-packages (from requests>=2.4.3->astroquery->scorpio==0.0.1) (2.9)
+Requirement already satisfied: zipp>=0.5 in ./.tox/py37/lib/python3.7/site-packages (from importlib-metadata; python_version < "3.8"->keyring>=4.0->astroquery->scorpio==0.0.1) (3.0.0)
+Requirement already satisfied: cryptography in ./.tox/py37/lib/python3.7/site-packages (from SecretStorage>=3; sys_platform == "linux"->keyring>=4.0->astroquery->scorpio==0.0.1) (2.8)
+Requirement already satisfied: cffi!=1.11.3,>=1.8 in ./.tox/py37/lib/python3.7/site-packages (from cryptography->SecretStorage>=3; sys_platform == "linux"->keyring>=4.0->astroquery->scorpio==0.0.1) (1.14.0)
+Requirement already satisfied: pycparser in ./.tox/py37/lib/python3.7/site-packages (from cffi!=1.11.3,>=1.8->cryptography->SecretStorage>=3; sys_platform == "linux"->keyring>=4.0->astroquery->scorpio==0.0.1) (2.19)
+Building wheels for collected packages: scorpio
+  Building wheel for scorpio (setup.py): started
+  Building wheel for scorpio (setup.py): finished with status 'done'
+  Created wheel for scorpio: filename=scorpio-0.0.1-py3-none-any.whl size=7578 sha256=01de8f71f76ff6a76309858b5d8d8cc25948feb7877404f8ce469bf9f50eb90d
+  Stored in directory: /home/jbenavides/.cache/pip/wheels/c8/1b/85/8c9e1fe7416c52ae99df35884e93f92cb30e1b568125cac5f4
+Successfully built scorpio
+Installing collected packages: scorpio
+  Attempting uninstall: scorpio
+    Found existing installation: scorpio 0.0.1
+    Not uninstalling scorpio at /home/jbenavides/Documentos/documentos_de_estudio/Diseno_de_software_para_computo_cientifico/PROJECT_SCORPIO/git_SCORPIO/SCORPIO, outside environment /home/jbenavides/Documentos/documentos_de_estudio/Diseno_de_software_para_computo_cientifico/PROJECT_SCORPIO/git_SCORPIO/SCORPIO/.tox/py37
+    Can't uninstall 'scorpio'. No files were found to uninstall.
+Successfully installed scorpio-0.0.1

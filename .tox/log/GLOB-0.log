@@ -1,0 +1,45 @@
+action: GLOB, msg: packaging
+cwd: /home/jbenavides/Documentos/documentos_de_estudio/Diseno_de_software_para_computo_cientifico/PROJECT_SCORPIO/git_SCORPIO/SCORPIO
+cmd: /home/jbenavides/anaconda2/envs/scorpio/bin/python setup.py sdist --formats=zip --dist-dir /home/jbenavides/Documentos/documentos_de_estudio/Diseno_de_software_para_computo_cientifico/PROJECT_SCORPIO/git_SCORPIO/SCORPIO/.tox/dist
+running sdist
+running egg_info
+writing scorpio.egg-info/PKG-INFO
+writing dependency_links to scorpio.egg-info/dependency_links.txt
+writing requirements to scorpio.egg-info/requires.txt
+writing top-level names to scorpio.egg-info/top_level.txt
+reading manifest file 'scorpio.egg-info/SOURCES.txt'
+writing manifest file 'scorpio.egg-info/SOURCES.txt'
+running check
+creating scorpio-0.0.1
+creating scorpio-0.0.1/scorpio
+creating scorpio-0.0.1/scorpio.egg-info
+copying files to scorpio-0.0.1...
+copying README.md -> scorpio-0.0.1
+copying ez_setup.py -> scorpio-0.0.1
+copying setup.py -> scorpio-0.0.1
+copying scorpio/__init__.py -> scorpio-0.0.1/scorpio
+copying scorpio/scorpio.py -> scorpio-0.0.1/scorpio
+copying scorpio.egg-info/PKG-INFO -> scorpio-0.0.1/scorpio.egg-info
+copying scorpio.egg-info/SOURCES.txt -> scorpio-0.0.1/scorpio.egg-info
+copying scorpio.egg-info/dependency_links.txt -> scorpio-0.0.1/scorpio.egg-info
+copying scorpio.egg-info/requires.txt -> scorpio-0.0.1/scorpio.egg-info
+copying scorpio.egg-info/top_level.txt -> scorpio-0.0.1/scorpio.egg-info
+Writing scorpio-0.0.1/setup.cfg
+creating /home/jbenavides/Documentos/documentos_de_estudio/Diseno_de_software_para_computo_cientifico/PROJECT_SCORPIO/git_SCORPIO/SCORPIO/.tox/dist
+creating '/home/jbenavides/Documentos/documentos_de_estudio/Diseno_de_software_para_computo_cientifico/PROJECT_SCORPIO/git_SCORPIO/SCORPIO/.tox/dist/scorpio-0.0.1.zip' and adding 'scorpio-0.0.1' to it
+adding 'scorpio-0.0.1'
+adding 'scorpio-0.0.1/scorpio'
+adding 'scorpio-0.0.1/scorpio.egg-info'
+adding 'scorpio-0.0.1/ez_setup.py'
+adding 'scorpio-0.0.1/setup.py'
+adding 'scorpio-0.0.1/PKG-INFO'
+adding 'scorpio-0.0.1/setup.cfg'
+adding 'scorpio-0.0.1/README.md'
+adding 'scorpio-0.0.1/scorpio/__init__.py'
+adding 'scorpio-0.0.1/scorpio/scorpio.py'
+adding 'scorpio-0.0.1/scorpio.egg-info/dependency_links.txt'
+adding 'scorpio-0.0.1/scorpio.egg-info/SOURCES.txt'
+adding 'scorpio-0.0.1/scorpio.egg-info/top_level.txt'
+adding 'scorpio-0.0.1/scorpio.egg-info/PKG-INFO'
+adding 'scorpio-0.0.1/scorpio.egg-info/requires.txt'
+removing 'scorpio-0.0.1' (and everything under it)

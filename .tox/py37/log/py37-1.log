@@ -1,0 +1,73 @@
+action: py37, msg: getenv
+cwd: /home/jbenavides/Documentos/documentos_de_estudio/Diseno_de_software_para_computo_cientifico/PROJECT_SCORPIO/git_SCORPIO/SCORPIO
+cmd: /home/jbenavides/Documentos/documentos_de_estudio/Diseno_de_software_para_computo_cientifico/PROJECT_SCORPIO/git_SCORPIO/SCORPIO/.tox/py37/bin/python -m pip install pytest astropy numpy astroquery
+Collecting pytest
+  Downloading pytest-5.3.5-py3-none-any.whl (235 kB)
+Collecting astropy
+  Using cached astropy-4.0-cp37-cp37m-manylinux1_x86_64.whl (6.5 MB)
+Collecting numpy
+  Downloading numpy-1.18.1-cp37-cp37m-manylinux1_x86_64.whl (20.1 MB)
+Collecting astroquery
+  Downloading astroquery-0.4.tar.gz (4.5 MB)
+Collecting pluggy<1.0,>=0.12
+  Downloading pluggy-0.13.1-py2.py3-none-any.whl (18 kB)
+Collecting packaging
+  Downloading packaging-20.1-py2.py3-none-any.whl (36 kB)
+Collecting wcwidth
+  Downloading wcwidth-0.1.8-py2.py3-none-any.whl (17 kB)
+Collecting attrs>=17.4.0
+  Downloading attrs-19.3.0-py2.py3-none-any.whl (39 kB)
+Collecting importlib-metadata>=0.12; python_version < "3.8"
+  Downloading importlib_metadata-1.5.0-py2.py3-none-any.whl (30 kB)
+Collecting py>=1.5.0
+  Downloading py-1.8.1-py2.py3-none-any.whl (83 kB)
+Collecting more-itertools>=4.0.0
+  Downloading more_itertools-8.2.0-py3-none-any.whl (43 kB)
+Collecting requests>=2.4.3
+  Downloading requests-2.23.0-py2.py3-none-any.whl (58 kB)
+Collecting keyring>=4.0
+  Downloading keyring-21.1.0-py2.py3-none-any.whl (31 kB)
+Collecting beautifulsoup4>=4.3.2
+  Downloading beautifulsoup4-4.8.2-py3-none-any.whl (106 kB)
+Collecting html5lib>=0.999
+  Downloading html5lib-1.0.1-py2.py3-none-any.whl (117 kB)
+Collecting six
+  Using cached six-1.14.0-py2.py3-none-any.whl (10 kB)
+Collecting pyparsing>=2.0.2
+  Downloading pyparsing-2.4.6-py2.py3-none-any.whl (67 kB)
+Collecting zipp>=0.5
+  Downloading zipp-3.0.0-py3-none-any.whl (4.8 kB)
+Collecting urllib3!=1.25.0,!=1.25.1,<1.26,>=1.21.1
+  Downloading urllib3-1.25.8-py2.py3-none-any.whl (125 kB)
+Collecting chardet<4,>=3.0.2
+  Downloading chardet-3.0.4-py2.py3-none-any.whl (133 kB)
+Collecting certifi>=2017.4.17
+  Downloading certifi-2019.11.28-py2.py3-none-any.whl (156 kB)
+Collecting idna<3,>=2.5
+  Downloading idna-2.9-py2.py3-none-any.whl (58 kB)
+Collecting jeepney>=0.4.2; sys_platform == "linux"
+  Downloading jeepney-0.4.2-py3-none-any.whl (21 kB)
+Collecting SecretStorage>=3; sys_platform == "linux"
+  Downloading SecretStorage-3.1.2-py3-none-any.whl (14 kB)
+Collecting soupsieve>=1.2
+  Downloading soupsieve-1.9.5-py2.py3-none-any.whl (33 kB)
+Collecting webencodings
+  Downloading webencodings-0.5.1-py2.py3-none-any.whl (11 kB)
+Collecting cryptography
+  Downloading cryptography-2.8-cp34-abi3-manylinux2010_x86_64.whl (2.3 MB)
+Collecting cffi!=1.11.3,>=1.8
+  Downloading cffi-1.14.0-cp37-cp37m-manylinux1_x86_64.whl (400 kB)
+Collecting pycparser
+  Downloading pycparser-2.19.tar.gz (158 kB)
+Building wheels for collected packages: astroquery, pycparser
+  Building wheel for astroquery (setup.py): started
+  Building wheel for astroquery (setup.py): finished with status 'done'
+  Created wheel for astroquery: filename=astroquery-0.4-py3-none-any.whl size=3582510 sha256=7ff5c9e5a716197e098b34152a274ae730f0cf0b8a4c764332e5bce43afcdf3f
+  Stored in directory: /home/jbenavides/.cache/pip/wheels/da/e4/ca/c71e05a621dfd3a1c51e24d89d38404dc4ac4ec3ce416d363b
+  Building wheel for pycparser (setup.py): started
+  Building wheel for pycparser (setup.py): finished with status 'done'
+  Created wheel for pycparser: filename=pycparser-2.19-py2.py3-none-any.whl size=111031 sha256=3f98a740fea98130396202b0bf7f9b953fc878efbf5c4ab163f6978e013b72a4
+  Stored in directory: /home/jbenavides/.cache/pip/wheels/0e/53/27/fee7fd9562e10dd046caccfc0340b8cf789b46846e660f3380
+Successfully built astroquery pycparser
+Installing collected packages: zipp, importlib-metadata, pluggy, pyparsing, six, packaging, wcwidth, attrs, py, more-itertools, pytest, numpy, astropy, urllib3, chardet, certifi, idna, requests, jeepney, pycparser, cffi, cryptography, SecretStorage, keyring, soupsieve, beautifulsoup4, webencodings, html5lib, astroquery
+Successfully installed SecretStorage-3.1.2 astropy-4.0 astroquery-0.4 attrs-19.3.0 beautifulsoup4-4.8.2 certifi-2019.11.28 cffi-1.14.0 chardet-3.0.4 cryptography-2.8 html5lib-1.0.1 idna-2.9 importlib-metadata-1.5.0 jeepney-0.4.2 keyring-21.1.0 more-itertools-8.2.0 numpy-1.18.1 packaging-20.1 pluggy-0.13.1 py-1.8.1 pycparser-2.19 pyparsing-2.4.6 pytest-5.3.5 requests-2.23.0 six-1.14.0 soupsieve-1.9.5 urllib3-1.25.8 wcwidth-0.1.8 webencodings-0.5.1 zipp-3.0.0

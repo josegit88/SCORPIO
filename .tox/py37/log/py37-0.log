@@ -1,0 +1,4 @@
+action: py37, msg: getenv
+cwd: /home/jbenavides/Documentos/documentos_de_estudio/Diseno_de_software_para_computo_cientifico/PROJECT_SCORPIO/git_SCORPIO/SCORPIO/.tox
+cmd: /home/jbenavides/anaconda2/envs/scorpio/bin/python -m virtualenv --no-download --python /home/jbenavides/anaconda2/envs/scorpio/bin/python py37
+created virtual environment in 399ms CPython3Posix(dest=/home/jbenavides/Documentos/documentos_de_estudio/Diseno_de_software_para_computo_cientifico/PROJECT_SCORPIO/git_SCORPIO/SCORPIO/.tox/py37, clear=False, global=False) with seeder FromAppData pip=latest setuptools=latest wheel=latest app_data_dir=/home/jbenavides/.local/share/virtualenv/seed-v1 via=copy
