@@ -57,22 +57,22 @@ class Imagen:
         self.dist_com = dist_com
         self.dist_pix = dist_pix
         #new:
-        self.long_arc = long_arc
+        self.length_arc = length_arc
 
-    def plot(self):
+    def plot(self, dir_images='./individual_images'):
         # ejemelo: plt.imshow(self.matriz)
         #hacer el plot
         
-        #------ confección del plot: ------
-        dir_images = './individual_images'
+        #------ confección del plot: ------        
         if not os.path.exists(dir_images):
             os.makedirs(dir_images)
                     
         erase_options = ["y", "n"]
 
         #data_stack = stack_pair(gal1,gal2, plx=100) # esto se debe modificar!!! img_gp.matriz = g1g2
-        img_gp.matriz = g1g2
-        final_imageA = data_stack[0]
+        #img_gp.matriz = g1g2         
+        #final_imageA = data_stack[0]
+        final_imageA = self.matriz
 
         f, ax = plt.subplots(figsize=(8, 8))
 
@@ -128,7 +128,7 @@ class Imagen:
                 mew=2, fillstyle="none")
 
         # lscale bar length:
-        len_bar = 50.*dis_c1_c2/S_AB
+        len_bar = 50.*dis_c1_c2/s_AB
         ax.broken_barh([(-plx/2.5, len_bar+plx/7.5)], (-plx/2.5, plx/7.5),
                        facecolors='w')
         ax.hlines(y=-plx/2.72, xmin=-plx/3.0, xmax=-plx/3.0+len_bar, color="k",
@@ -231,7 +231,8 @@ def stack_pair(glx1, glx2, plx=1000, survey='SDSS', filters=None):
 
 
 #--new: ---
-def distance_comv(glx1, glx2, z_glx, info_fits, cosmology="planck15")
+def distance_comv(glx1, glx2, z_glx, info_fits, cosmology)
+    #poner nombres mas explicitos de glx1 glx2,...
     """
     WMAP5        Komatsu et al. 2009            70.2    0.277    Yes
     WMAP7        Komatsu et al. 2011            70.4    0.272    Yes
@@ -242,6 +243,7 @@ def distance_comv(glx1, glx2, z_glx, info_fits, cosmology="planck15")
 
     glx_array = np.array([glx1, glx2])
     
+    """
     # calculo de distancia:
     if cosmology == "planck15":
         planck = asc.Planck15
@@ -253,15 +255,16 @@ def distance_comv(glx1, glx2, z_glx, info_fits, cosmology="planck15")
         planck = asc.WMAP5
     if cosmology == "WMAP5":
         planck = asc.WMAP5
+    """   
             
-    dist_comv = planck.comoving_distance(np.mean(z_glx)).value
+    dist_comv = cosmology.comoving_distance(np.mean(z_glx)).value
 
     # se estima la distancia entre el par:
     coord_A = SkyCoord(ra=glx_array[0, 0]*apu.deg, dec=glx_array[0, 1]*apu.deg)
     coord_B = SkyCoord(ra=glx_array[1, 0]*apu.deg, dec=glx_array[1, 1]*apu.deg)
 
     theta_rad = coord_A.separation(coord_B).rad
-    S_AB = (dist_comv*theta_rad)*1000.
+    s_AB = (dist_comv*theta_rad)*1000.
 
     # se convierte la distancia física a distancia en pixeles:
     data_WCS = wcs.WCS(info_fits)
@@ -270,7 +273,34 @@ def distance_comv(glx1, glx2, z_glx, info_fits, cosmology="planck15")
     c2 = data_WCS.wcs_world2pix(glx_array[1, 0], glx_array[1, 1], 0)
     dis_c1_c2 = np.sqrt((c1[0]-c2[0])**2+(c1[1]-c2[1])**2)  # pixel-pitagorazed
 
-    return S_AB, dis_c1_c2
+    return s_AB, dis_c1_c2
+
+# New 21 oct:
+def gpair(catalog, ra0, dec0, ra1, dec1, z=None, resolution=None, 
+    cosmology=asc.Planck15):
+
+    #new:
+    img_gp = Imagen() #Imagen es la instancia de la clase Imagen
+    #---
+    
+    #new:
+    #pasarle ra0, dec0, ra1, dec1, z=None para "armar" glx1, glx2, z_glx
+    g1g2, header = stack_pair(glx1, glx2, plx=1000, survey='SDSS', filters=None) #así ya tenemos disponible la informacion apilada y del header
+    img_gp.matriz = g1g2
+    img_gp.header = header
+    #-----
+    
+    #medir la distancia (escribir una funcion donde el usuario pueda elegir la cosmologia, cosmology=planck15)
+    #marcar los circulitos
+    
+    #pasarle ra0, dec0, ra1, dec1, z=None para "armar" glx1, glx2, z_glx, header-->info_fits
+    dist_com, dist_pix = distance_comv(glx1, glx2, z_glx, header, cosmology)
+    img_gp.dist_com = dist_com
+    img_gp.dist_pix = dist_pix
+
+    #devolver imagen #debe tener todos los atributos o informacion que fuimos calculando en estas funciones:
+    return img_gp
+
 
 # --------------------
 
