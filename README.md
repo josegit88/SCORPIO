@@ -3,6 +3,7 @@ Sky COllector of galaxy Pairs and Image Output
 
 This project is written in Python 3 (to use in Python 2, slight modifications must be made to the input functions, nothing difficult). To use some of the SCORPIO scripts and functions you need on your computer (It is suggested to create a virtual environment if you do not want some of these packages to be permanently hosted in your most used libraries):
 - numpy
+- matplotlib
 - astropy
 - astroquery:
   The latest version of astroquery can be conda or pip installed:
