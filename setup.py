@@ -33,23 +33,22 @@ from setuptools import setup
 # CONSTANTS
 # =============================================================================
 
-# REQUIREMENTS = ["numpy", "scipy", "attrs", "matplotlib"]
-REQUIREMENTS = ["numpy", "astropy", "astroquery"]
+#REQUIREMENTS = ["numpy", "astropy", "astroquery"]
+REQUIREMENTS = ["numpy", "astropy", "astroquery", "matplotlib"]
 
 PATH = pathlib.Path(os.path.abspath(os.path.dirname(__file__)))
 
 with open(PATH / "README.md") as fp:
     LONG_DESCRIPTION = fp.read()
 
-with open(PATH / "scorpio" / "__init__.py") as fp: # con mayuscula o minusc?
-# with open(PATH / "__init__.py") as fp: # con mayuscula o minusc?
+#with open(PATH / "scorpio" / "__init__.py") as fp: # con mayuscula o minusc?
+with open(PATH / "__init__.py") as fp: # con mayuscula o minusc?
     for l in fp.readlines():
         if l.startswith("__version__ = "):
             VERSION = l.split("=", 1)[-1].replace('"', '').strip()
             break
 
 
-# DESCRIPTION = "Grid Search in Python"
 DESCRIPTION = """SCORPIO: Sky COllector of galaxy Pairs and Image Output.
     SCORPIO is a tool for download fits of astronomial survey and generate
     image.
@@ -87,8 +86,9 @@ def do_setup():
             "Programming Language :: Python :: Implementation :: CPython",
             "Topic :: Scientific/Engineering"],
 
-        packages=["scorpio"],
-        py_modules=["ez_setup"],
+        # packages=["scorpio"],
+        # py_modules=["ez_setup"],
+        py_modules=["scorpio", "ez_setup"],
 
         install_requires=REQUIREMENTS)
 
