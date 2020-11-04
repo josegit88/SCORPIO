@@ -51,13 +51,16 @@ VALID_FILTERS_WISE = [" 3.4", " 4.6", " 12", " 22"]
 #--- new: ----
 class Imagen:
 
-    def __init__(self, matriz=None, header=None, dist_physic=None, dist_pix=None, long_arc=None)
+    def __init__(self, matriz=None, header=None, dist_physic=None, dist_pix=None, length_arc=None, pos1=None, pos2=None, resolution=None):
         self.matriz = matriz
         self.header = header
         self.dist_physic = dist_physic
         self.dist_pix = dist_pix
         #new:
         self.length_arc = length_arc
+        self.resolution = resolution
+        self.pos1 = pos1
+        self.pos2 = pos2
 
     def plot(self, dir_images='./individual_images'):
         # ejemelo: plt.imshow(self.matriz)
@@ -73,8 +76,19 @@ class Imagen:
         #img_gp.matriz = g1g2         
         #final_imageA = data_stack[0]
         final_imageA = self.matriz
+        final_imageA = final_imageA[0]
+        plx = self.resolution
+        c1 = self.pos1
+        c2 = self.pos2
+        dis_c1_c2 = self.dist_pix
+        s_AB = self.dist_physic
+        
+        print("resolution:", plx)
+        print(final_imageA)
 
         f, ax = plt.subplots(figsize=(8, 8))
+        
+        #plx = resolution
 
         xx = plx/2.
         yy = plx/2.
@@ -141,7 +155,7 @@ class Imagen:
 
         if save_Img == "y":
             imgName = input("please input Name for the image: ")
-            name_image = dir_ImStack+"/"+str(imgName)
+            name_image = dir_images+"/"+str(imgName)
             plt.savefig(name_image, bbox_inches='tight', dpi=200)
             plt.close()
         elif save_Img == "n":
@@ -171,14 +185,15 @@ def download_data(pos, survey, filters, plx, ff):
 
 
 #def stack_pair(glx1, glx2, plx=1000, survey='SDSS', filters=None):
-def stack_pair(ra1, dec1, ra2, dec2, z1=None, z2=None, plx=1000, survey='SDSS', filters=None):
+def stack_pair(ra1, dec1, ra2, dec2, z1=None, z2=None, resolution=1000, survey='SDSS', filters=None):
     """Generate a individual image from list (RA, DEC, z) data of galaxy pair
     for defaul pixles: plx = 1000 and g, i filters.
 
     """
+    plx = resolution
     
     glx1 = [ra1, dec1, z1]
-    glx1 = [ra2, dec2, z2]
+    glx2 = [ra2, dec2, z2]
     
     glx_array = np.array([glx1, glx2])
 
@@ -218,6 +233,8 @@ def stack_pair(ra1, dec1, ra2, dec2, z1=None, z2=None, plx=1000, survey='SDSS', 
                 stamp = download_data(
                     pos=pos, survey=survey,
                     filters=filters, plx=plx, ff=ff)
+                if ii == 0:
+                    stamp_g1 = stamp
             except urllib.error.HTTPError as err:
                 if err.code != 404:
                     raise err
@@ -232,13 +249,14 @@ def stack_pair(ra1, dec1, ra2, dec2, z1=None, z2=None, plx=1000, survey='SDSS', 
         raise NoFilterToStackError("Empty array for galaxy2")
 
     #info_fits = stamp[0][0].header
-    header = stamp[0][0].header
-    return g1g2, header # retorna una tupla
+    #header = stamp[0][0].header
+    header = stamp_g1[0][0].header
+    return g1g2, header, plx # retorna una tupla
 
 
 #--new: ---
 #def distances(glx1, glx2, z_glx, info_fits, cosmology)
-def distances(ra1, dec1, ra2, dec2, z1=None, z2=None, info_fits, cosmology)
+def distances(ra1, dec1, ra2, dec2, z1, z2, info_fits, cosmology):
     #poner nombres mas explicitos de glx1 glx2,...
     """
     WMAP5        Komatsu et al. 2009            70.2    0.277    Yes
@@ -249,9 +267,10 @@ def distances(ra1, dec1, ra2, dec2, z1=None, z2=None, info_fits, cosmology)
     """
 
     glx1 = [ra1, dec1, z1]
-    glx1 = [ra2, dec2, z2]
+    glx2 = [ra2, dec2, z2]
 
     glx_array = np.array([glx1, glx2])
+    z_glx = glx_array[:,2]
                 
     dist_comv = cosmology.comoving_distance(np.mean(z_glx)).value
 
@@ -269,13 +288,13 @@ def distances(ra1, dec1, ra2, dec2, z1=None, z2=None, info_fits, cosmology)
     c2 = data_WCS.wcs_world2pix(glx_array[1, 0], glx_array[1, 1], 0)
     dis_c1_c2 = np.sqrt((c1[0]-c2[0])**2+(c1[1]-c2[1])**2)  # pixel-pitagorazed
 
-    return s_AB, dis_c1_c2
+    return s_AB, dis_c1_c2, c1, c2
 
 # New 21 oct:
 #def gpair(catalog, ra1, dec1, ra2, dec2, z1=None, z2=None, resolution=None, 
 #    cosmology=asc.Planck15):
 
-def gpair(survey='SDSS', ra1, dec1, ra2, dec2, z1=None, z2=None, resolution=None, 
+def gpair(ra1, dec1, ra2, dec2, z1, z2, survey='SDSS',resolution=None, 
     cosmology=asc.Planck15):
     #new:
     img_gp = Imagen() #Imagen es la instancia de la clase Imagen
@@ -283,18 +302,21 @@ def gpair(survey='SDSS', ra1, dec1, ra2, dec2, z1=None, z2=None, resolution=None
     
     #new:
     #pasarle ra0, dec0, ra1, dec1, z=None para "armar" glx1, glx2, z_glx
-    g1g2, header = stack_pair(ra1, dec1, ra2, dec2, z1=None, z2=None, plx=1000, survey='SDSS', filters=None) #así ya tenemos disponible la informacion apilada y del header
+    g1g2, header, plx = stack_pair(ra1, dec1, ra2, dec2, z1=None, z2=None, resolution=1000, survey='SDSS', filters=None) #así ya tenemos disponible la informacion apilada y del header
     img_gp.matriz = g1g2
     img_gp.header = header
+    img_gp.resolution = plx
     #-----
     
     #medir la distancia (escribir una funcion donde el usuario pueda elegir la cosmologia, cosmology=planck15)
     #marcar los circulitos
     
     #pasarle ra0, dec0, ra1, dec1, z=None para "armar" glx1, glx2, z_glx, header-->info_fits
-    dist_physic, dist_pix = distances(ra1, dec1, ra2, dec2, z1=None, z2=None, header, cosmology)
+    dist_physic, dist_pix, pos1, pos2 = distances(ra1, dec1, ra2, dec2, z1, z2, header, cosmology)
     img_gp.dist_physic = dist_physic
     img_gp.dist_pix = dist_pix
+    img_gp.pos1 = pos1
+    img_gp.pos2 = pos2
 
     #devolver imagen #debe tener todos los atributos o informacion que fuimos calculando en estas funciones:
     return img_gp
@@ -306,5 +328,16 @@ def gpair(survey='SDSS', ra1, dec1, ra2, dec2, z1=None, z2=None, resolution=None
 # gal2 = [126.38991429000001, 47.305200665521902, 0.12554201000000001]
 
 # data_stack2 = stack_pair(gal1,gal2, plx=500)
+
+# [RA1, DEC1, Z1, RA2, DEC2, Z2] = [126.39162693999999, 47.296980665521900, 0.12573827000000001, 126.38991429000001, 47.305200665521902, 0.12554201000000001] 
+
+# scorpio.gpair(ra1=RA1, dec1=DEC1, ra2=RA2, dec2=DEC2, z1=Z1, z2=Z2)
+
+"""
+import scorpio
+[RA1, DEC1, Z1, RA2, DEC2, Z2] = [126.39162693999999, 47.296980665521900, 0.12573827000000001, 126.38991429000001, 47.305200665521902, 0.12554201000000001]
+prueba = scorpio.gpair(ra1=RA1, dec1=DEC1, ra2=RA2, dec2=DEC2, z1=Z1, z2=Z2)
+prueba.plot()
+"""
 
 # END
