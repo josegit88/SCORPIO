@@ -24,28 +24,29 @@ import os
 import pathlib
 
 from ez_setup import use_setuptools
-use_setuptools()
-
 from setuptools import setup
+
+use_setuptools()
 
 
 # =============================================================================
 # CONSTANTS
 # =============================================================================
 
-#REQUIREMENTS = ["numpy", "astropy", "astroquery"]
-REQUIREMENTS = ["numpy", "astropy", "astroquery", "matplotlib"]
+# REQUIREMENTS = ["numpy", "astropy", "astroquery"]
+REQUIREMENTS = ["numpy", "astropy", "astroquery", "matplotlib", "retrying"]
 
 PATH = pathlib.Path(os.path.abspath(os.path.dirname(__file__)))
 
 with open(PATH / "README.md") as fp:
     LONG_DESCRIPTION = fp.read()
 
-#with open(PATH / "scorpio" / "__init__.py") as fp: # con mayuscula o minusc?
-with open(PATH / "__init__.py") as fp: # con mayuscula o minusc?
-    for l in fp.readlines():
-        if l.startswith("__version__ = "):
-            VERSION = l.split("=", 1)[-1].replace('"', '').strip()
+# with open(PATH / "scorpio" / "__init__.py") as fp: # con mayuscula o minusc?
+# with open(PATH / "__init__.py") as fp: # con mayuscula o minusc?
+with open(PATH / "scorpio.py") as fp:
+    for idx in fp.readlines():
+        if idx.startswith("__version__ = "):
+            VERSION = idx.split("=", 1)[-1].replace('"', "").strip()
             break
 
 
@@ -59,22 +60,19 @@ DESCRIPTION = """SCORPIO: Sky COllector of galaxy Pairs and Image Output.
 # FUNCTIONS
 # =============================================================================
 
+
 def do_setup():
     setup(
         name="scorpio",
         version=VERSION,
         description=DESCRIPTION,
         long_description=LONG_DESCRIPTION,
-        long_description_content_type='text/markdown',
-
-        author=[
-            "Jose Benavides"],
+        long_description_content_type="text/markdown",
+        author=["Jose Benavides"],
         author_email="jose.astroph@gmail.com",
         url="https://github.com/josegit88/SCORPIO",
         license="MIT",
-
         keywords=["scorpio", "survey", "images", "stacking"],
-
         classifiers=[
             "Development Status :: 4 - Beta",
             "Intended Audience :: Education",
@@ -84,13 +82,11 @@ def do_setup():
             "Programming Language :: Python",
             "Programming Language :: Python :: 3.7",
             "Programming Language :: Python :: Implementation :: CPython",
-            "Topic :: Scientific/Engineering"],
-
-        # packages=["scorpio"],
-        # py_modules=["ez_setup"],
+            "Topic :: Scientific/Engineering",
+        ],
         py_modules=["scorpio", "ez_setup"],
-
-        install_requires=REQUIREMENTS)
+        install_requires=REQUIREMENTS,
+    )
 
 
 if __name__ == "__main__":
