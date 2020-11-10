@@ -26,6 +26,7 @@ from retrying import retry
 # add librarys for generated images:
 # import matplotlib.image as img
 import matplotlib.pyplot as plt
+
 # from astropy.io import fits
 from astropy import wcs  # new import
 import astropy.cosmology as asc
@@ -329,26 +330,26 @@ def distances(ra1, dec1, ra2, dec2, z1, z2, info_fits, cosmology=asc.Planck15):
     cosmology within the options provided by Astropy.
     Calculate the physical and pixel distances of the two galaxies necessary
     for their location in the final image.
-    
-    WMAP5        Komatsu et al. 2009            70.2    0.277 
-    WMAP7        Komatsu et al. 2011            70.4    0.272 
-    WMAP9        Hinshaw et al. 2013            69.3    0.287 
-    Planck13     Planck Collab 2013, Paper XVI  67.8    0.307 
-    Planck15     Planck Collab 2015, Paper XIII 67.7    0.307 
+
+    WMAP5        Komatsu et al. 2009            70.2    0.277
+    WMAP7        Komatsu et al. 2011            70.4    0.272
+    WMAP9        Hinshaw et al. 2013            69.3    0.287
+    Planck13     Planck Collab 2013, Paper XVI  67.8    0.307
+    Planck15     Planck Collab 2015, Paper XIII 67.7    0.307
     """
-     
+
     if cosmology not in [
-            asc.WMAP5,
-            asc.WMAP7,
-            asc.WMAP9,
-            asc.Planck13,
-            asc.Planck15
-            ]:
-        print("invalid cosmology")        
+        asc.WMAP5,
+        asc.WMAP7,
+        asc.WMAP9,
+        asc.Planck13,
+        asc.Planck15,
+    ]:
+        print("invalid cosmology")
         raise AttributeError("cosmology not allowed")
 
     if type(info_fits) != astropy.io.fits.header.Header:
-        print("header file error")        
+        print("header file error")
         raise IndexError("header file fits error")
 
     glx1 = [ra1, dec1, z1]
@@ -401,7 +402,7 @@ def gpair(
     """
     This function receives the RA, DEC, redshift parameters for the two
     galaxies, as well as the resolution in pixels, survey and filters.
-    Returns the necessary characteristics to generate the final image. 
+    Returns the necessary characteristics to generate the final image.
     """
     # new:
     img_gp = Imagen()  # Imagen es la instancia de la clase Imagen

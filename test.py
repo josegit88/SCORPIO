@@ -49,16 +49,16 @@ def test_download_and_stack(monkeypatch):
     expected_g1 = np.array(
         [
             [-2.45361328e-02, -6.26220703e-02, -1.12152100e-02],
-            [1.62239075e-02,  2.85937500e+00,  1.81388855e-02],
-            [-3.85131836e-02,  8.28247070e-02,  8.54492188e-04],
+            [1.62239075e-02, 2.85937500e00, 1.81388855e-02],
+            [-3.85131836e-02, 8.28247070e-02, 8.54492188e-04],
         ]
     )
 
     expected_g2 = np.array(
         [
-            [1.13616943e-01, -1.66931152e-02,  4.88281250e-04],
-            [1.61819458e-02,  2.73291016e+00,  9.80529785e-02],
-            [2.47344971e-02, -2.17952728e-02,  4.67758179e-02],
+            [1.13616943e-01, -1.66931152e-02, 4.88281250e-04],
+            [1.61819458e-02, 2.73291016e00, 9.80529785e-02],
+            [2.47344971e-02, -2.17952728e-02, 4.67758179e-02],
         ]
     )
 
@@ -196,8 +196,8 @@ def test_stack_code_error(monkeypatch):
             resolution=450,
             filters=["g"],
         )
-        
-        
+
+
 # new:
 """
 def test_distances_error_Cosmology():
@@ -227,11 +227,12 @@ def test_distances_error_Cosmology():
         )
 """
 
+
 def test_distances_physical():
-    data_imagen = fits.open("test_data/SDSS_image_0_filter_g.fits")    
+    data_imagen = fits.open("test_data/SDSS_image_0_filter_g.fits")
     header = data_imagen[0].header
     COSMOLOGY = asc.Planck15
-        
+
     [RA1, DEC1, Z1, RA2, DEC2, Z2] = [
         126.39162693999999,
         47.296980665521900,
@@ -242,26 +243,26 @@ def test_distances_physical():
     ]
 
     data_distances = scorpio.distances(
-            ra1=RA1,
-            dec1=DEC1,
-            ra2=RA2,
-            dec2=DEC2,
-            z1=Z1,
-            z2=Z2,
-            info_fits=header,
-            cosmology=COSMOLOGY,
-        )
+        ra1=RA1,
+        dec1=DEC1,
+        ra2=RA2,
+        dec2=DEC2,
+        z1=Z1,
+        z2=Z2,
+        info_fits=header,
+        cosmology=COSMOLOGY,
+    )
 
     physical_dist = data_distances[0]
     expected_dist = 78.169
     np.testing.assert_allclose(physical_dist, expected_dist, rtol=1e-2)
-    
+
 
 def test_distances_pixels():
-    data_imagen = fits.open("test_data/SDSS_image_0_filter_g.fits")    
+    data_imagen = fits.open("test_data/SDSS_image_0_filter_g.fits")
     header = data_imagen[0].header
     COSMOLOGY = asc.Planck15
-        
+
     [RA1, DEC1, Z1, RA2, DEC2, Z2] = [
         126.39162693999999,
         47.296980665521900,
@@ -272,15 +273,15 @@ def test_distances_pixels():
     ]
 
     data_distances = scorpio.distances(
-            ra1=RA1,
-            dec1=DEC1,
-            ra2=RA2,
-            dec2=DEC2,
-            z1=Z1,
-            z2=Z2,
-            info_fits=header,
-            cosmology=COSMOLOGY,
-        )
+        ra1=RA1,
+        dec1=DEC1,
+        ra2=RA2,
+        dec2=DEC2,
+        z1=Z1,
+        z2=Z2,
+        info_fits=header,
+        cosmology=COSMOLOGY,
+    )
 
     pixel_dist = data_distances[1]
     expected_dist = 0.747148061
