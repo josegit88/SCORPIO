@@ -34,7 +34,14 @@ use_setuptools()
 # =============================================================================
 
 # REQUIREMENTS = ["numpy", "astropy", "astroquery"]
-REQUIREMENTS = ["numpy", "astropy", "astroquery", "matplotlib", "retrying"]
+REQUIREMENTS = [
+    "numpy",
+    "astropy",
+    "astroquery",
+    "matplotlib",
+    "retrying",
+    "scipy",
+]
 
 PATH = pathlib.Path(os.path.abspath(os.path.dirname(__file__)))
 
