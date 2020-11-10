@@ -15,6 +15,7 @@ import urllib
 
 import numpy as np
 
+import astropy
 from astropy import units as apu
 from astropy.coordinates import SkyCoord
 
@@ -201,13 +202,15 @@ class Imagen:
 # -------------
 
 
-class NoFilterToStackError(RuntimeError):
+# class NoFilterToStackError(RuntimeError):
+class NoFilterToStackError(ValueError):
     """Error generated when data of stack galaxies is empty"""
 
     pass
 
 
-class NoSurveyInListToStackError(RuntimeError):
+# class NoSurveyInListToStackError(RuntimeError):
+class NoSurveyInListToStackError(ValueError):
     """Error generated when survey of stack galaxies not in our list"""
 
     pass
@@ -252,9 +255,9 @@ def stack_pair(
     glx_array = np.array([glx1, glx2])
 
     if survey not in ["SDSS", "2MASS", "WISE"]:
-        print("invalid filter")
-        # raise NoFilterToStackError("Filter not allowed")
-        raise ValueError("Filter not allowed")
+        print("invalid survey")
+        raise NoSurveyInListToStackError("Survey not allowed")
+        # raise ValueError("Survey not allowed")
 
     # SDSS:
     if survey == "SDSS":
@@ -262,14 +265,16 @@ def stack_pair(
 
         for ff in filters:
             if ff not in VALID_FILTERS_SDSS:
-                raise ValueError(f"{ff} is not a valid filter")
+                # raise ValueError(f"{ff} is not a valid filter")
+                raise NoFilterToStackError(f"{ff} is not a valid filter")
 
     # 2MASS:
     if survey == "2MASS":
         filters = ["-H", "-K"] if filters is None else filters
         for ff in filters:
             if ff not in VALID_FILTERS_2MASS:
-                raise ValueError(f"{ff} is not a valid filter")
+                # raise ValueError(f"{ff} is not a valid filter")
+                raise NoFilterToStackError(f"{ff} is not a valid filter")
 
     # WISE:
     if survey == "WISE":
@@ -277,7 +282,8 @@ def stack_pair(
 
         for ff in filters:
             if ff not in VALID_FILTERS_WISE:
-                raise ValueError(f"{ff} is not a valid filter")
+                # raise ValueError(f"{ff} is not a valid filter")
+                raise NoFilterToStackError(f"{ff} is not a valid filter")
 
     # ------- download images data fits in diferent filters: --------
     g1g2 = [np.empty(shape=(plx, plx)), np.empty(shape=(plx, plx))]
@@ -315,15 +321,35 @@ def stack_pair(
 
 # --new: ---
 # def distances(glx1, glx2, z_glx, info_fits, cosmology)
-def distances(ra1, dec1, ra2, dec2, z1, z2, info_fits, cosmology):
+def distances(ra1, dec1, ra2, dec2, z1, z2, info_fits, cosmology=asc.Planck15):
     # poner nombres mas explicitos de glx1 glx2,...
     """
-    WMAP5        Komatsu et al. 2009            70.2    0.277    Yes
-    WMAP7        Komatsu et al. 2011            70.4    0.272    Yes
-    WMAP9        Hinshaw et al. 2013            69.3    0.287    Yes
-    Planck13     Planck Collab 2013, Paper XVI  67.8    0.307    Yes
-    Planck15     Planck Collab 2015, Paper XIII 67.7    0.307    Yes
+    This function receives the RA, DEC, redshift parameters for the two
+    galaxies, as well as header information for the primary galaxy and
+    cosmology within the options provided by Astropy.
+    Calculate the physical and pixel distances of the two galaxies necessary
+    for their location in the final image.
+    
+    WMAP5        Komatsu et al. 2009            70.2    0.277 
+    WMAP7        Komatsu et al. 2011            70.4    0.272 
+    WMAP9        Hinshaw et al. 2013            69.3    0.287 
+    Planck13     Planck Collab 2013, Paper XVI  67.8    0.307 
+    Planck15     Planck Collab 2015, Paper XIII 67.7    0.307 
     """
+     
+    if cosmology not in [
+            asc.WMAP5,
+            asc.WMAP7,
+            asc.WMAP9,
+            asc.Planck13,
+            asc.Planck15
+            ]:
+        print("invalid cosmology")        
+        raise AttributeError("cosmology not allowed")
+
+    if type(info_fits) != astropy.io.fits.header.Header:
+        print("header file error")        
+        raise IndexError("header file fits error")
 
     glx1 = [ra1, dec1, z1]
     glx2 = [ra2, dec2, z2]
@@ -372,6 +398,11 @@ def gpair(
     resolution=None,
     cosmology=asc.Planck15,
 ):
+    """
+    This function receives the RA, DEC, redshift parameters for the two
+    galaxies, as well as the resolution in pixels, survey and filters.
+    Returns the necessary characteristics to generate the final image. 
+    """
     # new:
     img_gp = Imagen()  # Imagen es la instancia de la clase Imagen
     # ---

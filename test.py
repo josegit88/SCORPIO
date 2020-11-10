@@ -12,6 +12,8 @@ import pytest
 
 from astroquery.skyview import SkyView
 from astropy.io import fits
+import astropy.cosmology as asc
+import astropy
 
 import scorpio
 
@@ -194,3 +196,92 @@ def test_stack_code_error(monkeypatch):
             resolution=450,
             filters=["g"],
         )
+        
+        
+# new:
+"""
+def test_distances_error_Cosmology():
+    data_imagen = fits.open("test_data/SDSS_image_0_filter_g.fits")    
+    header = data_imagen[0].header
+    COSMOLOGY = asc.Planck20
+        
+    [RA1, DEC1, Z1, RA2, DEC2, Z2] = [
+        126.39162693999999,
+        47.296980665521900,
+        0.12573827000000001,
+        126.38991429000001,
+        47.305200665521902,
+        0.12554201000000001,
+    ]
+
+    with pytest.raises(AttributeError):
+        scorpio.distances(
+            ra1=RA1,
+            dec1=DEC1,
+            ra2=RA2,
+            dec2=DEC2,
+            z1=Z1,
+            z2=Z2,
+            info_fits=header,
+            cosmology=COSMOLOGY,
+        )
+"""
+
+def test_distances_physical():
+    data_imagen = fits.open("test_data/SDSS_image_0_filter_g.fits")    
+    header = data_imagen[0].header
+    COSMOLOGY = asc.Planck15
+        
+    [RA1, DEC1, Z1, RA2, DEC2, Z2] = [
+        126.39162693999999,
+        47.296980665521900,
+        0.12573827000000001,
+        126.38991429000001,
+        47.305200665521902,
+        0.12554201000000001,
+    ]
+
+    data_distances = scorpio.distances(
+            ra1=RA1,
+            dec1=DEC1,
+            ra2=RA2,
+            dec2=DEC2,
+            z1=Z1,
+            z2=Z2,
+            info_fits=header,
+            cosmology=COSMOLOGY,
+        )
+
+    physical_dist = data_distances[0]
+    expected_dist = 78.169
+    np.testing.assert_allclose(physical_dist, expected_dist, rtol=1e-2)
+    
+
+def test_distances_pixels():
+    data_imagen = fits.open("test_data/SDSS_image_0_filter_g.fits")    
+    header = data_imagen[0].header
+    COSMOLOGY = asc.Planck15
+        
+    [RA1, DEC1, Z1, RA2, DEC2, Z2] = [
+        126.39162693999999,
+        47.296980665521900,
+        0.12573827000000001,
+        126.38991429000001,
+        47.305200665521902,
+        0.12554201000000001,
+    ]
+
+    data_distances = scorpio.distances(
+            ra1=RA1,
+            dec1=DEC1,
+            ra2=RA2,
+            dec2=DEC2,
+            z1=Z1,
+            z2=Z2,
+            info_fits=header,
+            cosmology=COSMOLOGY,
+        )
+
+    pixel_dist = data_distances[1]
+    expected_dist = 0.747148061
+    np.testing.assert_allclose(pixel_dist, expected_dist, rtol=1e-5)
