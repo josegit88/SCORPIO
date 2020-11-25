@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.com/josegit88/SCORPIO.svg?branch=master)](https://travis-ci.com/josegit88/SCORPIO)
 # SCORPIO
 Sky COllector of galaxy Pairs and Image Output
 
