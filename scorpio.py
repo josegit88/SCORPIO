@@ -72,7 +72,12 @@ class Imagen:
         self.pos1 = pos1
         self.pos2 = pos2
 
-    def plot(self, dir_images="./individual_images"):
+    def plot(
+        self,
+        dir_images="./individual_images",
+        save_Img="n",
+        imgName="img1.png",
+    ):
         # ejemelo: plt.imshow(self.matriz)
         # hacer el plot
 
@@ -184,12 +189,12 @@ class Imagen:
         )
         ax.text(-plx / 3.0, -plx / 3.0, "50 kpc", fontsize=20, color="k")
 
-        save_Img = input("\nYou wish save this image? [y/n]: ")
-        while save_Img not in erase_options:
-            save_Img = input("\nYou wish save this image? [y/n]: ")
+        # save_Img = input("\nYou wish save this image? [y/n]: ")
+        # while save_Img not in erase_options:
+        #    save_Img = input("\nYou wish save this image? [y/n]: ")
 
         if save_Img == "y":
-            imgName = input("please input Name for the image: ")
+            # imgName = input("please input Name for the image: ")
             name_image = dir_images + "/" + str(imgName)
             plt.savefig(name_image, bbox_inches="tight", dpi=200)
             plt.close()
