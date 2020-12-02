@@ -30,6 +30,7 @@ import matplotlib.pyplot as plt
 # from astropy.io import fits
 from astropy import wcs  # new import
 import astropy.cosmology as asc
+
 # from matplotlib.colors import LogNorm
 import matplotlib as mpl
 import matplotlib.ticker as ticker
@@ -78,7 +79,7 @@ class Imagen:
         dir_images="./individual_images",
         save_Img="n",
         imgName="img1.png",
-        **kwargs
+        **kwargs,
     ):
         # ejemelo: plt.imshow(self.matriz)
         # hacer el plot
@@ -106,7 +107,7 @@ class Imagen:
 
         # f, ax = plt.subplots(figsize=(8, 8))
         if ax is None:
-            figsize = kwargs.get('figsize', (8, 8))
+            figsize = kwargs.get("figsize", (8, 8))
             f, ax = plt.subplots(figsize=figsize)
 
         # plx = resolution
