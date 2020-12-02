@@ -14,27 +14,22 @@ import os
 import urllib
 
 import numpy as np
-
 import astropy
 from astropy import units as apu
 from astropy.coordinates import SkyCoord
-
+# from astropy.io import fits
+from astropy import wcs  # new import
 from astroquery.skyview import SkyView
-
-from retrying import retry
-
+import astropy.cosmology as asc
 # add librarys for generated images:
 # import matplotlib.image as img
 import matplotlib.pyplot as plt
-
-# from astropy.io import fits
-from astropy import wcs  # new import
-import astropy.cosmology as asc
-
 # from matplotlib.colors import LogNorm
 import matplotlib as mpl
 import matplotlib.ticker as ticker
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
+
+from retrying import retry
 
 # from shutil import rmtree
 # plt.close()

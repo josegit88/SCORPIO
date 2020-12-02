@@ -7,13 +7,12 @@ Test about the scorpio functions
 import urllib
 
 import numpy as np
-
-import pytest
-
 from astroquery.skyview import SkyView
 from astropy.io import fits
 import astropy.cosmology as asc
 # import astropy
+
+import pytest
 
 import scorpio
 
