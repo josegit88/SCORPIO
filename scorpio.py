@@ -13,15 +13,17 @@ import logging
 import os
 import urllib
 
-import numpy as np
 import astropy
 from astropy import units as apu
 from astropy.coordinates import SkyCoord
 from astropy import wcs  # new import
 from astroquery.skyview import SkyView
 import astropy.cosmology as asc
-import matplotlib.pyplot as plt
+
+import numpy as np
+
 import matplotlib as mpl
+import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 
