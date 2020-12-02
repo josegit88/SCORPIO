@@ -30,7 +30,7 @@ import matplotlib.pyplot as plt
 # from astropy.io import fits
 from astropy import wcs  # new import
 import astropy.cosmology as asc
-from matplotlib.colors import LogNorm
+# from matplotlib.colors import LogNorm
 import matplotlib as mpl
 import matplotlib.ticker as ticker
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
@@ -87,7 +87,7 @@ class Imagen:
         if not os.path.exists(dir_images):
             os.makedirs(dir_images)
 
-        erase_options = ["y", "n"]
+        # erase_options = ["y", "n"]
 
         # data_stack = stack_pair(gal1,gal2, plx=100)
         # esto se debe modificar!!! img_gp.matriz = g1g2
@@ -101,10 +101,10 @@ class Imagen:
         dis_c1_c2 = self.dist_pix
         s_AB = self.dist_physic
 
-        #print("resolution:", plx)
-        #print(final_imageA)
+        # print("resolution:", plx)
+        # print(final_imageA)
 
-        #f, ax = plt.subplots(figsize=(8, 8))
+        # f, ax = plt.subplots(figsize=(8, 8))
         if ax is None:
             figsize = kwargs.get('figsize', (8, 8))
             f, ax = plt.subplots(figsize=figsize)

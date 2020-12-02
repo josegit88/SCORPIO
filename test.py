@@ -317,4 +317,5 @@ def test_distances_pixels():
     expected_dist = 0.747148061
     np.testing.assert_allclose(pixel_dist, expected_dist, rtol=1e-5)
     
-#testeo de plot, a mano creo mi imagen, la que yo espero, la que me devuelve scorpio y hacer una comparacion pixel a pixel. Revisar trabajo de Bruno y Juan    
+#testeo de plot, a mano creo mi imagen, la que yo espero, la que me devuelve
+#scorpio y hacer una comparacion pixel a pixel. Revisar trabajo de Bruno y Juan    
