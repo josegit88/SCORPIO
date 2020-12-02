@@ -8,8 +8,8 @@ import urllib
 
 import astropy.cosmology as asc
 from astropy.io import fits
+
 from astroquery.skyview import SkyView
-# import astropy
 
 import numpy as np
 

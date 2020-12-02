@@ -15,17 +15,19 @@ import urllib
 
 import astropy
 from astropy import units as apu
-from astropy.coordinates import SkyCoord
 from astropy import wcs  # new import
-from astroquery.skyview import SkyView
+from astropy.coordinates import SkyCoord
 import astropy.cosmology as asc
 
-import numpy as np
+from astroquery.skyview import SkyView
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
+
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
+
+import numpy as np
 
 from retrying import retry
 

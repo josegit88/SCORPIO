@@ -20,11 +20,12 @@
 # IMPORTS
 # =============================================================================
 
+import os
+
 from ez_setup import use_setuptools
 
 from setuptools import setup
 
-import os
 import pathlib
 
 use_setuptools()
