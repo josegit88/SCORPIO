@@ -16,8 +16,8 @@ import urllib
 import astropy
 from astropy import units as apu
 from astropy import wcs  # new import
-from astropy.coordinates import SkyCoord
 import astropy.cosmology as asc
+from astropy.coordinates import SkyCoord
 
 from astroquery.skyview import SkyView
 
