@@ -22,9 +22,9 @@
 
 import os
 
-from ez_setup import use_setuptools
-
 import pathlib
+
+from ez_setup import use_setuptools
 
 from setuptools import setup
 
