@@ -149,15 +149,15 @@ class Imagen:
         min_value = min(min_values_col)
 
         Norm = mpl.colors.Normalize(vmin=min_value, vmax=max_value)
-        Cmap = mpl.cm.ScalarMappable(norm=norm, cmap=mpl.cm.inferno)
-        cmap.set_array([])
+        Cmap = mpl.cm.ScalarMappable(norm=Norm, cmap=mpl.cm.inferno)
+        Cmap.set_array([])
         axins1 = inset_axes(
             ax,
             width="5%",  # width = 50% of parent_bbox width
             height="30%",  # height : 5%
             loc="lower right",
         )
-        cb = f.colorbar(cmap, ax=ax, cax=axins1, orientation="vertical")
+        cb = f.colorbar(Cmap, ax=ax, cax=axins1, orientation="vertical")
         cb.set_ticks([])
         ax.imshow(final_imageA, extent=extent, cmap=Cmap, norm=Norm)
         ax.plot(

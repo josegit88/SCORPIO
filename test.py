@@ -13,7 +13,7 @@ import pytest
 from astroquery.skyview import SkyView
 from astropy.io import fits
 import astropy.cosmology as asc
-import astropy
+# import astropy
 
 import scorpio
 
@@ -46,35 +46,36 @@ def test_download_and_stack(monkeypatch):
 
     monkeypatch.setattr(SkyView, "get_images", mock_func_g1g2)
 
-    try:
-        expected_g1 = np.array(
-            [
-                [-2.45361328e-02, -6.26220703e-02, -1.12152100e-02],
-                [1.62239075e-02, 2.85937500e00, 1.81388855e-02],
-                [-3.85131836e-02, 8.28247070e-02, 8.54492188e-04],
-            ]
-        )
+    # try:
+    expected_g1 = np.array(
+        [
+            [-2.45361328e-02, -6.26220703e-02, -1.12152100e-02],
+            [1.62239075e-02, 2.85937500e00, 1.81388855e-02],
+            [-3.85131836e-02, 8.28247070e-02, 8.54492188e-04],
+        ]
+    )
 
-        expected_g2 = np.array(
-            [
-                [1.13616943e-01, -1.66931152e-02, 4.88281250e-04],
-                [1.61819458e-02, 2.73291016e00, 9.80529785e-02],
-                [2.47344971e-02, -2.17952728e-02, 4.67758179e-02],
-            ]
-        )
+    expected_g2 = np.array(
+        [
+            [1.13616943e-01, -1.66931152e-02, 4.88281250e-04],
+            [1.61819458e-02, 2.73291016e00, 9.80529785e-02],
+            [2.47344971e-02, -2.17952728e-02, 4.67758179e-02],
+        ]
+    )
 
-        data_stack = scorpio.stack_pair(
-            ra1=RA1, dec1=DEC1, ra2=RA2, dec2=DEC2, z1=Z1, z2=Z2, resolution=3
-        )
+    data_stack = scorpio.stack_pair(
+        ra1=RA1, dec1=DEC1, ra2=RA2, dec2=DEC2, z1=Z1, z2=Z2, resolution=3
+    )
 
-        print(data_stack[0][0], data_stack[0][1])
+    print(data_stack[0][0], data_stack[0][1])
 
-        stack_g1 = data_stack[0][0]
-        stack_g2 = data_stack[0][1]
+    stack_g1 = data_stack[0][0]
+    stack_g2 = data_stack[0][1]
 
-        np.testing.assert_allclose(stack_g1, expected_g1, rtol=1e-3)
-        np.testing.assert_allclose(stack_g2, expected_g2, rtol=1e-3)
+    np.testing.assert_allclose(stack_g1, expected_g1, rtol=1e-3)
+    np.testing.assert_allclose(stack_g2, expected_g2, rtol=1e-3)
 
+    """
     except:
         expected_g1 = np.array(
             [
@@ -103,7 +104,7 @@ def test_download_and_stack(monkeypatch):
 
         np.testing.assert_allclose(stack_g1, expected_g1, rtol=1e-3)
         np.testing.assert_allclose(stack_g2, expected_g2, rtol=1e-3)
-
+    """
 
 def test_download_invalid_filter():
     # aa = [126.39162693999999, 47.296980665521900, 0.12573827000000001]
@@ -320,4 +321,5 @@ def test_distances_pixels():
 
 
 # testeo de plot, a mano creo mi imagen, la que yo espero, la que me devuelve
-# scorpio y hacer una comparacion pixel a pixel. Revisar trabajo de Bruno y Juan
+# scorpio y hacer una comparacion pixel a pixel.
+# Revisar trabajo de Bruno y Juan
