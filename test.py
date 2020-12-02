@@ -106,6 +106,7 @@ def test_download_and_stack(monkeypatch):
         np.testing.assert_allclose(stack_g2, expected_g2, rtol=1e-3)
     """
 
+
 def test_download_invalid_filter():
     # aa = [126.39162693999999, 47.296980665521900, 0.12573827000000001]
     # bb = [126.38991429000001, 47.305200665521902, 0.12554201000000001]
