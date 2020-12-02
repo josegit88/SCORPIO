@@ -74,9 +74,11 @@ class Imagen:
 
     def plot(
         self,
+        ax=None,
         dir_images="./individual_images",
         save_Img="n",
         imgName="img1.png",
+        **kwargs
     ):
         # ejemelo: plt.imshow(self.matriz)
         # hacer el plot
@@ -99,10 +101,13 @@ class Imagen:
         dis_c1_c2 = self.dist_pix
         s_AB = self.dist_physic
 
-        print("resolution:", plx)
-        print(final_imageA)
+        #print("resolution:", plx)
+        #print(final_imageA)
 
-        f, ax = plt.subplots(figsize=(8, 8))
+        #f, ax = plt.subplots(figsize=(8, 8))
+        if ax is None:
+            figsize = kwargs.get('figsize', (8, 8))
+            f, ax = plt.subplots(figsize=figsize)
 
         # plx = resolution
 
@@ -142,8 +147,8 @@ class Imagen:
         max_value = max(max_values_col)
         min_value = min(min_values_col)
 
-        norm = mpl.colors.Normalize(vmin=min_value, vmax=max_value)
-        cmap = mpl.cm.ScalarMappable(norm=norm, cmap=mpl.cm.inferno)
+        Norm = mpl.colors.Normalize(vmin=min_value, vmax=max_value)
+        Cmap = mpl.cm.ScalarMappable(norm=norm, cmap=mpl.cm.inferno)
         cmap.set_array([])
         axins1 = inset_axes(
             ax,
@@ -153,7 +158,7 @@ class Imagen:
         )
         cb = f.colorbar(cmap, ax=ax, cax=axins1, orientation="vertical")
         cb.set_ticks([])
-        ax.imshow(final_imageA, extent=extent, cmap="inferno", norm=LogNorm())
+        ax.imshow(final_imageA, extent=extent, cmap=Cmap, norm=Norm)
         ax.plot(
             c1[0] - yy,
             -(c1[1] - xx),
@@ -351,7 +356,7 @@ def distances(ra1, dec1, ra2, dec2, z1, z2, info_fits, cosmology=asc.Planck15):
         asc.Planck15,
     ]:
         print("invalid cosmology")
-        raise AttributeError("cosmology not allowed")
+        raise TypeError("cosmology not allowed")
 
     if type(info_fits) != astropy.io.fits.header.Header:
         print("header file error")
