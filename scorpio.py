@@ -426,10 +426,10 @@ def gpair(
         dec1,
         ra2,
         dec2,
-        z1=None,
-        z2=None,
-        resolution=1000,
-        survey="SDSS",
+        z1=z1,
+        z2=z2,
+        resolution=resolution,
+        survey=survey,
         filters=None,
     )  # así ya tenemos disponible la informacion apilada y del header
     img_gp.matriz = g1g2
