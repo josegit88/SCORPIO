@@ -381,7 +381,8 @@ def test_distances_pixels():
 # scorpio y hacer una comparacion pixel a pixel.
 # Revisar trabajo de Bruno y Juan
 
-def test_plot_kwargs():    
+
+def test_plot_kwargs():
     [RA1, DEC1, Z1, RA2, DEC2, Z2] = [
         126.39162693999999,
         47.296980665521900,
@@ -390,31 +391,70 @@ def test_plot_kwargs():
         47.305200665521902,
         0.12554201000000001,
     ]
-    
+
     test_img = scorpio.gpair(
-            ra1=RA1,
-            dec1=DEC1,
-            ra2=RA2,
-            dec2=DEC2,
-            z1=Z1,
-            z2=Z2,
-            resolution=200,
-        )
+        ra1=RA1,
+        dec1=DEC1,
+        ra2=RA2,
+        dec2=DEC2,
+        z1=Z1,
+        z2=Z2,
+        resolution=200,
+    )
 
     with pytest.raises(AttributeError):
         test_img.plot("./dir_test_images")
-        
+
     with pytest.raises(AttributeError):
         test_img.plot("y")
-    
+
     with pytest.raises(AttributeError):
         test_img.plot("img_test.png")
 
+"""
+def test_plot_pixels():
+    [RA1, DEC1, Z1, RA2, DEC2, Z2] = [
+        126.39162693999999,
+        47.296980665521900,
+        0.12573827000000001,
+        126.38991429000001,
+        47.305200665521902,
+        0.12554201000000001,
+    ]
 
+    test_img = scorpio.gpair(
+        ra1=RA1,
+        dec1=DEC1,
+        ra2=RA2,
+        dec2=DEC2,
+        z1=Z1,
+        z2=Z2,
+        resolution=0,
+    )
 
-#    with pytest.raises(ValueError):
-#        test_img.plot(
-#            dir_images="./dir_test_images",
-#            save_Img="y",
-#            imgName="img_test.png",
-#        )
+    with pytest.raises(AttributeError):
+        test_img.plot()
+"""
+
+def test_plot_ax():
+    [RA1, DEC1, Z1, RA2, DEC2, Z2] = [
+        126.39162693999999,
+        47.296980665521900,
+        0.12573827000000001,
+        126.38991429000001,
+        47.305200665521902,
+        0.12554201000000001,
+    ]
+
+    test_img = scorpio.gpair(
+        ra1=RA1,
+        dec1=DEC1,
+        ra2=RA2,
+        dec2=DEC2,
+        z1=Z1,
+        z2=Z2,
+        resolution=0,
+    )
+
+    with pytest.raises(AttributeError):
+        test_img.plot(ax=6)
