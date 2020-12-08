@@ -24,6 +24,7 @@ from astroquery.skyview import SkyView
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
+from matplotlib.colors import LogNorm
 
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 
@@ -142,8 +143,8 @@ class Imagen:
         min_value = min(min_values_col)
 
         Norm = mpl.colors.Normalize(vmin=min_value, vmax=max_value)
-        Cmap = mpl.cm.ScalarMappable(norm=Norm, cmap=mpl.cm.inferno)
-        Cmap.set_array([])
+        Cmap = mpl.cm.ScalarMappable(norm=Norm, cmap=mpl.cm.inferno)  #
+        # Cmap.set_array([])
         axins1 = inset_axes(
             ax,
             width="5%",  # width = 50% of parent_bbox width
@@ -152,7 +153,13 @@ class Imagen:
         )
         cb = f.colorbar(Cmap, ax=ax, cax=axins1, orientation="vertical")
         cb.set_ticks([])
-        ax.imshow(final_imageA, extent=extent, cmap=Cmap, norm=Norm)
+        # ax.imshow(final_imageA, extent=extent, cmap="inferno", norm=Norm)
+        ax.imshow(
+            final_imageA,
+            extent=extent,
+            cmap="inferno",
+            norm=LogNorm(vmin=min_value, vmax=max_value),
+        )
         ax.plot(
             c1[0] - yy,
             -(c1[1] - xx),
