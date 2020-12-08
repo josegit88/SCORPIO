@@ -11,6 +11,8 @@ from astropy.io import fits
 
 from astroquery.skyview import SkyView
 
+import matplotlib.pyplot as plt
+
 import numpy as np
 
 import pytest
@@ -459,4 +461,6 @@ def test_plot_ax():
     )
 
     with pytest.raises(AttributeError):
-        test_img.plot(ax=6)
+        test_img.plot(
+            ax=plt.subplots(figsize=(4, 8)),
+        )
