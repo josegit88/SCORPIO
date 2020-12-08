@@ -411,6 +411,7 @@ def test_plot_kwargs():
     with pytest.raises(AttributeError):
         test_img.plot("img_test.png")
 
+
 """
 def test_plot_pixels():
     [RA1, DEC1, Z1, RA2, DEC2, Z2] = [
@@ -436,6 +437,7 @@ def test_plot_pixels():
         test_img.plot()
 """
 
+
 def test_plot_ax():
     [RA1, DEC1, Z1, RA2, DEC2, Z2] = [
         126.39162693999999,
@@ -453,7 +455,7 @@ def test_plot_ax():
         dec2=DEC2,
         z1=Z1,
         z2=Z2,
-        resolution=0,
+        resolution=200,
     )
 
     with pytest.raises(AttributeError):
