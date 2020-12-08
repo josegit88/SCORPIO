@@ -133,6 +133,7 @@ def test_download_invalid_filter_SDSS():
             filters=["u", "t"],
         )
 
+
 # test for 2MASS filters:
 def test_download_invalid_filter_2MASS():
     # aa = [126.39162693999999, 47.296980665521900, 0.12573827000000001]
