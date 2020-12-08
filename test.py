@@ -107,7 +107,8 @@ def test_download_and_stack(monkeypatch):
     """
 
 
-def test_download_invalid_filter():
+# test for SDSS filters:
+def test_download_invalid_filter_SDSS():
     # aa = [126.39162693999999, 47.296980665521900, 0.12573827000000001]
     # bb = [126.38991429000001, 47.305200665521902, 0.12554201000000001]
     [RA1, DEC1, Z1, RA2, DEC2, Z2] = [
@@ -128,6 +129,60 @@ def test_download_invalid_filter():
             z1=Z1,
             z2=Z2,
             resolution=200,
+            survey="SDSS",
+            filters=["u", "t"],
+        )
+
+# test for 2MASS filters:
+def test_download_invalid_filter_2MASS():
+    # aa = [126.39162693999999, 47.296980665521900, 0.12573827000000001]
+    # bb = [126.38991429000001, 47.305200665521902, 0.12554201000000001]
+    [RA1, DEC1, Z1, RA2, DEC2, Z2] = [
+        126.39162693999999,
+        47.296980665521900,
+        0.12573827000000001,
+        126.38991429000001,
+        47.305200665521902,
+        0.12554201000000001,
+    ]
+
+    with pytest.raises(ValueError):
+        scorpio.stack_pair(
+            ra1=RA1,
+            dec1=DEC1,
+            ra2=RA2,
+            dec2=DEC2,
+            z1=Z1,
+            z2=Z2,
+            resolution=200,
+            survey="2MASS",
+            filters=["u", "t"],
+        )
+
+
+# test for WISE filters:
+def test_download_invalid_filter_WISE():
+    # aa = [126.39162693999999, 47.296980665521900, 0.12573827000000001]
+    # bb = [126.38991429000001, 47.305200665521902, 0.12554201000000001]
+    [RA1, DEC1, Z1, RA2, DEC2, Z2] = [
+        126.39162693999999,
+        47.296980665521900,
+        0.12573827000000001,
+        126.38991429000001,
+        47.305200665521902,
+        0.12554201000000001,
+    ]
+
+    with pytest.raises(ValueError):
+        scorpio.stack_pair(
+            ra1=RA1,
+            dec1=DEC1,
+            ra2=RA2,
+            dec2=DEC2,
+            z1=Z1,
+            z2=Z2,
+            resolution=200,
+            survey="WISE",
             filters=["u", "t"],
         )
 
