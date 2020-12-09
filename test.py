@@ -314,7 +314,7 @@ def test_distances_error_Cosmology():
             dec2=DEC2,
             z1=Z1,
             z2=Z2,
-            info_fits=header,
+            header=header,
             cosmology=COSMOLOGY,
         )
 
@@ -340,7 +340,7 @@ def test_distances_physical():
         dec2=DEC2,
         z1=Z1,
         z2=Z2,
-        info_fits=header,
+        header=header,
         cosmology=COSMOLOGY,
     )
 
@@ -370,7 +370,7 @@ def test_distances_pixels():
         dec2=DEC2,
         z1=Z1,
         z2=Z2,
-        info_fits=header,
+        header=header,
         cosmology=COSMOLOGY,
     )
 
@@ -464,11 +464,10 @@ def test_plot_ax():
         test_img.plot(
             ax=plt.subplots(figsize=(4, 8)),
         )
-        
-        
-        
+
+
 # gal2 fail:
-def test_gal2_fail(monkeypatch):    
+def test_gal2_fail(monkeypatch):
     [RA1, DEC1, Z1, RA2, DEC2, Z2] = [
         126.39162693999999,
         47.296980665521900,
@@ -476,7 +475,7 @@ def test_gal2_fail(monkeypatch):
         300.0,
         85.0,
         0.12554201000000001,
-    ]    
+    ]
 
     with pytest.raises(scorpio.NoFilterToStackError):
         scorpio.stack_pair(
@@ -488,4 +487,46 @@ def test_gal2_fail(monkeypatch):
             z2=Z2,
         )
 
-    
+
+"""
+# gal2 fail:
+def test_header_error(monkeypatch):
+    data_imagen = fits.open("test_data/missing_fits.fits")
+    header = data_imagen[0].header
+    COSMOLOGY = asc.Planck15    
+
+    with pytest.raises(IndexError):
+        scorpio.distances(
+            ra1=RA1,
+            dec1=DEC1,
+            ra2=RA2,
+            dec2=DEC2,
+            z1=Z1,
+            z2=Z2,
+        )
+"""
+
+"""
+def test_dir_plots():
+    [RA1, DEC1, Z1, RA2, DEC2, Z2] = [
+        126.39162693999999,
+        47.296980665521900,
+        0.12573827000000001,
+        126.38991429000001,
+        47.305200665521902,
+        0.12554201000000001,
+    ]
+
+    test_img = scorpio.gpair(
+        ra1=RA1,
+        dec1=DEC1,
+        ra2=RA2,
+        dec2=DEC2,
+        z1=Z1,
+        z2=Z2,
+        resolution=200,
+    )
+
+    with pytest.raises(scorpio.Name_dir_Error):
+        test_img.plot(dir_images=".//dir_test_images")
+"""

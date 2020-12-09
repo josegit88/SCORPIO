@@ -5,5 +5,5 @@ import scorpio
 
 prueba_img = scorpio.gpair(ra1=RA1, dec1=DEC1, ra2=RA2, dec2=DEC2, z1=Z1, z2=Z2, survey="2MASS", resolution=500) #, resolution=5, survey="2MASS"
 
-prueba_img.plot(save_Img="y", imgName="img2.png")
+prueba_img.plot(save_Img="y", imgName="img2.png", dir_images="./dir_test_images")
 

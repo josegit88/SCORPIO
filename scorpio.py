@@ -228,6 +228,12 @@ class NoSurveyInListToStackError(ValueError):
     pass
 
 
+class Name_dir_Error(OSError):
+    """Error when directory name is not allowed"""
+
+    pass
+
+
 @retry(stop_max_attempt_number=4)
 def download_data(pos, survey, filters, plx, ff):
     """Function for download data fits from survey."""
@@ -333,7 +339,7 @@ def stack_pair(
 
 # --new: ---
 # def distances(glx1, glx2, z_glx, info_fits, cosmology)
-def distances(ra1, dec1, ra2, dec2, z1, z2, info_fits, cosmology=asc.Planck15):
+def distances(ra1, dec1, ra2, dec2, z1, z2, header, cosmology=asc.Planck15):
     # poner nombres mas explicitos de glx1 glx2,...
     """
     This function receives the RA, DEC, redshift parameters for the two
@@ -356,12 +362,12 @@ def distances(ra1, dec1, ra2, dec2, z1, z2, info_fits, cosmology=asc.Planck15):
         asc.Planck13,
         asc.Planck15,
     ]:
-        print("invalid cosmology")
+        # print("invalid cosmology")
         raise TypeError("cosmology not allowed")
 
-    if type(info_fits) != astropy.io.fits.header.Header:
-        print("header file error")
-        raise IndexError("header file fits error")
+    # if type(header) != astropy.io.fits.header.Header:
+    # print("header file error")
+    #    raise IndexError("header file fits error")
 
     glx1 = [ra1, dec1, z1]
     glx2 = [ra2, dec2, z2]
@@ -383,7 +389,7 @@ def distances(ra1, dec1, ra2, dec2, z1, z2, info_fits, cosmology=asc.Planck15):
     s_AB = (dist_comv * theta_rad) * 1000.0
 
     # se convierte la distancia física a distancia en pixeles:
-    data_WCS = wcs.WCS(info_fits)
+    data_WCS = wcs.WCS(header)
 
     c1 = data_WCS.wcs_world2pix(glx_array[0, 0], glx_array[0, 1], 0)
     c2 = data_WCS.wcs_world2pix(glx_array[1, 0], glx_array[1, 1], 0)
