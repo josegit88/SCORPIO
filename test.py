@@ -21,8 +21,6 @@ import scorpio
 
 
 def test_download_and_stack(monkeypatch):
-    # aa = [126.39162693999999, 47.296980665521900, 0.12573827000000001]
-    # bb = [126.38991429000001, 47.305200665521902, 0.12554201000000001]
     [RA1, DEC1, Z1, RA2, DEC2, Z2] = [
         126.39162693999999,
         47.296980665521900,
@@ -77,42 +75,9 @@ def test_download_and_stack(monkeypatch):
     np.testing.assert_allclose(stack_g1, expected_g1, rtol=1e300)
     np.testing.assert_allclose(stack_g2, expected_g2, rtol=1e300)
 
-    """
-    except:
-        expected_g1 = np.array(
-            [
-                [-2.45361328e-02, -6.26220703e-02, 3.99195767e252],
-                [1.62239075e-02, 3.36201984e160, 1.81388855e-02],
-                [2.96410912e222, 8.28247070e-02, -4.48529307e198],
-            ]
-        )
-
-        expected_g2 = np.array(
-            [
-                [1.13616943e-01, -1.66931152e-02, 4.88281250e-04],
-                [1.61819458e-02, 2.73291016e0, 4.52350897e257],
-                [2.47344971e-02, 1.91084608e214, 4.67758179e-02],
-            ]
-        )
-
-        data_stack = scorpio.stack_pair(
-            ra1=RA1, dec1=DEC1, ra2=RA2, dec2=DEC2, z1=Z1, z2=Z2, resolution=3
-        )
-
-        print(data_stack[0][0], data_stack[0][1])
-
-        stack_g1 = data_stack[0][0]
-        stack_g2 = data_stack[0][1]
-
-        np.testing.assert_allclose(stack_g1, expected_g1, rtol=1e-3)
-        np.testing.assert_allclose(stack_g2, expected_g2, rtol=1e-3)
-    """
-
 
 # test for SDSS filters:
 def test_download_invalid_filter_SDSS():
-    # aa = [126.39162693999999, 47.296980665521900, 0.12573827000000001]
-    # bb = [126.38991429000001, 47.305200665521902, 0.12554201000000001]
     [RA1, DEC1, Z1, RA2, DEC2, Z2] = [
         126.39162693999999,
         47.296980665521900,
@@ -138,8 +103,6 @@ def test_download_invalid_filter_SDSS():
 
 # test for 2MASS filters:
 def test_download_invalid_filter_2MASS():
-    # aa = [126.39162693999999, 47.296980665521900, 0.12573827000000001]
-    # bb = [126.38991429000001, 47.305200665521902, 0.12554201000000001]
     [RA1, DEC1, Z1, RA2, DEC2, Z2] = [
         126.39162693999999,
         47.296980665521900,
@@ -165,8 +128,6 @@ def test_download_invalid_filter_2MASS():
 
 # test for WISE filters:
 def test_download_invalid_filter_WISE():
-    # aa = [126.39162693999999, 47.296980665521900, 0.12573827000000001]
-    # bb = [126.38991429000001, 47.305200665521902, 0.12554201000000001]
     [RA1, DEC1, Z1, RA2, DEC2, Z2] = [
         126.39162693999999,
         47.296980665521900,
@@ -192,8 +153,6 @@ def test_download_invalid_filter_WISE():
 
 # new:
 def test_download_invalid_survey():
-    # aa = [126.39162693999999, 47.296980665521900, 0.12573827000000001]
-    # bb = [126.38991429000001, 47.305200665521902, 0.12554201000000001]
     [RA1, DEC1, Z1, RA2, DEC2, Z2] = [
         126.39162693999999,
         47.296980665521900,
@@ -228,8 +187,6 @@ def test_no_filter_to_stack(monkeypatch):
 
     monkeypatch.setattr(SkyView, "get_images", mock_func)
 
-    # cc = [229.38791793999997, -15.1525941155219059, 0.12589231000000001]
-    # dd = [229.38705890000003, -15.1513408255219060, 0.12634666999999999]
     [RA1, DEC1, Z1, RA2, DEC2, Z2] = [
         229.38791793999997,
         -15.1525941155219059,
@@ -264,8 +221,6 @@ def test_stack_code_error(monkeypatch):
 
     monkeypatch.setattr(SkyView, "get_images", mock_func)
 
-    # cc = [229.38791793999997, -15.1525941155219059, 0.12589231000000001]
-    # dd = [229.38705890000003, -15.1513408255219060, 0.12634666999999999]
     [RA1, DEC1, Z1, RA2, DEC2, Z2] = [
         229.38791793999997,
         -15.1525941155219059,
@@ -412,32 +367,6 @@ def test_plot_kwargs():
         test_img.plot("img_test.png")
 
 
-"""
-def test_plot_pixels():
-    [RA1, DEC1, Z1, RA2, DEC2, Z2] = [
-        126.39162693999999,
-        47.296980665521900,
-        0.12573827000000001,
-        126.38991429000001,
-        47.305200665521902,
-        0.12554201000000001,
-    ]
-
-    test_img = scorpio.gpair(
-        ra1=RA1,
-        dec1=DEC1,
-        ra2=RA2,
-        dec2=DEC2,
-        z1=Z1,
-        z2=Z2,
-        resolution=0,
-    )
-
-    with pytest.raises(AttributeError):
-        test_img.plot()
-"""
-
-
 def test_plot_ax():
     [RA1, DEC1, Z1, RA2, DEC2, Z2] = [
         126.39162693999999,
@@ -484,47 +413,3 @@ def test_gal2_fail(monkeypatch):
             z1=Z1,
             z2=Z2,
         )
-
-
-"""
-# gal2 fail:
-def test_header_error(monkeypatch):
-    data_imagen = fits.open("test_data/missing_fits.fits")
-    header = data_imagen[0].header
-    COSMOLOGY = asc.Planck15    
-
-    with pytest.raises(IndexError):
-        scorpio.distances(
-            ra1=RA1,
-            dec1=DEC1,
-            ra2=RA2,
-            dec2=DEC2,
-            z1=Z1,
-            z2=Z2,
-        )
-"""
-
-"""
-def test_dir_plots():
-    [RA1, DEC1, Z1, RA2, DEC2, Z2] = [
-        126.39162693999999,
-        47.296980665521900,
-        0.12573827000000001,
-        126.38991429000001,
-        47.305200665521902,
-        0.12554201000000001,
-    ]
-
-    test_img = scorpio.gpair(
-        ra1=RA1,
-        dec1=DEC1,
-        ra2=RA2,
-        dec2=DEC2,
-        z1=Z1,
-        z2=Z2,
-        resolution=200,
-    )
-
-    with pytest.raises(scorpio.Name_dir_Error):
-        test_img.plot(dir_images=".//dir_test_images")
-"""
