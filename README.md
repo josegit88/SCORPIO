@@ -1,10 +1,5 @@
 [![Build Status](https://travis-ci.com/josegit88/SCORPIO.svg?branch=master)](https://travis-ci.com/josegit88/SCORPIO)
-
 [![Build Status](https://readthedocs.org/projects/scorpio-rdd/badge/?version=latest)](https://scorpio-rdd.readthedocs.io/en/latest/?badge=latest)
-
-.. image:: https://readthedocs.org/projects/scorpio-rdd/badge/?version=latest
-:target: https://scorpio-rdd.readthedocs.io/en/latest/?badge=latest
-:alt: Documentation Status
 
 # SCORPIO
 Sky COllector of galaxy Pairs and Image Output
