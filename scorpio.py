@@ -1,11 +1,39 @@
 # -*- coding: utf-8 -*-
 # Jose Benavides (jose.astroph@gmail.com)
 
-"""Este programa recibe información de RA y Dec de un par de galaxias
-interactuantes (o cercanas) u otros objetos individual y descarga los datos
-.fits correspondientes de datos del Sloan Digital sky Survey (SDSS) de una
-lista generada a partir de los filtros u, g, r, i, z. calcula la distancia
-en Mpc y la separación (solamente para el caso de pares).
+"""This program receives RA and Dec information from a pair of galaxies
+interacting (or nearby) or other individual objects and download the data
+Corresponding .fits of survey data and list of filters:
+
+******************************************************
+        Survey              >>>      Filters
+******************************************************
+
+Sloan Digital sky Survey (SDSS) >>> [u, g, r, i, z]
+
+Two Micron All Sky Survey (2MASS) >>> [J, H, K]
+
+Wide Field Infrared Survey Explorer (WISE) >>> [3.4, 4.6, 12, 22]
+
+Later it processes and exports an image.
+
+For this it has a series of steps that use some specific purpose functions:
+
+******************************************************
+        Process              >>>      Function
+******************************************************
+
+Download .fits data          >>>    download_data
+
+Stack the information        >>>      stack_pair
+
+Calculate distance to the
+observer Mpc and the
+separation between the pair  >>>      distances
+
+Generate the image           >>>      Image.plot
+
+******************************************************
 
 """
 
@@ -45,7 +73,28 @@ VALID_FILTERS_WISE = [" 3.4", " 4.6", " 12", " 22"]
 
 
 # --- new: ----
-class Imagen:
+class Image:
+    """Main object of the application, receives data from the other functions:
+
+    matrix: applied information from .fits files
+
+    header: header information of some .fits
+
+    dist_physic: estimates the physical distance to the observer in Mpc,
+    from a given cosmology
+
+    length_arc: estimates the physical distance between the pair in kpc
+
+    dist_pix: conversion of the physical distance to pixels in the image
+
+    pos1: RA, DEC, Z information of the primary galaxy
+
+    pos2: RA, DEC, Z information of the secondary galaxy
+
+    resolution: integer value of the image resolution in pixels.
+
+    """
+
     def __init__(
         self,
         matriz=None,
@@ -75,6 +124,25 @@ class Imagen:
         imgName="img1.png",
         **kwargs,
     ):
+
+        """Main function of the application, receives data from the other
+        functions to generate and export the image:
+
+        ax: Complete information of the properties to generate the image,
+        by default it is None
+
+        dir_images: Destination directory where the images will be exported,
+        by default it is "./individual_images"
+
+        save_Img: Option to save the image, yes [y] or not [n],
+        by default it is "n"
+
+        imgName: name of the image to be exported, by default it is "img1.png"
+
+          ** kwargs
+
+        """
+
         # ejemelo: plt.imshow(self.matriz)
         # hacer el plot
 
@@ -416,7 +484,7 @@ def gpair(
     Returns the necessary characteristics to generate the final image.
     """
     # new:
-    img_gp = Imagen()  # Imagen es la instancia de la clase Imagen
+    img_gp = Image()  # Image es la instancia de la clase Image
     # ---
 
     # new:
