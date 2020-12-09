@@ -1,6 +1,12 @@
 # -*- coding: utf-8 -*-
 # Jose Benavides (jose.astroph@gmail.com)
 
+# This file is part of the
+#   SCORPIO Project (https://github.com/josegit88/SCORPIO).
+# Copyright (c) 2020, Jose Benavides
+# License: MIT
+#   Full Text: https://github.com/josegit88/SCORPIO/blob/add-license-2/LICENSE
+
 """This program receives RA and Dec information from a pair of galaxies
 interacting (or nearby) or other individual objects and download the data
 Corresponding .fits of survey data and list of filters:

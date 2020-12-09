@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
 # Jose Benavides (jose.astroph@gmail.com)
+
+# This file is part of the
+#   SCORPIO Project (https://github.com/josegit88/SCORPIO).
+# Copyright (c) 2020, Jose Benavides
+# License: MIT
+#   Full Text: https://github.com/josegit88/SCORPIO/blob/add-license-2/LICENSE
+
 """
 Test about the scorpio functions
 """
