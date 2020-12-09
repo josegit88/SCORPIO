@@ -338,14 +338,13 @@ def test_distances_pixels():
 
 
 def test_plot_kwargs():
-    [RA1, DEC1, Z1, RA2, DEC2, Z2, res] = [
+    [RA1, DEC1, Z1, RA2, DEC2, Z2] = [
         126.39162693999999,
         47.296980665521900,
         0.12573827000000001,
         126.38991429000001,
         47.305200665521902,
         0.12554201000000001,
-        500,
     ]
 
     test_img = scorpio.gpair(
@@ -355,7 +354,8 @@ def test_plot_kwargs():
         dec2=DEC2,
         z1=Z1,
         z2=Z2,
-        resolution=res,
+        survey="2MASS",
+        resolution=500,
     )
 
     with pytest.raises(AttributeError):
@@ -369,14 +369,13 @@ def test_plot_kwargs():
 
 
 def test_plot_ax():
-    [RA1, DEC1, Z1, RA2, DEC2, Z2, res] = [
+    [RA1, DEC1, Z1, RA2, DEC2, Z2] = [
         126.39162693999999,
         47.296980665521900,
         0.12573827000000001,
         126.38991429000001,
         47.305200665521902,
         0.12554201000000001,
-        500,
     ]
 
     test_img = scorpio.gpair(
@@ -386,32 +385,11 @@ def test_plot_ax():
         dec2=DEC2,
         z1=Z1,
         z2=Z2,
-        resolution=res,
+        survey="2MASS",
+        resolution=500,
     )
 
     with pytest.raises(AttributeError):
         test_img.plot(
             ax=plt.subplots(figsize=(4, 8)),
-        )
-
-
-# gal2 fail:
-def test_gal2_fail():
-    [RA1, DEC1, Z1, RA2, DEC2, Z2] = [
-        126.39162693999999,
-        47.296980665521900,
-        0.12573827000000001,
-        300.0,
-        85.0,
-        0.12554201000000001,
-    ]
-
-    with pytest.raises(scorpio.NoFilterToStackError):
-        scorpio.stack_pair(
-            ra1=RA1,
-            dec1=DEC1,
-            ra2=RA2,
-            dec2=DEC2,
-            z1=Z1,
-            z2=Z2,
         )

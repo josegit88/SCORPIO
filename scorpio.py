@@ -407,7 +407,7 @@ def gpair(
     z1,
     z2,
     survey="SDSS",
-    resolution=None,
+    resolution=1000,    
     cosmology=asc.Planck15,
 ):
     """
@@ -430,7 +430,6 @@ def gpair(
         z2=z2,
         resolution=resolution,
         survey=survey,
-        filters=None,
     )  # así ya tenemos disponible la informacion apilada y del header
     img_gp.matriz = g1g2
     img_gp.header = header
