@@ -228,12 +228,6 @@ class NoSurveyInListToStackError(ValueError):
     pass
 
 
-class Name_dir_Error(OSError):
-    """Error when directory name is not allowed"""
-
-    pass
-
-
 @retry(stop_max_attempt_number=4)
 def download_data(pos, survey, filters, plx, ff):
     """Function for download data fits from survey."""
