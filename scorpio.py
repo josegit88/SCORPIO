@@ -322,8 +322,8 @@ def stack_pair(
     # que pasa si no estakeo un joraca
     if np.all(g1g2[0] == 0):
         raise NoFilterToStackError("Empty array for galaxy1")
-    if np.all(g1g2[1] == 0):
-        raise NoFilterToStackError("Empty array for galaxy2")
+    # if np.all(g1g2[1] == 0):
+    #    raise NoFilterToStackError("Empty array for galaxy2")
 
     # info_fits = stamp[0][0].header
     # header = stamp[0][0].header
@@ -407,7 +407,7 @@ def gpair(
     z1,
     z2,
     survey="SDSS",
-    resolution=1000,    
+    resolution=1000,
     cosmology=asc.Planck15,
 ):
     """
