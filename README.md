@@ -15,4 +15,4 @@ This project is written in Python 3 (to use in Python 2, slight modifications mu
 
 SCORPIO is a tool to quick generate images of astrophysical objects...
 
-![quick tool to generate images of astrophysical objects](https://raw.githubusercontent.com/josegit88/SCORPIO/master/legacy/web_images/tenor.gif)
+![quick tool to generate images of astrophysical objects](https://raw.githubusercontent.com/josegit88/SCORPIO/master/docs/source/_static/web_images/tenor.gif)
