@@ -13,7 +13,7 @@ import logging
 import os
 import urllib
 
-import astropy
+# import astropy
 import astropy.cosmology as asc
 from astropy import units as apu
 from astropy import wcs  # new import

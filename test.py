@@ -288,8 +288,6 @@ def test_stack_code_error(monkeypatch):
         )
 
 
-# new:
-
 # puedo armar que mi cosmology sea un diccionario
 # cosmo = {"H0":70, "Om0":0.3, "Ode0":0.7}
 def test_distances_error_Cosmology():
