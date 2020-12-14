@@ -2,6 +2,8 @@
 [![Build Status](https://readthedocs.org/projects/scorpio-rdd/badge/?version=latest)](https://scorpio-rdd.readthedocs.io/en/latest/?badge=latest)
 [![https://github.com/leliel12/diseno_sci_sfw](https://img.shields.io/badge/DiSoftCompCi-FAMAF-ffda00)](https://github.com/leliel12/diseno_sci_sfw)
 
+![quick tool to generate images of astrophysical objects](https://raw.githubusercontent.com/josegit88/SCORPIO/master/docs/source/_static/scorpio_logo.png)
+
 # SCORPIO (Sky COllector of galaxy Pairs and Image Output)
 Is a tool to quick generate images of galaxy pairs, using data from different surveys.
 
