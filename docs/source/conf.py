@@ -12,7 +12,17 @@
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../..'))
+import pathlib
+
+#sys.path.insert(0, os.path.abspath('../..'))
+
+CURRENT_PATH = pathlib.Path(os.path.abspath(os.path.dirname(__file__)))
+SCORPIO_PATH = CURRENT_PATH.parent.parent
+
+print("current_path:", CURRENT_PATH)
+print("scorpio_path:", SCORPIO_PATH)
+
+sys.path.insert(0, str(SCORPIO_PATH))
 
 
 # -- Project information -----------------------------------------------------
