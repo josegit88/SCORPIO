@@ -422,6 +422,8 @@ def test_plot_imshow_default_ax():
         survey="2MASS",
         resolution=500,
     )
+    
+    ax = prueba_img
 
     with pytest.raises(AssertionError):
-        assert prueba_img.plot() is plt.gca()
+        assert ax is plt.gca()
