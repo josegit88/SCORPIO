@@ -344,6 +344,7 @@ def test_distances_pixels():
 # Revisar trabajo de Bruno y Juan
 
 
+# test kwargs:
 def test_plot_kwargs():
     [RA1, DEC1, Z1, RA2, DEC2, Z2] = [
         126.39162693999999,
