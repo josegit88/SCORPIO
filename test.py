@@ -424,7 +424,7 @@ def test_plot_imshow_default_ax():
         resolution=500,
     )
 
-    ax = prueba_img
+    ax = prueba_img.plot()
 
     with pytest.raises(AssertionError):
         assert ax is plt.gca()
