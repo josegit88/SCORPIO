@@ -88,12 +88,6 @@ def test_download_and_stack(monkeypatch):
     np.testing.assert_allclose(stack_g1, expected_g1, rtol=1e300)
     np.testing.assert_allclose(stack_g2, expected_g2, rtol=1e300)
 
-    # np.testing.assert_array_equal(stack_g1, expected_g1, err_msg='', verbose=True)
-    # np.testing.assert_array_equal(stack_g2, expected_g2, err_msg='', verbose=True)
-
-    # np.testing.assert_almost_equal(stack_g1, expected_g1, decimal=7, err_msg='', verbose=True)
-    # np.testing.assert_almost_equal(stack_g2, expected_g2, decimal=7, err_msg='', verbose=True)
-
 
 # test equal matriz data
 def test_equal_data():
@@ -127,9 +121,6 @@ def test_equal_data():
         resolution=500,
     )
 
-    # np.testing.assert_allclose(prueba_img1.matriz[0], prueba_img2.matriz[0], rtol=1e-3)
-    # np.testing.assert_array_equal(prueba_img1.matriz[0], prueba_img2.matriz[0], err_msg='', verbose=True)
-    # np.testing.assert_approx_equal(prueba_img1.matriz[0], prueba_img2.matriz[0], significant=7, err_msg='', verbose=True,)
     np.testing.assert_almost_equal(
         prueba_img1.matriz[0],
         prueba_img2.matriz[0],
@@ -493,7 +484,7 @@ def test_equal_download_and_generate_plots(fig_1, fig_2):
     ax1.set_xlabel("RA")
 
     # test plot 2
-    test_ax2 = fig_ref.subplots()
+    test_ax2 = fig_2.subplots()
     ax2 = data_img2.plot(ax=test_ax2)
     ax2.set_ylabel("DEC")
     ax2.set_xlabel("RA")
