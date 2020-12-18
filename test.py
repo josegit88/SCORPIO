@@ -59,7 +59,7 @@ def test_download_and_stack(monkeypatch):
         return path
 
     monkeypatch.setattr(SkyView, "get_images", mock_func_g1g2)
-    
+
     expected_g1 = np.array(
         [
             [-2.45361328e-02, -6.26220703e-02, -1.12152100e-02],
@@ -88,11 +88,11 @@ def test_download_and_stack(monkeypatch):
     np.testing.assert_allclose(stack_g1, expected_g1, rtol=1e300)
     np.testing.assert_allclose(stack_g2, expected_g2, rtol=1e300)
 
-    #np.testing.assert_array_equal(stack_g1, expected_g1, err_msg='', verbose=True)
-    #np.testing.assert_array_equal(stack_g2, expected_g2, err_msg='', verbose=True)
-    
-    #np.testing.assert_almost_equal(stack_g1, expected_g1, decimal=7, err_msg='', verbose=True)
-    #np.testing.assert_almost_equal(stack_g2, expected_g2, decimal=7, err_msg='', verbose=True)
+    # np.testing.assert_array_equal(stack_g1, expected_g1, err_msg='', verbose=True)
+    # np.testing.assert_array_equal(stack_g2, expected_g2, err_msg='', verbose=True)
+
+    # np.testing.assert_almost_equal(stack_g1, expected_g1, decimal=7, err_msg='', verbose=True)
+    # np.testing.assert_almost_equal(stack_g2, expected_g2, decimal=7, err_msg='', verbose=True)
 
 
 # test equal matriz data
@@ -106,13 +106,37 @@ def test_equal_data():
         0.12554201000000001,
     ]
 
-    prueba_img1 = scorpio.gpair(ra1=RA1, dec1=DEC1, ra2=RA2, dec2=DEC2, z1=Z1, z2=Z2, survey="2MASS", resolution=500)
-    prueba_img2 = scorpio.gpair(ra1=RA1, dec1=DEC1, ra2=RA2, dec2=DEC2, z1=Z1, z2=Z2, survey="2MASS", resolution=500)        
-    
-    #np.testing.assert_allclose(prueba_img1.matriz[0], prueba_img2.matriz[0], rtol=1e-3)
-    #np.testing.assert_array_equal(prueba_img1.matriz[0], prueba_img2.matriz[0], err_msg='', verbose=True)    
-    #np.testing.assert_approx_equal(prueba_img1.matriz[0], prueba_img2.matriz[0], significant=7, err_msg='', verbose=True,)
-    np.testing.assert_almost_equal(prueba_img1.matriz[0], prueba_img2.matriz[0], decimal=7, err_msg='', verbose=True,)
+    prueba_img1 = scorpio.gpair(
+        ra1=RA1,
+        dec1=DEC1,
+        ra2=RA2,
+        dec2=DEC2,
+        z1=Z1,
+        z2=Z2,
+        survey="2MASS",
+        resolution=500,
+    )
+    prueba_img2 = scorpio.gpair(
+        ra1=RA1,
+        dec1=DEC1,
+        ra2=RA2,
+        dec2=DEC2,
+        z1=Z1,
+        z2=Z2,
+        survey="2MASS",
+        resolution=500,
+    )
+
+    # np.testing.assert_allclose(prueba_img1.matriz[0], prueba_img2.matriz[0], rtol=1e-3)
+    # np.testing.assert_array_equal(prueba_img1.matriz[0], prueba_img2.matriz[0], err_msg='', verbose=True)
+    # np.testing.assert_approx_equal(prueba_img1.matriz[0], prueba_img2.matriz[0], significant=7, err_msg='', verbose=True,)
+    np.testing.assert_almost_equal(
+        prueba_img1.matriz[0],
+        prueba_img2.matriz[0],
+        decimal=7,
+        err_msg="",
+        verbose=True,
+    )
 
 
 # test for SDSS filters:
@@ -427,42 +451,80 @@ def test_plot_ax():
     with pytest.raises(AttributeError):
         test_img.plot(
             ax=plt.subplots(figsize=(4, 8)),
-       )
+        )
 
-     
+
 @check_figures_equal(extensions=["png"])
 def test_equal_download_and_generate_plots(fig_1, fig_2):
-    [RA1, DEC1, Z1, RA2, DEC2, Z2] = [126.39162693999999, 47.296980665521900, 0.12573827000000001, 126.38991429000001, 47.305200665521902, 0.12554201000000001]    
-    
-    data_img1 = scorpio.gpair(ra1=RA1, dec1=DEC1, ra2=RA2, dec2=DEC2, z1=Z1, z2=Z2, survey="2MASS", resolution=500)
-    data_img2 = scorpio.gpair(ra1=RA1, dec1=DEC1, ra2=RA2, dec2=DEC2, z1=Z1, z2=Z2, survey="2MASS", resolution=500)
-    
+    [RA1, DEC1, Z1, RA2, DEC2, Z2] = [
+        126.39162693999999,
+        47.296980665521900,
+        0.12573827000000001,
+        126.38991429000001,
+        47.305200665521902,
+        0.12554201000000001,
+    ]
+
+    data_img1 = scorpio.gpair(
+        ra1=RA1,
+        dec1=DEC1,
+        ra2=RA2,
+        dec2=DEC2,
+        z1=Z1,
+        z2=Z2,
+        survey="2MASS",
+        resolution=500,
+    )
+    data_img2 = scorpio.gpair(
+        ra1=RA1,
+        dec1=DEC1,
+        ra2=RA2,
+        dec2=DEC2,
+        z1=Z1,
+        z2=Z2,
+        survey="2MASS",
+        resolution=500,
+    )
 
     # test plot 1:
     test_ax1 = fig_1.subplots()
-    ax1 = data_img1.plot(ax=test_ax1)        
+    ax1 = data_img1.plot(ax=test_ax1)
     ax1.set_ylabel("DEC")
-    ax1.set_xlabel("RA") 
-           
+    ax1.set_xlabel("RA")
+
     # test plot 2
-    test_ax2 = fig_ref.subplots()    
-    ax2 = data_img2.plot(ax=test_ax2)    
+    test_ax2 = fig_ref.subplots()
+    ax2 = data_img2.plot(ax=test_ax2)
     ax2.set_ylabel("DEC")
     ax2.set_xlabel("RA")
-    
-    
+
+
 @check_figures_equal(extensions=["png"])
 def test_equal_plots(fig_test, fig_ref):
-    [RA1, DEC1, Z1, RA2, DEC2, Z2] = [126.39162693999999, 47.296980665521900, 0.12573827000000001, 126.38991429000001, 47.305200665521902, 0.12554201000000001]    
-    
-    data_img = scorpio.gpair(ra1=RA1, dec1=DEC1, ra2=RA2, dec2=DEC2, z1=Z1, z2=Z2, survey="2MASS", resolution=500)        
-    
-    
+    [RA1, DEC1, Z1, RA2, DEC2, Z2] = [
+        126.39162693999999,
+        47.296980665521900,
+        0.12573827000000001,
+        126.38991429000001,
+        47.305200665521902,
+        0.12554201000000001,
+    ]
+
+    data_img = scorpio.gpair(
+        ra1=RA1,
+        dec1=DEC1,
+        ra2=RA2,
+        dec2=DEC2,
+        z1=Z1,
+        z2=Z2,
+        survey="2MASS",
+        resolution=500,
+    )
+
     # fig test
     test_ax = fig_test.subplots()
-    ax1 = data_img.plot(ax=test_ax)     
-    
-    
+    ax1 = data_img.plot(ax=test_ax)
+
     # fig expect
     final_imageA = data_img.matriz
     final_imageA = final_imageA[0]
@@ -470,15 +532,15 @@ def test_equal_plots(fig_test, fig_ref):
     c1 = data_img.pos1
     c2 = data_img.pos2
     dis_c1_c2 = data_img.dist_pix
-    s_AB = data_img.dist_physic                    
-    
+    s_AB = data_img.dist_physic
+
     expect_ax = fig_ref.subplots()
     fig = plt.gcf()
-        
+
     xx = plx / 2.0
     yy = plx / 2.0
 
-    expect_ax.axis([-xx * 0.8, xx * 0.8, -yy * 0.8, yy * 0.8])    
+    expect_ax.axis([-xx * 0.8, xx * 0.8, -yy * 0.8, yy * 0.8])
     expect_ax.xaxis.set_major_locator(ticker.NullLocator())
     expect_ax.yaxis.set_major_locator(ticker.NullLocator())
 
@@ -512,7 +574,7 @@ def test_equal_plots(fig_test, fig_ref):
     min_value = min(min_values_col)
 
     Norm = mpl.colors.Normalize(vmin=min_value, vmax=max_value)
-    Cmap = mpl.cm.ScalarMappable(norm=Norm, cmap=mpl.cm.inferno)        
+    Cmap = mpl.cm.ScalarMappable(norm=Norm, cmap=mpl.cm.inferno)
     axins1 = inset_axes(
         expect_ax,
         width="5%",
@@ -520,7 +582,7 @@ def test_equal_plots(fig_test, fig_ref):
         loc="lower right",
     )
     cb = fig.colorbar(Cmap, ax=expect_ax, cax=axins1, orientation="vertical")
-    cb.set_ticks([])        
+    cb.set_ticks([])
     expect_ax.imshow(
         final_imageA,
         extent=extent,
@@ -545,7 +607,7 @@ def test_equal_plots(fig_test, fig_ref):
         mew=2,
         fillstyle="none",
     )
-    
+
     len_bar = 50.0 * dis_c1_c2 / s_AB
     expect_ax.broken_barh(
         [(-plx / 2.5, len_bar + plx / 7.5)],
@@ -559,6 +621,5 @@ def test_equal_plots(fig_test, fig_ref):
         color="k",
         linewidth=3,
     )
-    expect_ax.text(-plx / 3.0, -plx / 3.0, "50 kpc", fontsize=20, color="k")    
+    expect_ax.text(-plx / 3.0, -plx / 3.0, "50 kpc", fontsize=20, color="k")
     # ----------------------------------
-

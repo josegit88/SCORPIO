@@ -112,16 +112,16 @@ class Image:
         self.matriz = matriz
         self.header = header
         self.dist_physic = dist_physic
-        self.dist_pix = dist_pix        
+        self.dist_pix = dist_pix
         self.length_arc = length_arc
         self.resolution = resolution
         self.pos1 = pos1
         self.pos2 = pos2
 
     def plot(
-        self,        
+        self,
         ax=None,
-        fig = plt.gcf(),
+        fig=plt.gcf(),
         dir_images="./individual_images",
         save_Img="n",
         imgName="img1.png",
@@ -144,12 +144,12 @@ class Image:
 
           ** kwargs
 
-        """        
+        """
 
         # ------ plot features: ------
         if not os.path.exists(dir_images):
             os.makedirs(dir_images)
-        
+
         final_imageA = self.matriz
         final_imageA = final_imageA[0]
         plx = self.resolution
@@ -157,18 +157,17 @@ class Image:
         c2 = self.pos2
         dis_c1_c2 = self.dist_pix
         s_AB = self.dist_physic
-        
-        if ax is None:
-            figsize = kwargs.get("figsize", (8, 8))            
-            # ax = plt.subplots(figsize=figsize)
-            fig, ax = plt.subplots(figsize=figsize)            
-            # fig = plt.gcf()           
 
-        
+        if ax is None:
+            figsize = kwargs.get("figsize", (8, 8))
+            # ax = plt.subplots(figsize=figsize)
+            fig, ax = plt.subplots(figsize=figsize)
+            # fig = plt.gcf()
+
         xx = plx / 2.0
         yy = plx / 2.0
 
-        ax.axis([-xx * 0.8, xx * 0.8, -yy * 0.8, yy * 0.8])        
+        ax.axis([-xx * 0.8, xx * 0.8, -yy * 0.8, yy * 0.8])
         ax.xaxis.set_major_locator(ticker.NullLocator())
         ax.yaxis.set_major_locator(ticker.NullLocator())
 
@@ -202,7 +201,7 @@ class Image:
         min_value = min(min_values_col)
 
         Norm = mpl.colors.Normalize(vmin=min_value, vmax=max_value)
-        Cmap = mpl.cm.ScalarMappable(norm=Norm, cmap=mpl.cm.inferno)        
+        Cmap = mpl.cm.ScalarMappable(norm=Norm, cmap=mpl.cm.inferno)
         axins1 = inset_axes(
             ax,
             width="5%",
@@ -210,7 +209,7 @@ class Image:
             loc="lower right",
         )
         cb = fig.colorbar(Cmap, ax=ax, cax=axins1, orientation="vertical")
-        cb.set_ticks([])        
+        cb.set_ticks([])
         ax.imshow(
             final_imageA,
             extent=extent,
@@ -235,7 +234,7 @@ class Image:
             mew=2,
             fillstyle="none",
         )
-        
+
         len_bar = 50.0 * dis_c1_c2 / s_AB
         ax.broken_barh(
             [(-plx / 2.5, len_bar + plx / 7.5)],
@@ -250,9 +249,8 @@ class Image:
             linewidth=3,
         )
         ax.text(-plx / 3.0, -plx / 3.0, "50 kpc", fontsize=20, color="k")
-       
 
-        if save_Img == "y":            
+        if save_Img == "y":
             name_image = dir_images + "/" + str(imgName)
             plt.savefig(name_image, bbox_inches="tight", dpi=200)
             plt.close()
@@ -264,6 +262,7 @@ class Image:
 
 
 # -------------
+
 
 class NoFilterToStackError(ValueError):
     """Error generated when data of stack galaxies is empty"""
@@ -316,21 +315,21 @@ def stack_pair(
 
     if survey not in ["SDSS", "2MASS", "WISE"]:
         print("invalid survey")
-        raise NoSurveyInListToStackError("Survey not allowed")        
+        raise NoSurveyInListToStackError("Survey not allowed")
 
     # SDSS:
     if survey == "SDSS":
         filters = ["g", "i"] if filters is None else filters
 
         for ff in filters:
-            if ff not in VALID_FILTERS_SDSS:                
+            if ff not in VALID_FILTERS_SDSS:
                 raise NoFilterToStackError(f"{ff} is not a valid filter")
 
     # 2MASS:
     if survey == "2MASS":
         filters = ["-H", "-K"] if filters is None else filters
         for ff in filters:
-            if ff not in VALID_FILTERS_2MASS:                
+            if ff not in VALID_FILTERS_2MASS:
                 raise NoFilterToStackError(f"{ff} is not a valid filter")
 
     # WISE:
@@ -338,7 +337,7 @@ def stack_pair(
         filters = [" 4.6", " 12"] if filters is None else filters
 
         for ff in filters:
-            if ff not in VALID_FILTERS_WISE:                
+            if ff not in VALID_FILTERS_WISE:
                 raise NoFilterToStackError(f"{ff} is not a valid filter")
 
     # ------- download images data fits in diferent filters: --------
@@ -363,15 +362,14 @@ def stack_pair(
             else:
                 g1g2[ii] += stamp[0][0].data
 
-    
     if np.all(g1g2[0] == 0):
         raise NoFilterToStackError("Empty array for galaxy1")
-    
+
     header = stamp_g1[0][0].header
     return g1g2, header, plx
 
 
-def distances(ra1, dec1, ra2, dec2, z1, z2, header, cosmology=asc.Planck15):    
+def distances(ra1, dec1, ra2, dec2, z1, z2, header, cosmology=asc.Planck15):
     """
     This function receives the RA, DEC, redshift parameters for the two
     galaxies, as well as header information for the primary galaxy and
@@ -393,7 +391,7 @@ def distances(ra1, dec1, ra2, dec2, z1, z2, header, cosmology=asc.Planck15):
         asc.Planck13,
         asc.Planck15,
     ]:
-        
+
         raise TypeError("cosmology not allowed")
 
     glx1 = [ra1, dec1, z1]
@@ -403,7 +401,7 @@ def distances(ra1, dec1, ra2, dec2, z1, z2, header, cosmology=asc.Planck15):
     z_glx = glx_array[:, 2]
 
     dist_comv = cosmology.comoving_distance(np.mean(z_glx)).value
-    
+
     coord_A = SkyCoord(
         ra=glx_array[0, 0] * apu.deg, dec=glx_array[0, 1] * apu.deg
     )
@@ -413,17 +411,14 @@ def distances(ra1, dec1, ra2, dec2, z1, z2, header, cosmology=asc.Planck15):
 
     theta_rad = coord_A.separation(coord_B).rad
     s_AB = (dist_comv * theta_rad) * 1000.0
-    
+
     data_WCS = wcs.WCS(header)
 
     c1 = data_WCS.wcs_world2pix(glx_array[0, 0], glx_array[0, 1], 0)
     c2 = data_WCS.wcs_world2pix(glx_array[1, 0], glx_array[1, 1], 0)
-    dis_c1_c2 = np.sqrt(
-        (c1[0] - c2[0]) ** 2 + (c1[1] - c2[1]) ** 2
-    )
+    dis_c1_c2 = np.sqrt((c1[0] - c2[0]) ** 2 + (c1[1] - c2[1]) ** 2)
 
     return s_AB, dis_c1_c2, c1, c2
-
 
 
 def gpair(
@@ -441,10 +436,10 @@ def gpair(
     This function receives the RA, DEC, redshift parameters for the two
     galaxies, as well as the resolution in pixels, survey and filters.
     Returns the necessary characteristics to generate the final image.
-    """    
+    """
     img_gp = Image()
     # ---
-    
+
     g1g2, header, plx = stack_pair(
         ra1,
         dec1,
@@ -459,7 +454,7 @@ def gpair(
     img_gp.header = header
     img_gp.resolution = plx
     # -----
-    
+
     dist_physic, dist_pix, pos1, pos2 = distances(
         ra1, dec1, ra2, dec2, z1, z2, header, cosmology
     )
@@ -467,7 +462,7 @@ def gpair(
     img_gp.dist_pix = dist_pix
     img_gp.pos1 = pos1
     img_gp.pos2 = pos2
-    
+
     return img_gp
 
 
