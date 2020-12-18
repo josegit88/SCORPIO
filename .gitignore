@@ -11,6 +11,8 @@ legacy/
 
 prueba_scorpio.py
 prueba_scorpio_plot_kwargs.py
+prueba_scorpio_test_plot.py
+prueba_scorpio_test_plot_a_mano.py
 
 # C extensions
 *.so

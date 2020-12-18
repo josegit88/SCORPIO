@@ -3,7 +3,7 @@ SCORPIO
 
 .. Escribir alguna documentacion general y corta aca.
 
-The essential input parameters are AR, DEC, redshift (and other optional ones such as survey and filters) for each of the galaxies of interest.
+The essential input parameters are AR, DEC, redshift (and other optional data such as survey and filters) for each of the galaxies of interest.
 
 Based on these, the application has several functions that:
 
