@@ -7,41 +7,39 @@
 # License: MIT
 #   Full Text: https://github.com/josegit88/SCORPIO/blob/add-license-2/LICENSE
 
-"""This program receives RA and Dec information from a pair of galaxies
+# ============================================================================
+# DOCS
+# ============================================================================
+
+"""scorpio.
+
+This program receives RA and Dec information from a pair of galaxies.
 interacting (or nearby) or other individual objects and download the data
 Corresponding .fits of survey data and list of filters:
 
 ******************************************************
         Survey              >>>      Filters
 ******************************************************
-
 Sloan Digital sky Survey (SDSS) >>> [u, g, r, i, z]
-
 Two Micron All Sky Survey (2MASS) >>> [J, H, K]
-
 Wide Field Infrared Survey Explorer (WISE) >>> [3.4, 4.6, 12, 22]
-
 Later it processes and exports an image.
-
 For this it has a series of steps that use some specific purpose functions:
-
 ******************************************************
         Process              >>>      Function
 ******************************************************
-
 Download .fits data          >>>    download_data
-
 Stack the information        >>>      stack_pair
-
 Calculate distance to the
 observer Mpc and the
 separation between the pair  >>>      distances
-
 Generate the image           >>>      Image.plot
-
 ******************************************************
-
 """
+
+# =============================================================================
+# IMPORTS
+# =============================================================================
 
 import logging
 import os
@@ -76,8 +74,25 @@ VALID_FILTERS_2MASS = ["-J", "-H", "-K"]
 VALID_FILTERS_WISE = [" 3.4", " 4.6", " 12", " 22"]
 
 
+# ============================================================================
+# CLASSES
+# ============================================================================
+
+
+class NoFilterToStackError(ValueError):
+    """Error generated when data of stack galaxies is empty."""
+
+    pass
+
+
+class NoSurveyInListToStackError(ValueError):
+    """Error generated when survey of stack galaxies not in our list."""
+
+    pass
+
+
 class Image:
-    """Main object of the application, receives data from the other functions:
+    """Main object of the application, receives data from the other functions.
 
     matrix: applied information from .fits files
 
@@ -123,29 +138,31 @@ class Image:
         ax=None,
         fig=plt.gcf(),
         dir_images="./individual_images",
-        save_Img="n",
+        save_Img=None,
         imgName="img1.png",
         **kwargs,
     ):
+        """Receives data from other functions to generate and export a image.
 
-        """Main function of the application, receives data from the other
-        functions to generate and export the image:
-
+        Parameters
+        ----------
         ax: Complete information of the properties to generate the image,
-        by default it is None
+        by default it is None.
 
         dir_images: Destination directory where the images will be exported,
-        by default it is "./individual_images"
+        by default it is "./individual_images".
 
-        save_Img: Option to save the image, yes [y] or not [n],
-        by default it is "n"
+        save_Img: Option to save the image, by default it is None.
 
-        imgName: name of the image to be exported, by default it is "img1.png"
+        imgName: name of the image to be exported, by default it is "img1.png".
 
-          ** kwargs
+        ** kwargs.
+
+        Returns
+        -------
+        ax
 
         """
-
         # ------ plot features: ------
         if not os.path.exists(dir_images):
             os.makedirs(dir_images)
@@ -250,11 +267,11 @@ class Image:
         )
         ax.text(-plx / 3.0, -plx / 3.0, "50 kpc", fontsize=20, color="k")
 
-        if save_Img == "y":
+        if save_Img != None:
             name_image = dir_images + "/" + str(imgName)
             plt.savefig(name_image, bbox_inches="tight", dpi=200)
             plt.close()
-        elif save_Img == "n":
+        if save_Img is None:
             pass
         # ----------------------------------
 
@@ -263,22 +280,14 @@ class Image:
 
 # -------------
 
-
-class NoFilterToStackError(ValueError):
-    """Error generated when data of stack galaxies is empty"""
-
-    pass
-
-
-class NoSurveyInListToStackError(ValueError):
-    """Error generated when survey of stack galaxies not in our list"""
-
-    pass
+# ============================================================================
+# FUNCTIONS
+# ============================================================================
 
 
 @retry(stop_max_attempt_number=4)
 def download_data(pos, survey, filters, plx, ff):
-    """Function for download data fits from survey."""
+    """Download data fits from survey."""
     path = SkyView.get_images(
         position=pos,
         survey=survey + str(filters[ff]),
@@ -301,7 +310,8 @@ def stack_pair(
     survey="SDSS",
     filters=None,
 ):
-    """Generate a individual image from list (RA, DEC, z) data of galaxy pair
+    """Generate a individual image from list (RA, DEC, z) data of galaxy pair.
+
     for defaul pixles: plx = 1000 and g, i filters.
 
     """
@@ -365,15 +375,17 @@ def stack_pair(
     if np.all(g1g2[0] == 0):
         raise NoFilterToStackError("Empty array for galaxy1")
 
+    # header = stamp_g1[0][0].header
     header = stamp_g1[0][0].header
     return g1g2, header, plx
 
 
 def distances(ra1, dec1, ra2, dec2, z1, z2, header, cosmology=asc.Planck15):
-    """
-    This function receives the RA, DEC, redshift parameters for the two
-    galaxies, as well as header information for the primary galaxy and
+    """Receives the RA, DEC, redshift parameters for the two galaxies.
+
+    As well as header information for the primary galaxy and
     cosmology within the options provided by Astropy.
+
     Calculate the physical and pixel distances of the two galaxies necessary
     for their location in the final image.
 
@@ -383,7 +395,6 @@ def distances(ra1, dec1, ra2, dec2, z1, z2, header, cosmology=asc.Planck15):
     Planck13     Planck Collab 2013, Paper XVI  67.8    0.307
     Planck15     Planck Collab 2015, Paper XIII 67.7    0.307
     """
-
     if cosmology not in [
         asc.WMAP5,
         asc.WMAP7,
@@ -391,7 +402,6 @@ def distances(ra1, dec1, ra2, dec2, z1, z2, header, cosmology=asc.Planck15):
         asc.Planck13,
         asc.Planck15,
     ]:
-
         raise TypeError("cosmology not allowed")
 
     glx1 = [ra1, dec1, z1]
@@ -432,9 +442,9 @@ def gpair(
     resolution=1000,
     cosmology=asc.Planck15,
 ):
-    """
-    This function receives the RA, DEC, redshift parameters for the two
-    galaxies, as well as the resolution in pixels, survey and filters.
+    """Receives the RA, DEC, redshift parameters for the two galaxies.
+
+    As well as the resolution in pixels, survey and filters.
     Returns the necessary characteristics to generate the final image.
     """
     img_gp = Image()

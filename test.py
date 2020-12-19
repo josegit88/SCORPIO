@@ -22,10 +22,9 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 from matplotlib.colors import LogNorm
+from matplotlib.testing.decorators import check_figures_equal
 
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
-
-from matplotlib.testing.decorators import check_figures_equal
 
 import numpy as np
 
@@ -446,7 +445,7 @@ def test_plot_ax():
 
 
 @check_figures_equal(extensions=["png"])
-def test_equal_download_and_generate_plots(fig_1, fig_2):
+def test_equal_download_and_generate_plots(fig_test, fig_ref):
     [RA1, DEC1, Z1, RA2, DEC2, Z2] = [
         126.39162693999999,
         47.296980665521900,
@@ -478,13 +477,13 @@ def test_equal_download_and_generate_plots(fig_1, fig_2):
     )
 
     # test plot 1:
-    test_ax1 = fig_1.subplots()
+    test_ax1 = fig_test.subplots()
     ax1 = data_img1.plot(ax=test_ax1)
     ax1.set_ylabel("DEC")
     ax1.set_xlabel("RA")
 
     # test plot 2
-    test_ax2 = fig_2.subplots()
+    test_ax2 = fig_ref.subplots()
     ax2 = data_img2.plot(ax=test_ax2)
     ax2.set_ylabel("DEC")
     ax2.set_xlabel("RA")
@@ -515,6 +514,8 @@ def test_equal_plots(fig_test, fig_ref):
     # fig test
     test_ax = fig_test.subplots()
     ax1 = data_img.plot(ax=test_ax)
+    ax1.set_ylabel("DEC")
+    ax1.set_xlabel("RA")
 
     # fig expect
     final_imageA = data_img.matriz
@@ -613,4 +614,6 @@ def test_equal_plots(fig_test, fig_ref):
         linewidth=3,
     )
     expect_ax.text(-plx / 3.0, -plx / 3.0, "50 kpc", fontsize=20, color="k")
+    expect_ax.set_ylabel("DEC")
+    expect_ax.set_xlabel("RA")
     # ----------------------------------
