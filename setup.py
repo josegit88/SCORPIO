@@ -58,10 +58,7 @@ with open(PATH / "scorpio.py") as fp:
             break
 
 
-DESCRIPTION = """SCORPIO: Sky COllector of galaxy Pairs and Image Output.
-    SCORPIO is a tool for download fits of astronomial survey and generate
-    image.
-    """
+DESCRIPTION = """SCORPIO is a tool for generate images of galaxy pairs."""
 
 
 # =============================================================================

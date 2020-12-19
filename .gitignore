@@ -7,6 +7,10 @@ individual_images/
 
 dir_test_images/
 
+dist/
+
+scorpio.egg-info/
+
 legacy/
 
 prueba_scorpio.py
