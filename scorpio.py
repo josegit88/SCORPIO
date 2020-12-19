@@ -11,31 +11,7 @@
 # DOCS
 # ============================================================================
 
-"""scorpio.
-
-This program receives RA and Dec information from a pair of galaxies.
-interacting (or nearby) or other individual objects and download the data
-Corresponding .fits of survey data and list of filters:
-
-******************************************************
-        Survey              >>>      Filters
-******************************************************
-Sloan Digital sky Survey (SDSS) >>> [u, g, r, i, z]
-Two Micron All Sky Survey (2MASS) >>> [J, H, K]
-Wide Field Infrared Survey Explorer (WISE) >>> [3.4, 4.6, 12, 22]
-Later it processes and exports an image.
-For this it has a series of steps that use some specific purpose functions:
-******************************************************
-        Process              >>>      Function
-******************************************************
-Download .fits data          >>>    download_data
-Stack the information        >>>      stack_pair
-Calculate distance to the
-observer Mpc and the
-separation between the pair  >>>      distances
-Generate the image           >>>      Image.plot
-******************************************************
-"""
+"""scorpio."""
 
 # =============================================================================
 # IMPORTS
@@ -138,29 +114,23 @@ class Image:
         ax=None,
         fig=plt.gcf(),
         dir_images="./individual_images",
-        save_Img=None,
+        save_Img=False,
         imgName="img1.png",
         **kwargs,
     ):
         """Receives data from other functions to generate and export a image.
 
-        Parameters
-        ----------
         ax: Complete information of the properties to generate the image,
-        by default it is None.
+            by default it is None.
 
         dir_images: Destination directory where the images will be exported,
-        by default it is "./individual_images".
+                    by default it is "./individual_images".
 
-        save_Img: Option to save the image, by default it is None.
+        save_Img: Option to save the image, by default it is False.
 
         imgName: name of the image to be exported, by default it is "img1.png".
 
         ** kwargs.
-
-        Returns
-        -------
-        ax
 
         """
         # ------ plot features: ------
@@ -267,11 +237,11 @@ class Image:
         )
         ax.text(-plx / 3.0, -plx / 3.0, "50 kpc", fontsize=20, color="k")
 
-        if save_Img != None:
+        if save_Img is True:
             name_image = dir_images + "/" + str(imgName)
             plt.savefig(name_image, bbox_inches="tight", dpi=200)
             plt.close()
-        if save_Img is None:
+        if save_Img is False:
             pass
         # ----------------------------------
 

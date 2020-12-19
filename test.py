@@ -88,47 +88,6 @@ def test_download_and_stack(monkeypatch):
     np.testing.assert_allclose(stack_g2, expected_g2, rtol=1e300)
 
 
-# test equal matriz data
-def test_equal_data():
-    [RA1, DEC1, Z1, RA2, DEC2, Z2] = [
-        126.39162693999999,
-        47.296980665521900,
-        0.12573827000000001,
-        126.38991429000001,
-        47.305200665521902,
-        0.12554201000000001,
-    ]
-
-    prueba_img1 = scorpio.gpair(
-        ra1=RA1,
-        dec1=DEC1,
-        ra2=RA2,
-        dec2=DEC2,
-        z1=Z1,
-        z2=Z2,
-        survey="2MASS",
-        resolution=500,
-    )
-    prueba_img2 = scorpio.gpair(
-        ra1=RA1,
-        dec1=DEC1,
-        ra2=RA2,
-        dec2=DEC2,
-        z1=Z1,
-        z2=Z2,
-        survey="2MASS",
-        resolution=500,
-    )
-
-    np.testing.assert_almost_equal(
-        prueba_img1.matriz[0],
-        prueba_img2.matriz[0],
-        decimal=7,
-        err_msg="",
-        verbose=True,
-    )
-
-
 # test for SDSS filters:
 def test_download_invalid_filter_SDSS():
     [RA1, DEC1, Z1, RA2, DEC2, Z2] = [
@@ -456,14 +415,7 @@ def test_equal_download_and_generate_plots(fig_test, fig_ref):
     ]
 
     data_img1 = scorpio.gpair(
-        ra1=RA1,
-        dec1=DEC1,
-        ra2=RA2,
-        dec2=DEC2,
-        z1=Z1,
-        z2=Z2,
-        survey="2MASS",
-        resolution=500,
+        ra1=RA1, dec1=DEC1, ra2=RA2, dec2=DEC2, z1=Z1, z2=Z2
     )
     data_img2 = scorpio.gpair(
         ra1=RA1,
@@ -472,8 +424,6 @@ def test_equal_download_and_generate_plots(fig_test, fig_ref):
         dec2=DEC2,
         z1=Z1,
         z2=Z2,
-        survey="2MASS",
-        resolution=500,
     )
 
     # test plot 1:

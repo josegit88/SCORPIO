@@ -27,6 +27,43 @@ astroquery: The latest version of astroquery can be conda or pip installed: cond
 | Jose Benavides (E-mail: jose.benavides@gmail.com)
 
 
+This program receives RA and Dec information from a pair of galaxies.
+interacting (or nearby) or other individual objects and download the data
+Corresponding .fits of survey data and list of filters:
+
+******************************************************
+
+        Survey              >>>      Filters
+
+******************************************************
+
+Sloan Digital sky Survey (SDSS) >>> [u, g, r, i, z]
+
+Two Micron All Sky Survey (2MASS) >>> [J, H, K]
+
+Wide Field Infrared Survey Explorer (WISE) >>> [3.4, 4.6, 12, 22]
+
+Later it processes and exports an image.
+
+For this it has a series of steps that use some specific purpose functions:
+
+******************************************************
+
+        Process              >>>      Function
+
+******************************************************
+
+Download .fits data          >>>    download_data
+
+Stack the information        >>>      stack_pair
+
+Calculate distance to the
+observer Mpc and the
+separation between the pair  >>>      distances
+
+Generate the image           >>>      Image.plot
+
+
 --------------------------------------------------
 
 .. toctree::
