@@ -113,6 +113,8 @@ class Image:
         self,
         ax=None,
         fig=plt.gcf(),
+        size=8,
+        color_map="inferno",
         dir_images="./individual_images",
         save_Img=False,
         imgName="img1.png",
@@ -146,7 +148,7 @@ class Image:
         s_AB = self.dist_physic
 
         if ax is None:
-            figsize = kwargs.get("figsize", (8, 8))
+            figsize = kwargs.get("figsize", (size, size))
             # ax = plt.subplots(figsize=figsize)
             fig, ax = plt.subplots(figsize=figsize)
             # fig = plt.gcf()
@@ -188,7 +190,7 @@ class Image:
         min_value = min(min_values_col)
 
         Norm = mpl.colors.Normalize(vmin=min_value, vmax=max_value)
-        Cmap = mpl.cm.ScalarMappable(norm=Norm, cmap=mpl.cm.inferno)
+        Cmap = mpl.cm.ScalarMappable(norm=Norm, cmap=color_map)
         axins1 = inset_axes(
             ax,
             width="5%",
@@ -200,7 +202,7 @@ class Image:
         ax.imshow(
             final_imageA,
             extent=extent,
-            cmap="inferno",
+            cmap=color_map,
             norm=LogNorm(vmin=min_value, vmax=max_value),
         )
         ax.plot(
@@ -235,7 +237,9 @@ class Image:
             color="k",
             linewidth=3,
         )
-        ax.text(-plx / 3.0, -plx / 3.0, "50 kpc", fontsize=20, color="k")
+        ax.text(
+            -plx / 3.0, -plx / 3.0, "50 kpc", fontsize=size * 2.5, color="k"
+        )
 
         if save_Img is True:
             name_image = dir_images + "/" + str(imgName)
@@ -379,6 +383,7 @@ def distances(ra1, dec1, ra2, dec2, z1, z2, header, cosmology=asc.Planck15):
 
     glx_array = np.array([glx1, glx2])
     z_glx = glx_array[:, 2]
+    scale_factor = 1.0 / (1.0 + np.mean(z_glx))
 
     dist_comv = cosmology.comoving_distance(np.mean(z_glx)).value
 
@@ -390,7 +395,7 @@ def distances(ra1, dec1, ra2, dec2, z1, z2, header, cosmology=asc.Planck15):
     )
 
     theta_rad = coord_A.separation(coord_B).rad
-    s_AB = (dist_comv * theta_rad) * 1000.0
+    s_AB = (dist_comv * theta_rad) * 1000.0 * scale_factor
 
     data_WCS = wcs.WCS(header)
 
