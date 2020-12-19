@@ -79,6 +79,7 @@ def do_setup():
         author=["Jose Benavides"],
         author_email="jose.astroph@gmail.com",
         url="https://github.com/josegit88/SCORPIO",
+        download_url = 'https://github.com/josegit88/SCORPIO/tarball/0.1',
         license="MIT",
         keywords=["scorpio", "survey", "images", "stacking"],
         classifiers=[
