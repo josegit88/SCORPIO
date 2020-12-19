@@ -187,40 +187,6 @@ def test_download_invalid_survey():
         )
 
 
-def test_no_filter_to_stack(monkeypatch):
-    def mock_func(*args, **kwargs):
-        raise urllib.error.HTTPError(
-            url="http://from.mock",
-            code=404,
-            msg="from mock",
-            hdrs=None,
-            fp=None,
-        )
-
-    monkeypatch.setattr(SkyView, "get_images", mock_func)
-
-    [RA1, DEC1, Z1, RA2, DEC2, Z2] = [
-        229.38791793999997,
-        -15.1525941155219059,
-        0.12589231000000001,
-        229.38705890000003,
-        -15.1513408255219060,
-        0.12634666999999999,
-    ]
-
-    with pytest.raises(scorpio.NoFilterToStackError):
-        scorpio.stack_pair(
-            ra1=RA1,
-            dec1=DEC1,
-            ra2=RA2,
-            dec2=DEC2,
-            z1=Z1,
-            z2=Z2,
-            resolution=450,
-            filters=["g"],
-        )
-
-
 def test_stack_code_error(monkeypatch):
     def mock_func(*args, **kwargs):
         raise urllib.error.HTTPError(
@@ -255,8 +221,6 @@ def test_stack_code_error(monkeypatch):
         )
 
 
-# puedo armar que mi cosmology sea un diccionario
-# cosmo = {"H0":70, "Om0":0.3, "Ode0":0.7}
 def test_distances_error_Cosmology():
     data_imagen = fits.open("test_data/SDSS_image_0_filter_g.fits")
     header = data_imagen[0].header
