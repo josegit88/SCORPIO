@@ -6,6 +6,25 @@
 Welcome to SCORPIO's documentation!
 ===================================
 
+.. only:: html
+
+.. image:: _static/scorpio_logo.png
+    :align: center
+    :scale: 100 %
+
+.. image:: https://travis-ci.com/josegit88/SCORPIO.svg?branch=master
+    :target: https://travis-ci.com/josegit88/SCORPIO
+    :alt: Build Status
+
+.. image:: https://readthedocs.org/projects/scorpio-rdd/badge/?version=latest
+    :target: https://scorpio-rdd.readthedocs.io/en/latest/?badge=latest
+    :alt: Documentation Status
+
+.. image:: https://img.shields.io/badge/DiSoftCompCi-FAMAF-ffda00
+   :target: https://github.com/leliel12/diseno_sci_sfw
+   :alt: Curso doctoral FAMAF: Diseño de software para cómputo científico
+
+
 .. Escribir una descripcion corta del proyecto aca:
 
 **SCORPIO** (Sky COllector of galaxy Pairs and Image Output) It is an application that generates images of pairs of galaxies, in different surveys and filters.
@@ -26,6 +45,13 @@ astroquery: The latest version of astroquery can be conda or pip installed: cond
 | **Authors**
 | Jose Benavides (E-mail: jose.benavides@gmail.com)
 
+
+Repository and Issues
+---------------------
+
+https://github.com/josegit88/SCORPIO
+
+---------------------
 
 This program receives RA and Dec information from a pair of galaxies.
 interacting (or nearby) or other individual objects and download the data
