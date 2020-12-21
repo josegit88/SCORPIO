@@ -33,7 +33,6 @@ To use SCORPIO you need python 3.7 or higher, and have the following libraries:
 
 
 ## Installation
-Clone this repo and then inside the local directory execute
 
     $ pip install -i https://test.pypi.org/simple/ scorpio==0.0.1
 
