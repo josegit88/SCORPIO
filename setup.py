@@ -68,7 +68,7 @@ DESCRIPTION = """SCORPIO is a tool for generate images of galaxy pairs."""
 
 def do_setup():
     setup(
-        name="scorpio",
+        name="scorpio_gp",
         version=VERSION,
         description=DESCRIPTION,
         long_description=LONG_DESCRIPTION,
