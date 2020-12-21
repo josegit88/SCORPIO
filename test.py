@@ -33,7 +33,7 @@ import pytest
 import scorpio
 
 
-def test_download_and_stack(monkeypatch):
+def test_download_and_stack_data(monkeypatch):
     [RA1, DEC1, Z1, RA2, DEC2, Z2] = [
         126.39162693999999,
         47.296980665521900,
@@ -248,7 +248,7 @@ def test_distances_error_Cosmology():
         )
 
 
-def test_distances_physical():
+def test_distances_physical_units():
     data_imagen = fits.open("test_data/SDSS_image_0_filter_g.fits")
     header = data_imagen[0].header
     COSMOLOGY = asc.Planck15
@@ -279,7 +279,7 @@ def test_distances_physical():
     print("physical_dist", physical_dist)
 
 
-def test_distances_pixels():
+def test_distances_in_pixels():
     data_imagen = fits.open("test_data/SDSS_image_0_filter_g.fits")
     header = data_imagen[0].header
     COSMOLOGY = asc.Planck15
@@ -310,7 +310,7 @@ def test_distances_pixels():
 
 
 # test kwargs:
-def test_plot_kwargs():
+def test_plot_error_kwargs():
     [RA1, DEC1, Z1, RA2, DEC2, Z2] = [
         126.39162693999999,
         47.296980665521900,
@@ -341,7 +341,7 @@ def test_plot_kwargs():
         test_img.plot("img_test.png")
 
 
-def test_plot_ax():
+def test_plot_size_fig_axes():
     [RA1, DEC1, Z1, RA2, DEC2, Z2] = [
         126.39162693999999,
         47.296980665521900,
@@ -369,7 +369,7 @@ def test_plot_ax():
 
 
 @check_figures_equal(extensions=["png"])
-def test_equal_download_and_generate_plots(fig_test, fig_ref):
+def test_download_and_generate_equal_plots(fig_test, fig_ref):
     [RA1, DEC1, Z1, RA2, DEC2, Z2] = [
         126.39162693999999,
         47.296980665521900,
@@ -386,6 +386,7 @@ def test_equal_download_and_generate_plots(fig_test, fig_ref):
         dec2=DEC2,
         z1=Z1,
         z2=Z2,
+        survey="2MASS",
     )
     data_img2 = scorpio.gpair(
         ra1=RA1,
@@ -394,6 +395,7 @@ def test_equal_download_and_generate_plots(fig_test, fig_ref):
         dec2=DEC2,
         z1=Z1,
         z2=Z2,
+        survey="2MASS",
     )
 
     # test plot 1:
@@ -410,7 +412,7 @@ def test_equal_download_and_generate_plots(fig_test, fig_ref):
 
 
 @check_figures_equal(extensions=["png"])
-def test_equal_plots(fig_test, fig_ref):
+def test_compare_plots_generation_methods(fig_test, fig_ref):
     [RA1, DEC1, Z1, RA2, DEC2, Z2] = [
         126.39162693999999,
         47.296980665521900,

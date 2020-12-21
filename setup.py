@@ -49,8 +49,6 @@ PATH = pathlib.Path(os.path.abspath(os.path.dirname(__file__)))
 with open(PATH / "README.md") as fp:
     LONG_DESCRIPTION = fp.read()
 
-# with open(PATH / "scorpio" / "__init__.py") as fp: # con mayuscula o minusc?
-# with open(PATH / "__init__.py") as fp: # con mayuscula o minusc?
 with open(PATH / "scorpio.py") as fp:
     for idx in fp.readlines():
         if idx.startswith("__version__ = "):

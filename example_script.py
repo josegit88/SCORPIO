@@ -8,7 +8,6 @@
 #   Full Text: https://github.com/josegit88/SCORPIO/blob/add-license-2/LICENSE
 
 import scorpio
-import matplotlib.pyplot as plt
 
 # data of both galaxies:
 [RA1, DEC1, Z1, RA2, DEC2, Z2] = [

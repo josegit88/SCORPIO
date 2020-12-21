@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Jose Benavides (jose.astroph@gmail.com)
 
@@ -120,7 +121,7 @@ class Image:
         imgName="img1.png",
         **kwargs,
     ):
-        """Receives data from other functions to generate and export a image.
+        r"""Receives data from other functions to generate and export a image.
 
         ax: Complete information of the properties to generate the image,
             by default it is None.
@@ -149,9 +150,7 @@ class Image:
 
         if ax is None:
             figsize = kwargs.get("figsize", (size, size))
-            # ax = plt.subplots(figsize=figsize)
             fig, ax = plt.subplots(figsize=figsize)
-            # fig = plt.gcf()
 
         xx = plx / 2.0
         yy = plx / 2.0
