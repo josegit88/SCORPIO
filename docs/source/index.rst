@@ -19,6 +19,14 @@ Welcome to SCORPIO's documentation!
 .. image:: https://readthedocs.org/projects/scorpio-rdd/badge/?version=latest
     :target: https://scorpio-rdd.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
+    
+.. image:: https://img.shields.io/badge/License-MIT-blue.svg
+    :target: https://opensource.org/licenses/MIT
+    :alt: License: MIT
+    
+.. image:: https://img.shields.io/badge/python-3.7+-blue.svg
+    :target: https://www.python.org/downloads/release/python-370/
+    :alt: Python 3.7+    
 
 .. image:: https://img.shields.io/badge/DiSoftCompCi-FAMAF-ffda00
    :target: https://github.com/leliel12/diseno_sci_sfw
