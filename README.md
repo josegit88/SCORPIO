@@ -36,6 +36,6 @@ To use SCORPIO you need python 3.7 or higher, and have the following libraries:
 
 ## Installation
 
-    $ pip install -i https://test.pypi.org/simple/ scorpio==0.0.1
+    $ pip install scorpio-gp
 
 ![quick tool to generate images of astrophysical objects](https://raw.githubusercontent.com/josegit88/SCORPIO/master/docs/source/_static/tenor.gif)
