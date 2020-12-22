@@ -41,7 +41,7 @@ Is a tool to quick generate images of galaxy pairs, using data from different su
 
 
 | **Authors**
-| Jose Benavides (E-mail: jose.benavides@gmail.com)
+| Jose Benavides (E-mail: jose.astroph@gmail.com)
 
 
 Repository and Issues
