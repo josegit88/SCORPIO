@@ -23,7 +23,7 @@ After setting up and activating the virtualenv, run the following command:
 
 .. code-block:: console
 
-   $ pip install -i https://test.pypi.org/simple/ scorpio==0.0.1
+   $ pip install scorpio-gp
    ...
 
 That should be it all.
