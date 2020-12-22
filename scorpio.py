@@ -125,21 +125,26 @@ class Image:
 
         Parameters
         ----------
-        ax: Complete information of the properties to generate the image,
+        ax : Axes
+            Complete information of the properties to generate the image,
             by default it is None.
 
-        dir_images: Destination directory where the images will be exported,
-                    by default it is "./individual_images".
+        dir_images : string
+            Destination directory where the images will be exported,
+            by default it is "./individual_images".
 
-        save_Img: Option to save the image, by default it is False.
+        save_Img : bool
+            Option to save the image, by default it is False.
 
-        imgName: name of the image to be exported, by default it is "img1.png".
+        imgName: string
+            Name of the image to be exported, by default it is "img1.png".
 
         ** kwargs.
 
         Returns
         -------
-        ax
+        ax : Axes
+           Axes with complete configuration of plot 
         """
         # ------ plot features: ------
         if not os.path.exists(dir_images):
