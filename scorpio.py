@@ -123,6 +123,8 @@ class Image:
     ):
         r"""Receives data from other functions to generate and export a image.
 
+        Parameters
+        ----------
         ax: Complete information of the properties to generate the image,
             by default it is None.
 
@@ -135,6 +137,9 @@ class Image:
 
         ** kwargs.
 
+        Returns
+        -------
+        ax
         """
         # ------ plot features: ------
         if not os.path.exists(dir_images):
@@ -287,6 +292,36 @@ def stack_pair(
 
     for defaul pixles: plx = 1000 and g, i filters.
 
+    Parameters
+    ----------
+    ra1 : float
+        Right ascension of primary galaxy.
+    dec1 : float
+        Reclination of primary galaxy.
+    z1: float
+        Redshift of secondary galaxy.
+    ra2 : float
+        Right ascension of secondary galaxy.
+    dec2 : float
+        Declination of secondary galaxy.
+    z2 : float
+        Redshift of secondary galaxy.
+    resolution : int
+        Size resolution value in pixels, by default it is 1000.
+    survey : string
+        Survey for query and download data, by default it is "SDSS".
+    filters: list of strings
+        Filters for respective survey, by default it is ["g", "i"] for "SDSS".
+
+    Returns
+    -------
+    g1g2 : array_like
+        Array with the stacked information of the galaxies in the survey and
+        the selected filters.
+    header: string
+        Header from the primary galaxy .fits file.
+    plx : int
+        Size resolution value in pixels.
     """
     print(survey)
     plx = resolution
@@ -367,6 +402,37 @@ def distances(ra1, dec1, ra2, dec2, z1, z2, header, cosmology=asc.Planck15):
     WMAP9        Hinshaw et al. 2013            69.3    0.287
     Planck13     Planck Collab 2013, Paper XVI  67.8    0.307
     Planck15     Planck Collab 2015, Paper XIII 67.7    0.307
+
+    Parameters
+    ----------
+    ra1 : float
+        Right ascension of primary galaxy.
+    dec1 : float
+        Reclination of primary galaxy.
+    z1: float
+        Redshift of secondary galaxy.
+    ra2 : float
+        Right ascension of secondary galaxy.
+    dec2 : float
+        Declination of secondary galaxy.
+    z2 : float
+        Redshift of secondary galaxy.
+    header : string
+        Header from the primary galaxy .fits file.
+    survey : string
+        Survey for query and download data, by default it is "SDSS".
+    cosmology: astropy.cosmology.core.FlatLambdaCDM
+        Instance of class astropy.cosmology.FLRW,
+        by default it is asc.Planck15.
+
+    Returns
+    -------
+    s_AB : float
+        physical distance between the pair in kpc.
+    dis_c1_c2 : float
+        physical distance to pixels in the image.
+    c1, c2 : array_like
+        Arrays with coordinates of both galaxies in pixels.
     """
     if cosmology not in [
         asc.WMAP5,
@@ -420,6 +486,33 @@ def gpair(
 
     As well as the resolution in pixels, survey and filters.
     Returns the necessary characteristics to generate the final image.
+
+    Parameters
+    ----------
+    ra1 : float
+        Right ascension of primary galaxy.
+    dec1 : float
+        Reclination of primary galaxy.
+    z1: float
+        Redshift of secondary galaxy.
+    ra2 : float
+        Right ascension of secondary galaxy.
+    dec2 : float
+        Declination of secondary galaxy.
+    z2 : float
+        Redshift of secondary galaxy.
+    survey : string
+        Survey for query and download data, by default it is "SDSS".
+    resolution : int
+        Size resolution value in pixels, by default it is 1000.
+    cosmology: astropy.cosmology.core.FlatLambdaCDM
+        Instance of class astropy.cosmology.FLRW,
+        by default it is asc.Planck15.
+
+    Returns
+    -------
+    img_gp : class
+        Complete information of the class Image.
     """
     img_gp = Image()
     # ---

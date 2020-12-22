@@ -14,7 +14,7 @@ import os
 import sys
 import pathlib
 
-#sys.path.insert(0, os.path.abspath('../..'))
+# sys.path.insert(0, os.path.abspath('../..'))
 
 CURRENT_PATH = pathlib.Path(os.path.abspath(os.path.dirname(__file__)))
 SCORPIO_PATH = CURRENT_PATH.parent.parent
@@ -27,12 +27,12 @@ sys.path.insert(0, str(SCORPIO_PATH))
 
 # -- Project information -----------------------------------------------------
 
-project = 'SCORPIO'
-copyright = '2020, Jose Benavides'
-author = 'Jose Benavides'
+project = "SCORPIO"
+copyright = "2020, Jose Benavides"
+author = "Jose Benavides"
 
 # The full version, including alpha/beta/rc tags
-release = '0.0.1'
+release = "0.0.1"
 
 
 # -- General configuration ---------------------------------------------------
@@ -40,15 +40,22 @@ release = '0.0.1'
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.coverage',
+extensions = [
+    "sphinx.ext.autodoc",
+    "sphinx.ext.coverage",
+    "sphinx.ext.mathjax",
+    "sphinx.ext.napoleon",
+    "sphinx.ext.intersphinx",
+    "sphinx.ext.viewcode",
+    "sphinx.ext.autosummary",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = ["_templates"]
 
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
-source_suffix = ['.rst', '.md']
+source_suffix = [".rst", ".md"]
 
 # The master toctree document.
 # master_doc = 'index'
@@ -64,10 +71,10 @@ exclude_patterns = []
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-#html_theme = 'alabaster'
-html_theme = 'sphinx_rtd_theme'
+# html_theme = 'alabaster'
+html_theme = "sphinx_rtd_theme"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_static_path = ["_static"]
