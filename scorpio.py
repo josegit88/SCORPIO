@@ -270,7 +270,15 @@ class Image:
 
 @retry(stop_max_attempt_number=4)
 def download_data(pos, survey, filters, plx, ff):
-    """Download data fits from survey."""
+    """Download data fits from survey.
+
+    Parameters
+    ----------
+
+    Returns
+    -------
+    
+    """
     path = SkyView.get_images(
         position=pos,
         survey=survey + str(filters[ff]),
