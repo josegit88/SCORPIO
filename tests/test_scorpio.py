@@ -11,6 +11,8 @@
 Test about the scorpio functions
 """
 
+import os
+import pathlib
 import urllib
 
 import astropy.cosmology as asc
@@ -32,6 +34,17 @@ import pytest
 
 import scorpio
 
+# =============================================================================
+# CONSTANTS
+# =============================================================================
+
+PATH = pathlib.Path(os.path.abspath(os.path.dirname(__file__)))
+
+TEST_DATA = PATH / "test_data"
+
+# =============================================================================
+# TESTS
+# =============================================================================
 
 def test_download_and_stack_data(monkeypatch):
     [RA1, DEC1, Z1, RA2, DEC2, Z2] = [
@@ -47,13 +60,13 @@ def test_download_and_stack_data(monkeypatch):
         pos = [position.ra.value, position.dec.value]
 
         if pos == [RA1, DEC1] and survey == "SDSSg":
-            path = [fits.open("test_data/SDSS_image_0_filter_g.fits")]
+            path = [fits.open(TEST_DATA / "SDSS_image_0_filter_g.fits")]
         elif pos == [RA1, DEC1] and survey == "SDSSi":
-            path = [fits.open("test_data/SDSS_image_0_filter_i.fits")]
+            path = [fits.open(TEST_DATA / "SDSS_image_0_filter_i.fits")]
         elif pos == [RA2, DEC2] and survey == "SDSSg":
-            path = [fits.open("test_data/SDSS_image_1_filter_g.fits")]
+            path = [fits.open(TEST_DATA / "SDSS_image_1_filter_g.fits")]
         elif pos == [RA2, DEC2] and survey == "SDSSi":
-            path = [fits.open("test_data/SDSS_image_1_filter_i.fits")]
+            path = [fits.open(TEST_DATA / "SDSS_image_1_filter_i.fits")]
 
         return path
 
@@ -222,7 +235,7 @@ def test_stack_code_error(monkeypatch):
 
 
 def test_distances_error_Cosmology():
-    data_imagen = fits.open("test_data/SDSS_image_0_filter_g.fits")
+    data_imagen = fits.open(TEST_DATA / "SDSS_image_0_filter_g.fits")
     header = data_imagen[0].header
     COSMOLOGY = {"H0": 70, "Om0": 0.3, "Ode0": 0.7}
 
@@ -249,7 +262,7 @@ def test_distances_error_Cosmology():
 
 
 def test_distances_physical_units():
-    data_imagen = fits.open("test_data/SDSS_image_0_filter_g.fits")
+    data_imagen = fits.open(TEST_DATA / "SDSS_image_0_filter_g.fits")
     header = data_imagen[0].header
     COSMOLOGY = asc.Planck15
 
@@ -280,7 +293,7 @@ def test_distances_physical_units():
 
 
 def test_distances_in_pixels():
-    data_imagen = fits.open("test_data/SDSS_image_0_filter_g.fits")
+    data_imagen = fits.open(TEST_DATA / "SDSS_image_0_filter_g.fits")
     header = data_imagen[0].header
     COSMOLOGY = asc.Planck15
 
