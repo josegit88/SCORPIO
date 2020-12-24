@@ -28,21 +28,69 @@ Based on these, the application has several functions that:
 - Calculate the distance in physical units and in pixels.
 - Export the image in the desired format and directory.
 
-## Requirements
 
-To use SCORPIO you need python 3.7 or higher, and have the following libraries:
+## Code and issues
 
-- numpy
-- astropy
-- matplotlib
-- astroquery:
-  The latest version of astroquery can be conda or pip installed:
-  conda install -c astropy astroquery
-  or pip install astroquery
+The entire source code of is hosted in GitHub
+[https://github.com/josegit88/SCORPIO](https://github.com/josegit88/SCORPIO)
 
-(It is suggested to create a virtual environment if you do not want some of these packages to be permanently hosted in your most used libraries)
+## License
+
+SCORPIO is under
+[MIT](https://www.tldrlegal.com/l/mit)
+
+A short, permissive software license. Basically, you can do whatever you want as long as you include the original copyright and license notice in any copy of the software/source.  There are many variations of this license in use.
 
 
 ## Installation
 
-    $ pip install scorpio-gp
+This is the recommended way to install SCORPIO.
+
+### Installing  with pip
+
+Make sure that the Python interpreter can load SCORPIO code.
+The most convenient way to do this is to use virtualenv, virtualenvwrapper, and pip.
+
+After setting up and activating the virtualenv, run the following command:
+
+```console
+$ pip install scorpio-gp
+...
+```
+
+That should be it all.
+
+### Installing the development version
+
+If you’d like to be able to update your SCORPIO code occasionally with the latest bug fixes and improvements, follow these instructions:
+
+Make sure that you have Git installed and that you can run its commands from a shell.
+(Enter *git help* at a shell prompt to test this.)
+
+Check out SCORPIO main development branch like so:
+
+```console
+$ git clone https://github.com/josegit88/SCORPIO.git
+...
+```
+
+This will create a directory *SCORPIO* in your current directory.
+
+Then you can proceed to install with the commands
+
+```console
+$ cd SCORPIO
+$ pip install -e .
+...
+```
+
+## Documentation
+
+The full documentation of the project are available in
+[https://scorpio-rdd.readthedocs.io](https://scorpio-rdd.readthedocs.io/)
+
+## Contact
+
+For bugs or question please contact
+
+> **José Benavides** [jose.astroph@gmail.com](jose.astroph@gmail.com)
