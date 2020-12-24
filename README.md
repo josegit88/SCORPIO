@@ -6,13 +6,18 @@
 
 ![quick tool to generate images of astrophysical objects](https://github.com/josegit88/SCORPIO/raw/master/res/scorpio.png)
 
-# SCORPIO (Sky COllector of galaxy Pairs and Image Output)
+# SCORPIO
+
+> Sky COllector of galaxy Pairs and Image Output
+
 Is a tool to quick generate images of galaxy pairs, using data from different surveys.
 
 ## Motivation
+
 The interacting galaxies are one of the most interesting events in the area of extragalactic astronomy. The degree of interaction can sometimes be biased by projection effects. From the osbervation point of view, a visual image obtained from the photometry of these objects makes it possible to establish and quantify some features of this interaction, such as tidal tails and other deformations caused by gravitational force.
 
 ## Features
+
 The essential input parameters are AR, DEC, redshift (and other optional data such as survey and filters) for each of the galaxies of interest.
 
 Based on these, the application has several functions that:
@@ -22,7 +27,9 @@ Based on these, the application has several functions that:
 - Export the image in the desired format and directory.
 
 ## Requirements
+
 To use SCORPIO you need python 3.7 or higher, and have the following libraries:
+
 - numpy
 - astropy
 - matplotlib
@@ -37,5 +44,3 @@ To use SCORPIO you need python 3.7 or higher, and have the following libraries:
 ## Installation
 
     $ pip install scorpio-gp
-
-![quick tool to generate images of astrophysical objects](https://raw.githubusercontent.com/josegit88/SCORPIO/master/docs/source/_static/tenor.gif)

@@ -19,8 +19,6 @@ import pathlib
 CURRENT_PATH = pathlib.Path(os.path.abspath(os.path.dirname(__file__)))
 SCORPIO_PATH = CURRENT_PATH.parent.parent
 
-print("current_path:", CURRENT_PATH)
-print("scorpio_path:", SCORPIO_PATH)
 
 sys.path.insert(0, str(SCORPIO_PATH))
 
@@ -50,6 +48,7 @@ extensions = [
     "sphinx.ext.autosummary",
 ]
 
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
 
@@ -72,9 +71,58 @@ exclude_patterns = []
 # a list of builtin themes.
 #
 # html_theme = 'alabaster'
-html_theme = "sphinx_rtd_theme"
+html_theme = 'bootstrap-astropy'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
+
+
+# Custom
+
+html_logo = "_static/logo.png"
+
+
+html_theme_options = {
+    'logotext1': 'Scorpio',  # white,  semi-bold
+    'logotext2': '',  # orange, light
+    'logotext3': ':docs',   # white,  light
+    'astropy_project_menubar': False
+    }
+
+
+
+import m2r
+
+
+with open(SCORPIO_PATH / "README.md") as fp:
+    md = fp.read()
+
+
+index = f"""
+..
+   Automatic created file. Don't edit
+
+{m2r.convert(md)}
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+   api/modules
+   installation.rst
+   license.rst
+
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
+
+"""
+
+with open(CURRENT_PATH / "index.rst", "w") as fp:
+    fp.write(index)
