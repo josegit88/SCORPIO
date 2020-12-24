@@ -93,8 +93,6 @@ def test_download_and_stack_data(monkeypatch):
         ra1=ra1, dec1=dec1, ra2=ra2, dec2=dec2, z1=z1, z2=z2, resolution=3
     )
 
-    print(data_stack[0][0], data_stack[0][1])
-
     stack_g1 = data_stack[0][0]
     stack_g2 = data_stack[0][1]
 
@@ -290,7 +288,6 @@ def test_distances_physical_units():
     physical_dist = data_distances[0]
     expected_dist = 69.444
     np.testing.assert_allclose(physical_dist, expected_dist, rtol=1e-2)
-    print("physical_dist", physical_dist)
 
 
 def test_distances_in_pixels():
@@ -454,7 +451,7 @@ def test_compare_plots_generation_methods(fig_test, fig_ref):
     ax1.set_xlabel("RA")
 
     # fig expect
-    final_image_a = data_img.matriz[0]
+    final_image_a = data_img.mtx[0]
     plx = data_img.resolution
     c1 = data_img.pos1
     c2 = data_img.pos2
@@ -551,4 +548,3 @@ def test_compare_plots_generation_methods(fig_test, fig_ref):
     expect_ax.text(-plx / 3.0, -plx / 3.0, "50 kpc", fontsize=20, color="k")
     expect_ax.set_ylabel("DEC")
     expect_ax.set_xlabel("RA")
-    # ----------------------------------

@@ -12,9 +12,10 @@
 # DOCS
 # ============================================================================
 
-"""Sky COllector of galaxy Pairs and Image Output (Scorpio) Is a tool to
-quick generate images of galaxy pairs, using data from different surveys.
+"""Sky COllector of galaxy Pairs and Image Output (Scorpio).
 
+Is a tool to quick generate images of galaxy pairs, using data from different
+surveys.
 
 """
 
@@ -44,19 +45,37 @@ import numpy as np
 
 from retrying import retry
 
-# ----------------------------------
+# =============================================================================
+# METADATA
+# =============================================================================
 
 __version__ = "0.0.1"
 
+
+# =============================================================================
+# CONSTANTS
+# =============================================================================
+
 logger = logging.getLogger("scorpio")
 
+#: Valid filters for the Sloan Digital Sky Survey (SDSS).
 VALID_FILTERS_SDSS = ["u", "g", "r", "i", "z"]
+
+#: Valid filters for the Two Micron All-Sky Survey (2MASS).
 VALID_FILTERS_2MASS = ["-J", "-H", "-K"]
+
+#: Valid filters for the Wide-field Infrared Survey Explorer (WISE).
 VALID_FILTERS_WISE = [" 3.4", " 4.6", " 12", " 22"]
+
+#: The default coordinate system.
+DOWNLOAD_COORDINATE_SYSTEM = "J2000"
+
+#: If a progress indicator will be showed when a file is downloaded.
+DOWNLOAD_SHOW_PROGRESS = True
 
 
 # ============================================================================
-# CLASSES
+# EXCEPTIONS
 # ============================================================================
 
 
@@ -72,31 +91,39 @@ class NoSurveyInListToStackError(ValueError):
     pass
 
 
+# =============================================================================
+# IMAGE RESPONSE CLASS
+# =============================================================================
+
+
 class Image:
-    """Main object of the application, receives data from the other functions.
+    """Image representation of two interacting galaxies.
 
-    matrix: applied information from .fits files
-
-    header: header information of some .fits
-
-    dist_physic: estimates the physical distance to the observer in Mpc,
-    from a given cosmology
-
-    length_arc: estimates the physical distance between the pair in kpc
-
-    dist_pix: conversion of the physical distance to pixels in the image
-
-    pos1: RA, DEC, Z information of the primary galaxy
-
-    pos2: RA, DEC, Z information of the secondary galaxy
-
-    resolution: integer value of the image resolution in pixels.
+    Parameters
+    ----------
+    mtx :
+        The image itself.
+    header:
+        header information of image fits file.
+    dist_physic :
+        Estimation of physical distance to the observer in Mpc,
+        from a given cosmology
+    length_arc :
+        estimation of the physical distance between the pair in Kpc.
+    dist_pix :
+        Physical distance as pixels in the image.
+    pos1 :
+        RA, DEC, Z information of the first galaxy.
+    pos2 :
+        RA, DEC, Z information of the second galaxy.
+    resolution:
+        Image resolution in pixels.
 
     """
 
     def __init__(
         self,
-        matriz=None,
+        mtx=None,
         header=None,
         dist_physic=None,
         dist_pix=None,
@@ -105,7 +132,7 @@ class Image:
         pos2=None,
         resolution=None,
     ):
-        self.matriz = matriz
+        self.mtx = mtx
         self.header = header
         self.dist_physic = dist_physic
         self.dist_pix = dist_pix
@@ -154,10 +181,9 @@ class Image:
         if not os.path.exists(dir_images):
             os.makedirs(dir_images)
 
-        final_image_a = self.matriz[0]
+        final_image_a = self.mtx[0]
         plx = self.resolution
-        c1 = self.pos1
-        c2 = self.pos2
+        c1, c2 = self.pos1, self.pos2
         dis_c1_c2 = self.dist_pix
         s_ab = self.dist_physic
 
@@ -259,12 +285,9 @@ class Image:
             plt.close()
         if save_img is False:
             pass
-        # ----------------------------------
 
         return ax
 
-
-# -------------
 
 # ============================================================================
 # FUNCTIONS
@@ -287,8 +310,8 @@ def download_data(pos, survey, filters, plx, ff):
         survey=survey + str(filters[ff]),
         radius=2 * apu.arcmin,
         pixels=(plx, plx),
-        coordinates="J2000",
-        show_progress=True,
+        coordinates=DOWNLOAD_COORDINATE_SYSTEM,
+        show_progress=DOWNLOAD_SHOW_PROGRESS,
     )
     return path
 
@@ -339,7 +362,7 @@ def stack_pair(
     plx : int
         Size resolution value in pixels.
     """
-    print(survey)
+
     plx = resolution
 
     glx1 = [ra1, dec1, z1]
@@ -348,8 +371,7 @@ def stack_pair(
     glx_array = np.array([glx1, glx2])
 
     if survey not in ["SDSS", "2MASS", "WISE"]:
-        print("invalid survey")
-        raise NoSurveyInListToStackError("Survey not allowed")
+        raise NoSurveyInListToStackError(f"Survey '{survey}' not supported")
 
     # SDSS:
     if survey == "SDSS":
@@ -527,8 +549,9 @@ def gpair(
 
     Returns
     -------
-    img_gp : class
-        Complete information of the class Image.
+    Image :
+        An inmage of two interacting galaxies.
+
     """
     img_gp = Image()
     # ---
@@ -543,10 +566,9 @@ def gpair(
         resolution=resolution,
         survey=survey,
     )
-    img_gp.matriz = g1g2
+    img_gp.mtx = g1g2
     img_gp.header = header
     img_gp.resolution = plx
-    # -----
 
     dist_physic, dist_pix, pos1, pos2 = distances(
         ra1, dec1, ra2, dec2, z1, z2, header, cosmology
@@ -557,8 +579,3 @@ def gpair(
     img_gp.pos2 = pos2
 
     return img_gp
-
-
-# --------------------
-
-# END
