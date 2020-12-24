@@ -3,6 +3,19 @@
    Automatic created file. Don't edit
 
 
+SCORPIO
+=======
+
+Sky COllector of galaxy Pairs and Image Output (Scorpio) Is a tool to quick generate images of galaxy pairs, using data from different surveys.
+
+
+.. image:: https://github.com/josegit88/SCORPIO/raw/master/res/scorpio.png
+   :target: https://github.com/josegit88/SCORPIO/raw/master/res/scorpio.png
+   :alt: logo-scorpio
+
+
+----
+
 
 .. image:: https://travis-ci.com/josegit88/SCORPIO.svg?branch=master
    :target: https://travis-ci.com/josegit88/SCORPIO
@@ -28,22 +41,6 @@
    :target: https://github.com/leliel12/diseno_sci_sfw
    :alt: https://github.com/leliel12/diseno_sci_sfw
 
-
-
-.. image:: https://github.com/josegit88/SCORPIO/raw/master/res/scorpio.png
-   :target: https://github.com/josegit88/SCORPIO/raw/master/res/scorpio.png
-   :alt: quick tool to generate images of astrophysical objects
-
-
-SCORPIO
-=======
-
-..
-
-   Sky COllector of galaxy Pairs and Image Output
-
-
-Is a tool to quick generate images of galaxy pairs, using data from different surveys.
 
 Motivation
 ----------

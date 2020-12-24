@@ -1,16 +1,18 @@
+# SCORPIO
+
+Sky COllector of galaxy Pairs and Image Output (Scorpio) Is a tool to quick generate images of galaxy pairs, using data from different surveys.
+
+![logo-scorpio](https://github.com/josegit88/SCORPIO/raw/master/res/scorpio.png)
+
+----
+
+
 [![Build Status](https://travis-ci.com/josegit88/SCORPIO.svg?branch=master)](https://travis-ci.com/josegit88/SCORPIO)
 [![Build Status](https://readthedocs.org/projects/scorpio-rdd/badge/?version=latest)](https://scorpio-rdd.readthedocs.io/en/latest/?badge=latest)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.7+](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/release/python-370/)
 [![https://github.com/leliel12/diseno_sci_sfw](https://img.shields.io/badge/DiSoftCompCi-FAMAF-ffda00)](https://github.com/leliel12/diseno_sci_sfw)
 
-![quick tool to generate images of astrophysical objects](https://github.com/josegit88/SCORPIO/raw/master/res/scorpio.png)
-
-# SCORPIO
-
-> Sky COllector of galaxy Pairs and Image Output
-
-Is a tool to quick generate images of galaxy pairs, using data from different surveys.
 
 ## Motivation
 
