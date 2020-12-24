@@ -12,7 +12,11 @@
 # DOCS
 # ============================================================================
 
-"""scorpio."""
+"""Sky COllector of galaxy Pairs and Image Output (Scorpio) Is a tool to
+quick generate images of galaxy pairs, using data from different surveys.
+
+
+"""
 
 # =============================================================================
 # IMPORTS
@@ -117,8 +121,8 @@ class Image:
         size=8,
         color_map="inferno",
         dir_images="./individual_images",
-        save_Img=False,
-        imgName="img1.png",
+        save_img=False,
+        img_name="img1.png",
         **kwargs,
     ):
         r"""Receives data from other functions to generate and export a image.
@@ -133,10 +137,10 @@ class Image:
             Destination directory where the images will be exported,
             by default it is "./individual_images".
 
-        save_Img : bool
+        save_img : bool
             Option to save the image, by default it is False.
 
-        imgName: string
+        img_name: string
             Name of the image to be exported, by default it is "img1.png".
 
         ** kwargs.
@@ -144,19 +148,18 @@ class Image:
         Returns
         -------
         ax : Axes
-           Axes with complete configuration of plot 
+           Axes with complete configuration of plot
         """
         # ------ plot features: ------
         if not os.path.exists(dir_images):
             os.makedirs(dir_images)
 
-        final_imageA = self.matriz
-        final_imageA = final_imageA[0]
+        final_image_a = self.matriz[0]
         plx = self.resolution
         c1 = self.pos1
         c2 = self.pos2
         dis_c1_c2 = self.dist_pix
-        s_AB = self.dist_physic
+        s_ab = self.dist_physic
 
         if ax is None:
             figsize = kwargs.get("figsize", (size, size))
@@ -173,43 +176,43 @@ class Image:
 
         max_values_col = []
         min_values_col = []
-        for mm in range(len(final_imageA)):
-            max_in_column = max(final_imageA[:, mm])
+        for mm in range(len(final_image_a)):
+            max_in_column = max(final_image_a[:, mm])
             max_values_col.append(max_in_column)
-            min_in_column = min(final_imageA[:, mm])
+            min_in_column = min(final_image_a[:, mm])
             min_values_col.append(min_in_column)
 
         max_value = max(max_values_col)
         min_value = min(min_values_col)
 
-        for vv in range(len(final_imageA)):
-            for hh in range(len(final_imageA)):
-                if final_imageA[vv, hh] <= 0.0005 * max_value:
-                    final_imageA[vv, hh] = 0.0005 * max_value
+        for vv in range(len(final_image_a)):
+            for hh in range(len(final_image_a)):
+                if final_image_a[vv, hh] <= 0.0005 * max_value:
+                    final_image_a[vv, hh] = 0.0005 * max_value
 
         max_values_col = []
         min_values_col = []
-        for mm in range(len(final_imageA)):
-            max_in_column = max(final_imageA[:, mm])
+        for mm in range(len(final_image_a)):
+            max_in_column = max(final_image_a[:, mm])
             max_values_col.append(max_in_column)
-            min_in_column = min(final_imageA[:, mm])
+            min_in_column = min(final_image_a[:, mm])
             min_values_col.append(min_in_column)
 
         max_value = max(max_values_col)
         min_value = min(min_values_col)
 
-        Norm = mpl.colors.Normalize(vmin=min_value, vmax=max_value)
-        Cmap = mpl.cm.ScalarMappable(norm=Norm, cmap=color_map)
+        norm_color = mpl.colors.Normalize(vmin=min_value, vmax=max_value)
+        cmap = mpl.cm.ScalarMappable(norm=norm_color, cmap=color_map)
         axins1 = inset_axes(
             ax,
             width="5%",
             height="30%",
             loc="lower right",
         )
-        cb = fig.colorbar(Cmap, ax=ax, cax=axins1, orientation="vertical")
+        cb = fig.colorbar(cmap, ax=ax, cax=axins1, orientation="vertical")
         cb.set_ticks([])
         ax.imshow(
-            final_imageA,
+            final_image_a,
             extent=extent,
             cmap=color_map,
             norm=LogNorm(vmin=min_value, vmax=max_value),
@@ -233,7 +236,7 @@ class Image:
             fillstyle="none",
         )
 
-        len_bar = 50.0 * dis_c1_c2 / s_AB
+        len_bar = 50.0 * dis_c1_c2 / s_ab
         ax.broken_barh(
             [(-plx / 2.5, len_bar + plx / 7.5)],
             (-plx / 2.5, plx / 7.5),
@@ -250,11 +253,11 @@ class Image:
             -plx / 3.0, -plx / 3.0, "50 kpc", fontsize=size * 2.5, color="k"
         )
 
-        if save_Img is True:
-            name_image = dir_images + "/" + str(imgName)
+        if save_img is True:
+            name_image = dir_images + "/" + str(img_name)
             plt.savefig(name_image, bbox_inches="tight", dpi=200)
             plt.close()
-        if save_Img is False:
+        if save_img is False:
             pass
         # ----------------------------------
 
@@ -277,7 +280,7 @@ def download_data(pos, survey, filters, plx, ff):
 
     Returns
     -------
-    
+
     """
     path = SkyView.get_images(
         position=pos,
@@ -440,7 +443,7 @@ def distances(ra1, dec1, ra2, dec2, z1, z2, header, cosmology=asc.Planck15):
 
     Returns
     -------
-    s_AB : float
+    s_ab : float
         physical distance between the pair in kpc.
     dis_c1_c2 : float
         physical distance to pixels in the image.
@@ -454,7 +457,7 @@ def distances(ra1, dec1, ra2, dec2, z1, z2, header, cosmology=asc.Planck15):
         asc.Planck13,
         asc.Planck15,
     ]:
-        raise TypeError("cosmology not allowed")
+        raise TypeError(f"cosmology `{cosmology}` not allowed")
 
     glx1 = [ra1, dec1, z1]
     glx2 = [ra2, dec2, z2]
@@ -465,23 +468,23 @@ def distances(ra1, dec1, ra2, dec2, z1, z2, header, cosmology=asc.Planck15):
 
     dist_comv = cosmology.comoving_distance(np.mean(z_glx)).value
 
-    coord_A = SkyCoord(
+    coord_a = SkyCoord(
         ra=glx_array[0, 0] * apu.deg, dec=glx_array[0, 1] * apu.deg
     )
-    coord_B = SkyCoord(
+    coord_b = SkyCoord(
         ra=glx_array[1, 0] * apu.deg, dec=glx_array[1, 1] * apu.deg
     )
 
-    theta_rad = coord_A.separation(coord_B).rad
-    s_AB = (dist_comv * theta_rad) * 1000.0 * scale_factor
+    theta_rad = coord_a.separation(coord_b).rad
+    s_ab = (dist_comv * theta_rad) * 1000.0 * scale_factor
 
-    data_WCS = wcs.WCS(header)
+    data_wcs = wcs.WCS(header)
 
-    c1 = data_WCS.wcs_world2pix(glx_array[0, 0], glx_array[0, 1], 0)
-    c2 = data_WCS.wcs_world2pix(glx_array[1, 0], glx_array[1, 1], 0)
+    c1 = data_wcs.wcs_world2pix(glx_array[0, 0], glx_array[0, 1], 0)
+    c2 = data_wcs.wcs_world2pix(glx_array[1, 0], glx_array[1, 1], 0)
     dis_c1_c2 = np.sqrt((c1[0] - c2[0]) ** 2 + (c1[1] - c2[1]) ** 2)
 
-    return s_AB, dis_c1_c2, c1, c2
+    return s_ab, dis_c1_c2, c1, c2
 
 
 def gpair(

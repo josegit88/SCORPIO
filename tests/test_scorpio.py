@@ -46,8 +46,9 @@ TEST_DATA = PATH / "test_data"
 # TESTS
 # =============================================================================
 
+
 def test_download_and_stack_data(monkeypatch):
-    [RA1, DEC1, Z1, RA2, DEC2, Z2] = [
+    [ra1, dec1, z1, ra2, dec2, z2] = [
         126.39162693999999,
         47.296980665521900,
         0.12573827000000001,
@@ -59,13 +60,13 @@ def test_download_and_stack_data(monkeypatch):
     def mock_func_g1g2(position, survey, **kwargs):
         pos = [position.ra.value, position.dec.value]
 
-        if pos == [RA1, DEC1] and survey == "SDSSg":
+        if pos == [ra1, dec1] and survey == "SDSSg":
             path = [fits.open(TEST_DATA / "SDSS_image_0_filter_g.fits")]
-        elif pos == [RA1, DEC1] and survey == "SDSSi":
+        elif pos == [ra1, dec1] and survey == "SDSSi":
             path = [fits.open(TEST_DATA / "SDSS_image_0_filter_i.fits")]
-        elif pos == [RA2, DEC2] and survey == "SDSSg":
+        elif pos == [ra2, dec2] and survey == "SDSSg":
             path = [fits.open(TEST_DATA / "SDSS_image_1_filter_g.fits")]
-        elif pos == [RA2, DEC2] and survey == "SDSSi":
+        elif pos == [ra2, dec2] and survey == "SDSSi":
             path = [fits.open(TEST_DATA / "SDSS_image_1_filter_i.fits")]
 
         return path
@@ -89,7 +90,7 @@ def test_download_and_stack_data(monkeypatch):
     )
 
     data_stack = scorpio.stack_pair(
-        ra1=RA1, dec1=DEC1, ra2=RA2, dec2=DEC2, z1=Z1, z2=Z2, resolution=3
+        ra1=ra1, dec1=dec1, ra2=ra2, dec2=dec2, z1=z1, z2=z2, resolution=3
     )
 
     print(data_stack[0][0], data_stack[0][1])
@@ -103,7 +104,7 @@ def test_download_and_stack_data(monkeypatch):
 
 # test for SDSS filters:
 def test_download_invalid_filter_SDSS():
-    [RA1, DEC1, Z1, RA2, DEC2, Z2] = [
+    [ra1, dec1, z1, ra2, dec2, z2] = [
         126.39162693999999,
         47.296980665521900,
         0.12573827000000001,
@@ -114,12 +115,12 @@ def test_download_invalid_filter_SDSS():
 
     with pytest.raises(ValueError):
         scorpio.stack_pair(
-            ra1=RA1,
-            dec1=DEC1,
-            ra2=RA2,
-            dec2=DEC2,
-            z1=Z1,
-            z2=Z2,
+            ra1=ra1,
+            dec1=dec1,
+            ra2=ra2,
+            dec2=dec2,
+            z1=z1,
+            z2=z2,
             resolution=200,
             survey="SDSS",
             filters=["u", "t"],
@@ -128,7 +129,7 @@ def test_download_invalid_filter_SDSS():
 
 # test for 2MASS filters:
 def test_download_invalid_filter_2MASS():
-    [RA1, DEC1, Z1, RA2, DEC2, Z2] = [
+    [ra1, dec1, z1, ra2, dec2, z2] = [
         126.39162693999999,
         47.296980665521900,
         0.12573827000000001,
@@ -139,12 +140,12 @@ def test_download_invalid_filter_2MASS():
 
     with pytest.raises(ValueError):
         scorpio.stack_pair(
-            ra1=RA1,
-            dec1=DEC1,
-            ra2=RA2,
-            dec2=DEC2,
-            z1=Z1,
-            z2=Z2,
+            ra1=ra1,
+            dec1=dec1,
+            ra2=ra2,
+            dec2=dec2,
+            z1=z1,
+            z2=z2,
             resolution=200,
             survey="2MASS",
             filters=["u", "t"],
@@ -153,7 +154,7 @@ def test_download_invalid_filter_2MASS():
 
 # test for WISE filters:
 def test_download_invalid_filter_WISE():
-    [RA1, DEC1, Z1, RA2, DEC2, Z2] = [
+    [ra1, dec1, z1, ra2, dec2, z2] = [
         126.39162693999999,
         47.296980665521900,
         0.12573827000000001,
@@ -164,12 +165,12 @@ def test_download_invalid_filter_WISE():
 
     with pytest.raises(ValueError):
         scorpio.stack_pair(
-            ra1=RA1,
-            dec1=DEC1,
-            ra2=RA2,
-            dec2=DEC2,
-            z1=Z1,
-            z2=Z2,
+            ra1=ra1,
+            dec1=dec1,
+            ra2=ra2,
+            dec2=dec2,
+            z1=z1,
+            z2=z2,
             resolution=200,
             survey="WISE",
             filters=["u", "t"],
@@ -178,7 +179,7 @@ def test_download_invalid_filter_WISE():
 
 # new:
 def test_download_invalid_survey():
-    [RA1, DEC1, Z1, RA2, DEC2, Z2] = [
+    [ra1, dec1, z1, ra2, dec2, z2] = [
         126.39162693999999,
         47.296980665521900,
         0.12573827000000001,
@@ -189,12 +190,12 @@ def test_download_invalid_survey():
 
     with pytest.raises(ValueError):
         scorpio.stack_pair(
-            ra1=RA1,
-            dec1=DEC1,
-            ra2=RA2,
-            dec2=DEC2,
-            z1=Z1,
-            z2=Z2,
+            ra1=ra1,
+            dec1=dec1,
+            ra2=ra2,
+            dec2=dec2,
+            z1=z1,
+            z2=z2,
             resolution=200,
             survey="JABB",
         )
@@ -212,7 +213,7 @@ def test_stack_code_error(monkeypatch):
 
     monkeypatch.setattr(SkyView, "get_images", mock_func)
 
-    [RA1, DEC1, Z1, RA2, DEC2, Z2] = [
+    [ra1, dec1, z1, ra2, dec2, z2] = [
         229.38791793999997,
         -15.1525941155219059,
         0.12589231000000001,
@@ -223,12 +224,12 @@ def test_stack_code_error(monkeypatch):
 
     with pytest.raises(urllib.error.HTTPError):
         scorpio.stack_pair(
-            ra1=RA1,
-            dec1=DEC1,
-            ra2=RA2,
-            dec2=DEC2,
-            z1=Z1,
-            z2=Z2,
+            ra1=ra1,
+            dec1=dec1,
+            ra2=ra2,
+            dec2=dec2,
+            z1=z1,
+            z2=z2,
             resolution=450,
             filters=["g"],
         )
@@ -237,9 +238,9 @@ def test_stack_code_error(monkeypatch):
 def test_distances_error_Cosmology():
     data_imagen = fits.open(TEST_DATA / "SDSS_image_0_filter_g.fits")
     header = data_imagen[0].header
-    COSMOLOGY = {"H0": 70, "Om0": 0.3, "Ode0": 0.7}
+    cosmology = {"H0": 70, "Om0": 0.3, "Ode0": 0.7}
 
-    [RA1, DEC1, Z1, RA2, DEC2, Z2] = [
+    [ra1, dec1, z1, ra2, dec2, z2] = [
         126.39162693999999,
         47.296980665521900,
         0.12573827000000001,
@@ -250,23 +251,23 @@ def test_distances_error_Cosmology():
 
     with pytest.raises(TypeError):
         scorpio.distances(
-            ra1=RA1,
-            dec1=DEC1,
-            ra2=RA2,
-            dec2=DEC2,
-            z1=Z1,
-            z2=Z2,
+            ra1=ra1,
+            dec1=dec1,
+            ra2=ra2,
+            dec2=dec2,
+            z1=z1,
+            z2=z2,
             header=header,
-            cosmology=COSMOLOGY,
+            cosmology=cosmology,
         )
 
 
 def test_distances_physical_units():
     data_imagen = fits.open(TEST_DATA / "SDSS_image_0_filter_g.fits")
     header = data_imagen[0].header
-    COSMOLOGY = asc.Planck15
+    cosmology = asc.Planck15
 
-    [RA1, DEC1, Z1, RA2, DEC2, Z2] = [
+    [ra1, dec1, z1, ra2, dec2, z2] = [
         126.39162693999999,
         47.296980665521900,
         0.12573827000000001,
@@ -276,14 +277,14 @@ def test_distances_physical_units():
     ]
 
     data_distances = scorpio.distances(
-        ra1=RA1,
-        dec1=DEC1,
-        ra2=RA2,
-        dec2=DEC2,
-        z1=Z1,
-        z2=Z2,
+        ra1=ra1,
+        dec1=dec1,
+        ra2=ra2,
+        dec2=dec2,
+        z1=z1,
+        z2=z2,
         header=header,
-        cosmology=COSMOLOGY,
+        cosmology=cosmology,
     )
 
     physical_dist = data_distances[0]
@@ -295,9 +296,9 @@ def test_distances_physical_units():
 def test_distances_in_pixels():
     data_imagen = fits.open(TEST_DATA / "SDSS_image_0_filter_g.fits")
     header = data_imagen[0].header
-    COSMOLOGY = asc.Planck15
+    cosmology = asc.Planck15
 
-    [RA1, DEC1, Z1, RA2, DEC2, Z2] = [
+    [ra1, dec1, z1, ra2, dec2, z2] = [
         126.39162693999999,
         47.296980665521900,
         0.12573827000000001,
@@ -307,14 +308,14 @@ def test_distances_in_pixels():
     ]
 
     data_distances = scorpio.distances(
-        ra1=RA1,
-        dec1=DEC1,
-        ra2=RA2,
-        dec2=DEC2,
-        z1=Z1,
-        z2=Z2,
+        ra1=ra1,
+        dec1=dec1,
+        ra2=ra2,
+        dec2=dec2,
+        z1=z1,
+        z2=z2,
         header=header,
-        cosmology=COSMOLOGY,
+        cosmology=cosmology,
     )
 
     pixel_dist = data_distances[1]
@@ -324,7 +325,7 @@ def test_distances_in_pixels():
 
 # test kwargs:
 def test_plot_error_kwargs():
-    [RA1, DEC1, Z1, RA2, DEC2, Z2] = [
+    [ra1, dec1, z1, ra2, dec2, z2] = [
         126.39162693999999,
         47.296980665521900,
         0.12573827000000001,
@@ -334,12 +335,12 @@ def test_plot_error_kwargs():
     ]
 
     test_img = scorpio.gpair(
-        ra1=RA1,
-        dec1=DEC1,
-        ra2=RA2,
-        dec2=DEC2,
-        z1=Z1,
-        z2=Z2,
+        ra1=ra1,
+        dec1=dec1,
+        ra2=ra2,
+        dec2=dec2,
+        z1=z1,
+        z2=z2,
         survey="2MASS",
         resolution=500,
     )
@@ -355,7 +356,7 @@ def test_plot_error_kwargs():
 
 
 def test_plot_size_fig_axes():
-    [RA1, DEC1, Z1, RA2, DEC2, Z2] = [
+    [ra1, dec1, z1, ra2, dec2, z2] = [
         126.39162693999999,
         47.296980665521900,
         0.12573827000000001,
@@ -365,12 +366,12 @@ def test_plot_size_fig_axes():
     ]
 
     test_img = scorpio.gpair(
-        ra1=RA1,
-        dec1=DEC1,
-        ra2=RA2,
-        dec2=DEC2,
-        z1=Z1,
-        z2=Z2,
+        ra1=ra1,
+        dec1=dec1,
+        ra2=ra2,
+        dec2=dec2,
+        z1=z1,
+        z2=z2,
         survey="2MASS",
         resolution=500,
     )
@@ -383,7 +384,7 @@ def test_plot_size_fig_axes():
 
 @check_figures_equal(extensions=["png"])
 def test_download_and_generate_equal_plots(fig_test, fig_ref):
-    [RA1, DEC1, Z1, RA2, DEC2, Z2] = [
+    [ra1, dec1, z1, ra2, dec2, z2] = [
         126.39162693999999,
         47.296980665521900,
         0.12573827000000001,
@@ -393,21 +394,21 @@ def test_download_and_generate_equal_plots(fig_test, fig_ref):
     ]
 
     data_img1 = scorpio.gpair(
-        ra1=RA1,
-        dec1=DEC1,
-        ra2=RA2,
-        dec2=DEC2,
-        z1=Z1,
-        z2=Z2,
+        ra1=ra1,
+        dec1=dec1,
+        ra2=ra2,
+        dec2=dec2,
+        z1=z1,
+        z2=z2,
         survey="2MASS",
     )
     data_img2 = scorpio.gpair(
-        ra1=RA1,
-        dec1=DEC1,
-        ra2=RA2,
-        dec2=DEC2,
-        z1=Z1,
-        z2=Z2,
+        ra1=ra1,
+        dec1=dec1,
+        ra2=ra2,
+        dec2=dec2,
+        z1=z1,
+        z2=z2,
         survey="2MASS",
     )
 
@@ -426,7 +427,7 @@ def test_download_and_generate_equal_plots(fig_test, fig_ref):
 
 @check_figures_equal(extensions=["png"])
 def test_compare_plots_generation_methods(fig_test, fig_ref):
-    [RA1, DEC1, Z1, RA2, DEC2, Z2] = [
+    [ra1, dec1, z1, ra2, dec2, z2] = [
         126.39162693999999,
         47.296980665521900,
         0.12573827000000001,
@@ -436,12 +437,12 @@ def test_compare_plots_generation_methods(fig_test, fig_ref):
     ]
 
     data_img = scorpio.gpair(
-        ra1=RA1,
-        dec1=DEC1,
-        ra2=RA2,
-        dec2=DEC2,
-        z1=Z1,
-        z2=Z2,
+        ra1=ra1,
+        dec1=dec1,
+        ra2=ra2,
+        dec2=dec2,
+        z1=z1,
+        z2=z2,
         survey="2MASS",
         resolution=500,
     )
@@ -453,13 +454,12 @@ def test_compare_plots_generation_methods(fig_test, fig_ref):
     ax1.set_xlabel("RA")
 
     # fig expect
-    final_imageA = data_img.matriz
-    final_imageA = final_imageA[0]
+    final_image_a = data_img.matriz[0]
     plx = data_img.resolution
     c1 = data_img.pos1
     c2 = data_img.pos2
     dis_c1_c2 = data_img.dist_pix
-    s_AB = data_img.dist_physic
+    s_ab = data_img.dist_physic
 
     expect_ax = fig_ref.subplots()
     fig = plt.gcf()
@@ -475,43 +475,43 @@ def test_compare_plots_generation_methods(fig_test, fig_ref):
 
     max_values_col = []
     min_values_col = []
-    for mm in range(len(final_imageA)):
-        max_in_column = max(final_imageA[:, mm])
+    for mm in range(len(final_image_a)):
+        max_in_column = max(final_image_a[:, mm])
         max_values_col.append(max_in_column)
-        min_in_column = min(final_imageA[:, mm])
+        min_in_column = min(final_image_a[:, mm])
         min_values_col.append(min_in_column)
 
     max_value = max(max_values_col)
     min_value = min(min_values_col)
 
-    for vv in range(len(final_imageA)):
-        for hh in range(len(final_imageA)):
-            if final_imageA[vv, hh] <= 0.0005 * max_value:
-                final_imageA[vv, hh] = 0.0005 * max_value
+    for vv in range(len(final_image_a)):
+        for hh in range(len(final_image_a)):
+            if final_image_a[vv, hh] <= 0.0005 * max_value:
+                final_image_a[vv, hh] = 0.0005 * max_value
 
     max_values_col = []
     min_values_col = []
-    for mm in range(len(final_imageA)):
-        max_in_column = max(final_imageA[:, mm])
+    for mm in range(len(final_image_a)):
+        max_in_column = max(final_image_a[:, mm])
         max_values_col.append(max_in_column)
-        min_in_column = min(final_imageA[:, mm])
+        min_in_column = min(final_image_a[:, mm])
         min_values_col.append(min_in_column)
 
     max_value = max(max_values_col)
     min_value = min(min_values_col)
 
-    Norm = mpl.colors.Normalize(vmin=min_value, vmax=max_value)
-    Cmap = mpl.cm.ScalarMappable(norm=Norm, cmap=mpl.cm.inferno)
+    norm_color = mpl.colors.Normalize(vmin=min_value, vmax=max_value)
+    cmap = mpl.cm.ScalarMappable(norm=norm_color, cmap=mpl.cm.inferno)
     axins1 = inset_axes(
         expect_ax,
         width="5%",
         height="30%",
         loc="lower right",
     )
-    cb = fig.colorbar(Cmap, ax=expect_ax, cax=axins1, orientation="vertical")
+    cb = fig.colorbar(cmap, ax=expect_ax, cax=axins1, orientation="vertical")
     cb.set_ticks([])
     expect_ax.imshow(
-        final_imageA,
+        final_image_a,
         extent=extent,
         cmap="inferno",
         norm=LogNorm(vmin=min_value, vmax=max_value),
@@ -535,7 +535,7 @@ def test_compare_plots_generation_methods(fig_test, fig_ref):
         fillstyle="none",
     )
 
-    len_bar = 50.0 * dis_c1_c2 / s_AB
+    len_bar = 50.0 * dis_c1_c2 / s_ab
     expect_ax.broken_barh(
         [(-plx / 2.5, len_bar + plx / 7.5)],
         (-plx / 2.5, plx / 7.5),
