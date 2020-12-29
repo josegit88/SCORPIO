@@ -25,21 +25,21 @@ import pathlib
 
 from ez_setup import use_setuptools
 
-from setuptools import setup
-
 use_setuptools()
+from setuptools import setup  # noqa
 
 
 # =============================================================================
 # CONSTANTS
 # =============================================================================
 
-# REQUIREMENTS = ["numpy", "astropy", "astroquery"]
+
 REQUIREMENTS = [
     "numpy",
     "astropy",
     "astroquery",
     "matplotlib",
+    "attrs",
     "retrying",
     "scipy",
 ]
@@ -56,7 +56,7 @@ with open(PATH / "scorpio.py") as fp:
             break
 
 
-DESCRIPTION = """SCORPIO is a tool for generate images of galaxy pairs."""
+DESCRIPTION = """SCORPIO is a tool for analyze galaxy pairs."""
 
 
 # =============================================================================
