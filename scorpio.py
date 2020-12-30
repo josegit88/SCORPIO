@@ -352,18 +352,29 @@ class GPInteraction:
 
 @retry(stop_max_attempt_number=4)
 def download_data(pos, survey, filters, plx, ff):
-    """Download data fits from survey.
+    """Proxy to astroquery SkyviewService.
+
+    This functions is mostly for internal use.
 
     Parameters
     ----------
+    pos: SkyCoord
+        Determines the center of the field to be retrieved.
+    survey: str
+        The data to download the survey.
+    filters: list
+        Specific astronomical filters of the data.
+    plx:
+        Selects the pixel dimensions of the image to be produced.
 
     Returns
     -------
+    A list of `~astropy.io.fits.HDUList` objects.
 
     """
     path = SkyView.get_images(
         position=pos,
-        survey=survey + str(filters[ff]),
+        survey=survey + str(filters),
         radius=2 * apu.arcmin,
         pixels=(plx, plx),
         coordinates=DOWNLOAD_COORDINATE_SYSTEM,
@@ -462,7 +473,7 @@ def stack_pair(
             )
             try:
                 stamp = download_data(
-                    pos=pos, survey=survey, filters=filters, plx=plx, ff=ff
+                    pos=pos, survey=survey, filters=filters[ff], plx=plx
                 )
                 if ii == 0:
                     stamp_g1 = stamp
@@ -594,13 +605,13 @@ def gpair(
         Declination of secondary galaxy.
     z2 : float
         Redshift of secondary galaxy.
-    survey : string
-        Survey for query and download data, by default it is "SDSS".
-    resolution : int
-        Size resolution value in pixels, by default it is 1000.
-    cosmology: astropy.cosmology.core.FlatLambdaCDM
-        Instance of class ``astropy.cosmology.FLRW``,
-        by default it is asc.Planck15.
+    survey : string, optional (default='SDSS')
+        Survey for query and download data.
+    resolution : int, optional (default=1000)
+        Size resolution value in pixels.
+    cosmology: astropy.cosmology.core.FlatLambdaCDM, optional
+        Instance of class ``astropy.cosmology.FLRW``.
+        default `asc.Planck15`.
 
     Returns
     -------
