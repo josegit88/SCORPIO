@@ -40,6 +40,7 @@ REQUIREMENTS = [
     "astroquery",
     "matplotlib",
     "attrs",
+    "seaborn",
     "retrying",
     "scipy",
 ]

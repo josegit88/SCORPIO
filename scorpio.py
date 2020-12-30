@@ -24,7 +24,6 @@ surveys.
 # =============================================================================
 
 import logging
-import os
 import urllib
 
 import astropy.cosmology as asc
@@ -36,22 +35,20 @@ from astroquery.skyview import SkyView
 
 import attr
 
-import matplotlib as mpl
 import matplotlib.pyplot as plt
-import matplotlib.ticker as ticker
 from matplotlib.colors import LogNorm
-
-from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 
 import numpy as np
 
 from retrying import retry
 
+import seaborn as sns
+
 # =============================================================================
 # METADATA
 # =============================================================================
 
-__version__ = "0.0.1"
+__version__ = "0.2"
 
 
 # =============================================================================
@@ -107,7 +104,6 @@ class GPInteraction:
 
     Parameters
     ----------
-
     ra1 : float
         Right ascension of primary galaxy.
     dec1 : float
@@ -143,7 +139,6 @@ class GPInteraction:
     pos2_ :
         RA, DEC, Z as pixels of the second galaxy.
 
-
     """
 
     ra1 = attr.ib()
@@ -169,12 +164,11 @@ class GPInteraction:
         ax=None,
         cmap="magma",
         center_color="cyan",
-        cbar=True,
         center=True,
         scale=True,
         fmt=".4g",
-        imshow_kws=None,
-        cbar_kws=None,
+        llimit=None,
+        heatmap_kws=None,
         center_kws=None,
         center_text_kws=None,
         scalebar_kws=None,
@@ -196,25 +190,29 @@ class GPInteraction:
             colormap generator.
         center_color : ``str``, optional
             The color for the marker of the galaxy centers.
-        cbar : ``bool``, optional.
-            Whether to draw a colorbar.
         center : ``bool``, optional.
             Whether to draw the galaxy center markers.
         scale : ``bool``, optional.
             Whether to draw the scale bar.
         fmt : ``str``, optional
-            String formatting code to use in the coordinates..
-        imshow_kws : ``dict`` or ``None``, optional
-             Keyword arguments for :meth:`matplotlib.pyplot.Axes.imshow`.
+            String formatting code to use in the coordinates.
+        llimit : ``float``, optional.
+            The lowest value to show in the plot. If some value is <= llimit
+            then it was remplaced with llimit. By default this value is setted
+            as 0.0005 times the maximun value of the image.
+        heatmap_kws : ``dict`` or ``None``, optional
+             Keyword arguments for :meth:`seaborn.heatmap`.
              This routine is the one that draws the image of the interaction.
         cbar_kws : ``dict`` or ``None``, optional
             Keyword arguments for :meth:`matplotlib.figure.Figure.colorbar`.
         center_kws : ``dict`` or ``None``, optional
             Keyword arguments for :meth:`matplotlib.pyplot.Axes.plot`.
-            This routine is the one that draws the markers for the centers of the two galaxies.
+            This routine is the one that draws the markers for the centers of
+            the two galaxies.
         center_text_kws : ``dict`` or ``None``, optional
             Keyword arguments for :meth:`matplotlib.pyplot.Axes.text`.
-            This routine is the one that draws the names of the markers of the galactic centers.
+            This routine is the one that draws the names of the markers of the
+            galactic centers.
         scalebar_kws : ``dict`` or ``None``, optional
             Keyword arguments for :meth:`matplotlib.pyplot.Axes.hlines`.
             This routine is what draws the scale bar.
@@ -234,18 +232,10 @@ class GPInteraction:
         if ax is None:
             ax, fig = plt.gca(), plt.gcf()
             fig.set_size_inches(PLOT_DEFAULT_SIZE)
-        else:
-            fig = ax.get_figure()
 
         # get al values from the instance for a more compact code
         survey = self.survey
         cosmology = self.cosmology
-        ra1, dec1, z1 = [
-            format(v, fmt) for v in (self.ra1, self.dec1, self.z1)
-        ]
-        ra2, dec2, z2 = [
-            format(v, fmt) for v in (self.ra2, self.dec2, self.z2)
-        ]
 
         final_image_a = np.copy(self.mtx_[0])
         plx = self.resolution_
@@ -253,91 +243,36 @@ class GPInteraction:
         dis_c1_c2 = self.dist_pix_
         s_ab = self.dist_physic_
 
-        xx = yy = plx / 2.0
-
-        ax.axis([-xx * 0.8, xx * 0.8, -yy * 0.8, yy * 0.8])
-        ax.xaxis.set_major_locator(ticker.NullLocator())
-        ax.yaxis.set_major_locator(ticker.NullLocator())
-
-        ax.set_title(
-            f"Interaction - Survey: {survey} - " f"Cosmology: {cosmology.name}"
-        )
-        ax.set_xlabel("RA")
-        ax.set_ylabel("Dec")
-
         # Normalization part 1
         max_value = np.max(final_image_a)
         min_value = np.min(final_image_a)
 
-        limit = 0.0005 * max_value
-        final_image_a[final_image_a <= limit] = limit
+        # Normalization part 2 (remove negatives)
+        llimit = (0.0005 * max_value) if llimit is None else llimit
+        final_image_a[final_image_a <= llimit] = llimit
 
-        # Normalization part 2
         max_value = np.max(final_image_a)
         min_value = np.min(final_image_a)
 
         # plot the image
-        imshow_kws = {} if imshow_kws is None else dict(imshow_kws)
-        imshow_kws["cmap"] = cmap
-        imshow_kws.setdefault("extent", [-xx, xx, -yy, yy])
-        imshow_kws.setdefault("norm", LogNorm(vmin=min_value, vmax=max_value))
-        ax.imshow(final_image_a, **imshow_kws)
-
-        # colorbar
-        if cbar:
-            cbar_kws = {} if cbar_kws is None else dict(cbar_kws)
-
-            norm_color = mpl.colors.Normalize(vmin=min_value, vmax=max_value)
-            scalar_mappable = mpl.cm.ScalarMappable(norm=norm_color, cmap=cmap)
-            cax = inset_axes(
-                ax,
-                width=cbar_kws.pop("width", "5%"),
-                height=cbar_kws.pop("height", "30%"),
-                loc=cbar_kws.pop("loc", "lower right"),
-            )
-
-            cbar_kws.setdefault("mappable", scalar_mappable)
-            cbar_kws.setdefault("cax", cax)
-            cbar_kws.setdefault("orientation", "vertical")
-            cb = fig.colorbar(ax=ax, **cbar_kws)
-            cb.set_ticks([])
-
-        # Scale bar background
-        if scale:
-            len_bar = 50.0 * dis_c1_c2 / s_ab
-
-            scalebar_bg_kws = {} if scalebar_bg_kws is None else scalebar_bg_kws
-            scalebar_bg_kws.setdefault(
-                "xranges", [(-plx / 2.5, len_bar + plx / 7.5)]
-            )
-            scalebar_bg_kws.setdefault("yrange", (-plx / 2.5, plx / 7.5))
-            scalebar_bg_kws.setdefault("facecolors", "w")
-            ax.broken_barh(**scalebar_bg_kws)
-
-            # Scale bar itself
-            scalebar_kws = {} if scalebar_kws is None else dict(scalebar_kws)
-            scalebar_kws.setdefault(
-                "y",
-                -plx / 2.72,
-            )
-            scalebar_kws.setdefault("xmin", -plx / 3.0)
-            scalebar_kws.setdefault("xmax", -plx / 3.0 + len_bar)
-            scalebar_kws.setdefault("color", "k")
-            scalebar_kws.setdefault("linewidth", 3)
-            ax.hlines(**scalebar_kws)
-
-            # Scale bar text
-            scalebar_text_kws = (
-                {} if scalebar_text_kws is None else dict(scalebar_text_kws)
-            )
-            scalebar_text_kws.setdefault("x", -plx / 3.0)
-            scalebar_text_kws.setdefault("y", -plx / 3.0)
-            scalebar_text_kws.setdefault("s", "50 kpc")
-            scalebar_text_kws.setdefault("fontsize", 20)
-            ax.text(**scalebar_text_kws)
+        heatmap_kws = {} if heatmap_kws is None else dict(heatmap_kws)
+        heatmap_kws["cmap"] = cmap
+        heatmap_kws.setdefault("square", True)
+        heatmap_kws.setdefault("cbar", False)
+        heatmap_kws.setdefault("norm", LogNorm(vmin=min_value, vmax=max_value))
+        heatmap_kws.setdefault("xticklabels", False)
+        heatmap_kws.setdefault("yticklabels", False)
+        sns.heatmap(final_image_a, ax=ax, **heatmap_kws)
 
         # Markers of the galaxy centers
         if center:
+            ra1, dec1, z1 = [
+                format(v, fmt) for v in (self.ra1, self.dec1, self.z1)
+            ]
+            ra2, dec2, z2 = [
+                format(v, fmt) for v in (self.ra2, self.dec2, self.z2)
+            ]
+
             center_kws = {} if center_kws is None else dict(center_kws)
             center_kws["color"] = center_color
             center_kws.setdefault("marker", "o")
@@ -346,10 +281,10 @@ class GPInteraction:
             center_kws.setdefault("fillstyle", "none")
 
             label_g1 = f"G1: $RA={ra1}$, $Dec={dec1}$, $Z={z1}$"
-            ax.plot(c1[0] - yy, -(c1[1] - xx), label=label_g1, **center_kws)
+            ax.plot(c1[0], c1[1], label=label_g1, **center_kws)
 
             label_g2 = f"G2: $RA={ra2}$, $Dec={dec2}$, $Z={z2}$"
-            ax.plot(c2[0] - yy, -(c2[1] - xx), label=label_g2, **center_kws)
+            ax.plot(c2[0], c2[1], label=label_g2, **center_kws)
 
             center_text_kws = (
                 {} if center_text_kws is None else dict(center_text_kws)
@@ -357,10 +292,55 @@ class GPInteraction:
             center_text_kws["color"] = center_color
             center_text_kws.setdefault("fontsize", 15)
 
-            ax.text(c1[0] - yy + 20, -(c1[1] - xx), "G1", **center_text_kws)
-            ax.text(c2[0] - yy + 20, -(c2[1] - xx), "G2", **center_text_kws)
+            offset = center_kws.get("markersize") or 0
+            ax.text(c1[0] + offset, c1[1], "G1", **center_text_kws)
+            ax.text(c2[0] + offset, c2[1], "G2", **center_text_kws)
 
             ax.legend(framealpha=1)
+
+        if scale:
+            len_bar = 50.0 * dis_c1_c2 / s_ab
+
+            # Scale bar kwargs text
+            scalebar_text_kws = (
+                {} if scalebar_text_kws is None else dict(scalebar_text_kws)
+            )
+            scale_fontsize = scalebar_text_kws.setdefault("fontsize", 15)
+            scalebar_text_kws.setdefault("x", scale_fontsize)
+            scalebar_text_kws.setdefault("y", plx - scale_fontsize * 2)
+            scalebar_text_kws.setdefault("s", "50 kpc")
+            scalebar_text_kws.setdefault("color", "k")
+
+            # Scale bar kwargs itself
+            scalebar_kws = {} if scalebar_kws is None else dict(scalebar_kws)
+            scalebar_kws.setdefault("y", plx - scale_fontsize * 1.1)
+            scalebar_kws.setdefault("xmin", scale_fontsize)
+            scalebar_kws.setdefault("xmax", len_bar)
+            scalebar_kws.setdefault("color", "k")
+            scalebar_kws.setdefault("linewidth", 3)
+
+            # Scale bar background kwargs
+            scalebar_bg_kws = (
+                {} if scalebar_bg_kws is None else scalebar_bg_kws
+            )
+            scalebar_bg_kws.setdefault("xranges", [(0, len_bar * 1.2)])
+            scalebar_bg_kws.setdefault(
+                "yrange", (plx * 0.9 - scale_fontsize, plx)
+            )
+            scalebar_bg_kws.setdefault("facecolors", "w")
+
+            ax.broken_barh(**scalebar_bg_kws)
+            ax.hlines(**scalebar_kws)
+            ax.text(**scalebar_text_kws)
+
+        ax.set_title(
+            f"Interaction - Survey: {survey} - " f"Cosmology: {cosmology.name}"
+        )
+        ax.set_xlabel("RA")
+        ax.set_ylabel("Dec")
+
+        ax.patch.set_edgecolor("black")
+        ax.patch.set_linewidth("3")
 
         return ax
 
@@ -438,7 +418,6 @@ def stack_pair(
     plx : int
         Size resolution value in pixels.
     """
-
     plx = resolution
 
     glx1 = [ra1, dec1, z1]
@@ -620,16 +599,15 @@ def gpair(
     resolution : int
         Size resolution value in pixels, by default it is 1000.
     cosmology: astropy.cosmology.core.FlatLambdaCDM
-        Instance of class astropy.cosmology.FLRW,
+        Instance of class ``astropy.cosmology.FLRW``,
         by default it is asc.Planck15.
 
     Returns
     -------
-    Image :
-        An inmage of two interacting galaxies.
+    GPInteraction :
+        An object with information about the two interacting galaxies.
 
     """
-
     g1g2, header, plx = stack_pair(
         ra1,
         dec1,

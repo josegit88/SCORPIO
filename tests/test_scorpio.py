@@ -61,15 +61,13 @@ def test_download_and_stack_data(monkeypatch):
         pos = [position.ra.value, position.dec.value]
 
         if pos == [ra1, dec1] and survey == "SDSSg":
-            path = [fits.open(TEST_DATA / "SDSS_image_0_filter_g.fits")]
+            return [fits.open(TEST_DATA / "SDSS_image_0_filter_g.fits")]
         elif pos == [ra1, dec1] and survey == "SDSSi":
-            path = [fits.open(TEST_DATA / "SDSS_image_0_filter_i.fits")]
+            return [fits.open(TEST_DATA / "SDSS_image_0_filter_i.fits")]
         elif pos == [ra2, dec2] and survey == "SDSSg":
-            path = [fits.open(TEST_DATA / "SDSS_image_1_filter_g.fits")]
+            return [fits.open(TEST_DATA / "SDSS_image_1_filter_g.fits")]
         elif pos == [ra2, dec2] and survey == "SDSSi":
-            path = [fits.open(TEST_DATA / "SDSS_image_1_filter_i.fits")]
-
-        return path
+            return [fits.open(TEST_DATA / "SDSS_image_1_filter_i.fits")]
 
     monkeypatch.setattr(SkyView, "get_images", mock_func_g1g2)
 
