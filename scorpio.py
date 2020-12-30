@@ -57,14 +57,15 @@ __version__ = "0.2"
 
 logger = logging.getLogger("scorpio")
 
-#: Valid filters for the Sloan Digital Sky Survey (SDSS).
-VALID_FILTERS_SDSS = ["u", "g", "r", "i", "z"]
-
-#: Valid filters for the Two Micron All-Sky Survey (2MASS).
-VALID_FILTERS_2MASS = ["-J", "-H", "-K"]
-
-#: Valid filters for the Wide-field Infrared Survey Explorer (WISE).
-VALID_FILTERS_WISE = [" 3.4", " 4.6", " 12", " 22"]
+#: SURVEYS
+SURVEYS = {
+    "SDSS": {"default": ["g", "i"], "filters": ["u", "g", "r", "i", "z"]},
+    "2MASS": {"default": ["-H", "-K"], "filters": ["-J", "-H", "-K"]},
+    "WISE": {
+        "default": [" 4.6", " 12"],
+        "filters": [" 3.4", " 4.6", " 12", " 22"],
+    },
+}
 
 #: The default coordinate system.
 DOWNLOAD_COORDINATE_SYSTEM = "J2000"
@@ -351,7 +352,7 @@ class GPInteraction:
 
 
 @retry(stop_max_attempt_number=4)
-def download_data(pos, survey, filters, plx, ff):
+def download_data(pos, survey, filters, plx):
     """Proxy to astroquery SkyviewService.
 
     This functions is mostly for internal use.
@@ -429,38 +430,23 @@ def stack_pair(
     plx : int
         Size resolution value in pixels.
     """
+    # survey validation
+    survey_conf = SURVEYS.get(survey)
+    if survey_conf is None:
+        raise NoSurveyInListToStackError(f"Survey '{survey}' not supported")
+
+    filters = survey_conf["default"] if filters is None else filters
+    for ff in filters:
+        if ff not in survey_conf["filters"]:
+            raise NoFilterToStackError(f"{ff} is not a valid filter")
+
+    # preprocess
     plx = resolution
 
     glx1 = [ra1, dec1, z1]
     glx2 = [ra2, dec2, z2]
 
     glx_array = np.array([glx1, glx2])
-
-    if survey not in ["SDSS", "2MASS", "WISE"]:
-        raise NoSurveyInListToStackError(f"Survey '{survey}' not supported")
-
-    # SDSS:
-    if survey == "SDSS":
-        filters = ["g", "i"] if filters is None else filters
-
-        for ff in filters:
-            if ff not in VALID_FILTERS_SDSS:
-                raise NoFilterToStackError(f"{ff} is not a valid filter")
-
-    # 2MASS:
-    if survey == "2MASS":
-        filters = ["-H", "-K"] if filters is None else filters
-        for ff in filters:
-            if ff not in VALID_FILTERS_2MASS:
-                raise NoFilterToStackError(f"{ff} is not a valid filter")
-
-    # WISE:
-    if survey == "WISE":
-        filters = [" 4.6", " 12"] if filters is None else filters
-
-        for ff in filters:
-            if ff not in VALID_FILTERS_WISE:
-                raise NoFilterToStackError(f"{ff} is not a valid filter")
 
     # ------- download images data fits in diferent filters: --------
     g1g2 = [np.empty(shape=(plx, plx)), np.empty(shape=(plx, plx))]

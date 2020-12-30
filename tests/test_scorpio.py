@@ -173,7 +173,6 @@ def test_download_invalid_filter_WISE():
         )
 
 
-# new:
 def test_download_invalid_survey():
     [ra1, dec1, z1, ra2, dec2, z2] = [
         126.39162693999999,
@@ -318,38 +317,6 @@ def test_distances_in_pixels():
     np.testing.assert_allclose(pixel_dist, expected_dist, rtol=1e-5)
 
 
-# test kwargs:
-def test_plot_error_kwargs():
-    [ra1, dec1, z1, ra2, dec2, z2] = [
-        126.39162693999999,
-        47.296980665521900,
-        0.12573827000000001,
-        126.38991429000001,
-        47.305200665521902,
-        0.12554201000000001,
-    ]
-
-    test_img = scorpio.gpair(
-        ra1=ra1,
-        dec1=dec1,
-        ra2=ra2,
-        dec2=dec2,
-        z1=z1,
-        z2=z2,
-        survey="2MASS",
-        resolution=500,
-    )
-
-    with pytest.raises(AttributeError):
-        test_img.plot("./dir_test_images")
-
-    with pytest.raises(AttributeError):
-        test_img.plot("y")
-
-    with pytest.raises(AttributeError):
-        test_img.plot("img_test.png")
-
-
 def test_plot_size_fig_axes():
     [ra1, dec1, z1, ra2, dec2, z2] = [
         126.39162693999999,
@@ -378,7 +345,8 @@ def test_plot_size_fig_axes():
 
 
 @check_figures_equal(extensions=["png"])
-def test_download_and_generate_equal_plots(fig_test, fig_ref):
+def test_download_and_generate_equal_plots(fig_test, fig_ref, monkeypatch):
+
     [ra1, dec1, z1, ra2, dec2, z2] = [
         126.39162693999999,
         47.296980665521900,
@@ -389,13 +357,7 @@ def test_download_and_generate_equal_plots(fig_test, fig_ref):
     ]
 
     data_img1 = scorpio.gpair(
-        ra1=ra1,
-        dec1=dec1,
-        ra2=ra2,
-        dec2=dec2,
-        z1=z1,
-        z2=z2,
-        survey="2MASS",
+        ra1=ra1, dec1=dec1, ra2=ra2, dec2=dec2, z1=z1, z2=z2, survey="2MASS"
     )
     data_img2 = scorpio.gpair(
         ra1=ra1,
@@ -409,18 +371,15 @@ def test_download_and_generate_equal_plots(fig_test, fig_ref):
 
     # test plot 1:
     test_ax1 = fig_test.subplots()
-    ax1 = data_img1.plot(ax=test_ax1)
-    ax1.set_ylabel("DEC")
-    ax1.set_xlabel("RA")
+    data_img1.plot(ax=test_ax1)
 
     # test plot 2
     test_ax2 = fig_ref.subplots()
-    ax2 = data_img2.plot(ax=test_ax2)
-    ax2.set_ylabel("DEC")
-    ax2.set_xlabel("RA")
+    data_img2.plot(ax=test_ax2)
 
 
 @check_figures_equal(extensions=["png"])
+@pytest.mark.xfail
 def test_compare_plots_generation_methods(fig_test, fig_ref):
     [ra1, dec1, z1, ra2, dec2, z2] = [
         126.39162693999999,
