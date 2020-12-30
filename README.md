@@ -23,6 +23,7 @@ The interacting galaxies are one of the most interesting events in the area of e
 The essential input parameters are RA, DEC, redshift (and other optional data such as survey and filters) for each of the galaxies of interest.
 
 Based on these, the application has several functions that:
+
 - Check and download the `.fits` files in each survey and filter, using astroquery tools.
 - stack and generate a single array with the information
 - Calculate the distance in physical units and in pixels.

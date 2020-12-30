@@ -44,6 +44,7 @@ from retrying import retry
 
 import seaborn as sns
 
+
 # =============================================================================
 # METADATA
 # =============================================================================
@@ -124,7 +125,7 @@ class GPInteraction:
     filters: list of strings
         Filters for respective survey, by default it is ["g", "i"] for "SDSS".
 
-    Properties
+    Attributes
     ----------
     mtx_ :
         The image of the two galaxies interacting.
@@ -156,7 +157,6 @@ class GPInteraction:
     header_ = attr.ib(repr=False)
     dist_physic_ = attr.ib(repr=False)
     dist_pix_ = attr.ib(repr=False)
-    resolution_ = attr.ib(repr=False)
     pos1_ = attr.ib(repr=False)
     pos2_ = attr.ib(repr=False)
 
@@ -239,10 +239,10 @@ class GPInteraction:
         cosmology = self.cosmology
 
         final_image_a = np.copy(self.mtx_[0])
-        plx = self.resolution_
+        plx = self.resolution
         c1, c2 = self.pos1_, self.pos2_
         dis_c1_c2 = self.dist_pix_
-        s_ab = self.dist_physic_
+        s_ab = self.dist_physic_.value
 
         # Normalization part 1
         max_value = np.max(final_image_a)
@@ -633,8 +633,7 @@ def gpair(
         # properties
         mtx_=g1g2,
         header_=header,
-        resolution_=plx,
-        dist_physic_=dist_physic,
+        dist_physic_=dist_physic * apu.Mpc,
         dist_pix_=dist_pix,
         pos1_=pos1,
         pos2_=pos2,

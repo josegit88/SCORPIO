@@ -14,6 +14,7 @@ Test about the scorpio functions
 import os
 import pathlib
 import urllib
+from unittest import mock
 
 import astropy.cosmology as asc
 from astropy.io import fits
@@ -45,8 +46,8 @@ TEST_DATA = PATH / "test_data"
 # =============================================================================
 
 
-def test_download_and_stack_data(monkeypatch):
-    [ra1, dec1, z1, ra2, dec2, z2] = [
+def test_download_and_stack_data():
+    ra1, dec1, z1, ra2, dec2, z2 = [
         126.39162693999999,
         47.296980665521900,
         0.12573827000000001,
@@ -54,20 +55,6 @@ def test_download_and_stack_data(monkeypatch):
         47.305200665521902,
         0.12554201000000001,
     ]
-
-    def mock_func_g1g2(position, survey, **kwargs):
-        pos = [position.ra.value, position.dec.value]
-
-        if pos == [ra1, dec1] and survey == "SDSSg":
-            return [fits.open(TEST_DATA / "SDSS_image_0_filter_g.fits")]
-        elif pos == [ra1, dec1] and survey == "SDSSi":
-            return [fits.open(TEST_DATA / "SDSS_image_0_filter_i.fits")]
-        elif pos == [ra2, dec2] and survey == "SDSSg":
-            return [fits.open(TEST_DATA / "SDSS_image_1_filter_g.fits")]
-        elif pos == [ra2, dec2] and survey == "SDSSi":
-            return [fits.open(TEST_DATA / "SDSS_image_1_filter_i.fits")]
-
-    monkeypatch.setattr(SkyView, "get_images", mock_func_g1g2)
 
     expected_g1 = np.array(
         [
@@ -85,15 +72,28 @@ def test_download_and_stack_data(monkeypatch):
         ]
     )
 
-    data_stack = scorpio.stack_pair(
-        ra1=ra1, dec1=dec1, ra2=ra2, dec2=dec2, z1=z1, z2=z2, resolution=3
-    )
+    def mock_func_g1g2(position, survey, **kwargs):
+        pos = [position.ra.value, position.dec.value]
+
+        if pos == [ra1, dec1] and survey == "SDSSg":
+            return [fits.open(TEST_DATA / "SDSS_image_0_filter_g.fits")]
+        elif pos == [ra1, dec1] and survey == "SDSSi":
+            return [fits.open(TEST_DATA / "SDSS_image_0_filter_i.fits")]
+        elif pos == [ra2, dec2] and survey == "SDSSg":
+            return [fits.open(TEST_DATA / "SDSS_image_1_filter_g.fits")]
+        elif pos == [ra2, dec2] and survey == "SDSSi":
+            return [fits.open(TEST_DATA / "SDSS_image_1_filter_i.fits")]
+
+    with mock.patch("astroquery.skyview.SkyView.get_images", mock_func_g1g2):
+        data_stack = scorpio.stack_pair(
+            ra1=ra1, dec1=dec1, ra2=ra2, dec2=dec2, z1=z1, z2=z2, resolution=3
+        )
 
     stack_g1 = data_stack[0][0]
     stack_g2 = data_stack[0][1]
 
-    np.testing.assert_allclose(stack_g1, expected_g1, rtol=1e300)
-    np.testing.assert_allclose(stack_g2, expected_g2, rtol=1e300)
+    np.testing.assert_allclose(stack_g1, expected_g1)
+    np.testing.assert_allclose(stack_g2, expected_g2)
 
 
 # test for SDSS filters:
@@ -408,10 +408,10 @@ def test_compare_plots_generation_methods(fig_test, fig_ref):
     cosmology = data_img.cosmology
 
     final_image_a = np.copy(data_img.mtx_[0])
-    plx = data_img.resolution_
+    plx = data_img.resolution
     c1, c2 = data_img.pos1_, data_img.pos2_
     dis_c1_c2 = data_img.dist_pix_
-    s_ab = data_img.dist_physic_
+    s_ab = data_img.dist_physic_.value
 
     # Normalization part 1
     max_value = np.max(final_image_a)

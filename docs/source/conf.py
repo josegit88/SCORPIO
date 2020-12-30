@@ -46,6 +46,7 @@ extensions = [
     "sphinx.ext.intersphinx",
     "sphinx.ext.viewcode",
     "sphinx.ext.autosummary",
+    'nbsphinx'
 ]
 
 
@@ -110,9 +111,9 @@ index = f"""
    :maxdepth: 2
    :caption: Contents:
 
-   api/modules
-   installation.rst
-   license.rst
+   tutorial.ipynb
+   api.rst
+
 
 
 Indices and tables

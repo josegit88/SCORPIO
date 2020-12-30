@@ -140,9 +140,9 @@ For bugs or question please contact
    :maxdepth: 2
    :caption: Contents:
 
-   api/modules
-   installation.rst
-   license.rst
+   tutorial.ipynb
+   api.rst
+
 
 
 Indices and tables
