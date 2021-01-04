@@ -461,14 +461,16 @@ def stack_pair(
                 stamp = download_data(
                     pos=pos, survey=survey, filters=filters[ff], plx=plx
                 )
-                if ii == 0:
-                    stamp_g1 = stamp
+
             except urllib.error.HTTPError as err:
                 if err.code != 404:
                     raise err
                 logger.warning(f"No data filter '{filters[ff]}' in gal {ii}")
             else:
-                g1g2[ii] += stamp[0][0].data
+                if ii == 0:
+                    stamp_g1 = stamp
+                else:
+                    g1g2[ii] += stamp[0][0].data
 
     if np.all(g1g2[0] == 0):
         raise NoFilterToStackError("Empty array for galaxy1")
