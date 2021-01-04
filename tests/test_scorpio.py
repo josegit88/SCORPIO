@@ -42,11 +42,38 @@ PATH = pathlib.Path(os.path.abspath(os.path.dirname(__file__)))
 TEST_DATA = PATH / "test_data"
 
 # =============================================================================
+# FIXTURE
+# =============================================================================
+
+
+@pytest.fixture(scope="session")
+def mget_images_maker():
+    def maker(test_name):
+        def mget_images(position, survey, **kwargs):
+            pos = str([position.ra.value, position.dec.value])
+
+            call_str = (
+                f"SkyView.get_images(position={pos}, survey='{survey}', "
+                f"radius='{kwargs['radius']}', pixels={kwargs['pixels']}, "
+                f"coordinates='{kwargs['coordinates']}', "
+                f"show_progress={kwargs['show_progress']})"
+            )
+            full_path = TEST_DATA / test_name / call_str / "return.fits"
+
+            return [fits.open(full_path)]
+
+        return mget_images
+
+    return maker
+
+
+# =============================================================================
 # TESTS
 # =============================================================================
 
 
-def test_download_and_stack_data():
+def test_download_and_stack_data(mget_images_maker):
+
     ra1, dec1, z1, ra2, dec2, z2 = [
         126.39162693999999,
         47.296980665521900,
@@ -72,19 +99,8 @@ def test_download_and_stack_data():
         ]
     )
 
-    def mock_func_g1g2(position, survey, **kwargs):
-        pos = [position.ra.value, position.dec.value]
-
-        if pos == [ra1, dec1] and survey == "SDSSg":
-            return [fits.open(TEST_DATA / "SDSS_image_0_filter_g.fits")]
-        elif pos == [ra1, dec1] and survey == "SDSSi":
-            return [fits.open(TEST_DATA / "SDSS_image_0_filter_i.fits")]
-        elif pos == [ra2, dec2] and survey == "SDSSg":
-            return [fits.open(TEST_DATA / "SDSS_image_1_filter_g.fits")]
-        elif pos == [ra2, dec2] and survey == "SDSSi":
-            return [fits.open(TEST_DATA / "SDSS_image_1_filter_i.fits")]
-
-    with mock.patch("astroquery.skyview.SkyView.get_images", mock_func_g1g2):
+    mget_images = mget_images_maker("test_download_and_stack_data")
+    with mock.patch("astroquery.skyview.SkyView.get_images", mget_images):
         data_stack = scorpio.stack_pair(
             ra1=ra1, dec1=dec1, ra2=ra2, dec2=dec2, z1=z1, z2=z2, resolution=3
         )
