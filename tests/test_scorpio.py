@@ -47,24 +47,21 @@ TEST_DATA = PATH / "test_data"
 
 
 @pytest.fixture(scope="session")
-def mget_images_maker():
-    def maker(test_name):
-        def mget_images(position, survey, **kwargs):
-            pos = str([position.ra.value, position.dec.value])
+def mget_images():
+    def _mock(position, survey, **kwargs):
+        pos = str([position.ra.value, position.dec.value])
 
-            call_str = (
-                f"SkyView.get_images(position={pos}, survey='{survey}', "
-                f"radius='{kwargs['radius']}', pixels={kwargs['pixels']}, "
-                f"coordinates='{kwargs['coordinates']}', "
-                f"show_progress={kwargs['show_progress']})"
-            )
-            full_path = TEST_DATA / test_name / call_str / "return.fits"
+        call_str = (
+            f"SkyView.get_images(position={pos}, survey='{survey}', "
+            f"radius='{kwargs['radius']}', pixels={kwargs['pixels']}, "
+            f"coordinates='{kwargs['coordinates']}', "
+            f"show_progress={kwargs['show_progress']})"
+        )
+        full_path = TEST_DATA / "mget_images" / call_str / "return.fits"
 
-            return [fits.open(full_path)]
+        return [fits.open(full_path)]
 
-        return mget_images
-
-    return maker
+    return _mock
 
 
 # =============================================================================
@@ -72,7 +69,7 @@ def mget_images_maker():
 # =============================================================================
 
 
-def test_download_and_stack_data(mget_images_maker):
+def test_download_and_stack_data(mget_images):
 
     ra1, dec1, z1, ra2, dec2, z2 = [
         126.39162693999999,
@@ -99,7 +96,6 @@ def test_download_and_stack_data(mget_images_maker):
         ]
     )
 
-    mget_images = mget_images_maker("test_download_and_stack_data")
     with mock.patch("astroquery.skyview.SkyView.get_images", mget_images):
         data_stack = scorpio.stack_pair(
             ra1=ra1, dec1=dec1, ra2=ra2, dec2=dec2, z1=z1, z2=z2, resolution=3
@@ -245,8 +241,8 @@ def test_stack_code_error(monkeypatch):
 
 
 def test_distances_error_Cosmology():
-    data_imagen = fits.open(TEST_DATA / "SDSS_image_0_filter_g.fits")
-    header = data_imagen[0].header
+    image = fits.open(TEST_DATA / "SDSS_g.fits")
+    header = image[0].header
     cosmology = {"H0": 70, "Om0": 0.3, "Ode0": 0.7}
 
     [ra1, dec1, z1, ra2, dec2, z2] = [
@@ -272,8 +268,8 @@ def test_distances_error_Cosmology():
 
 
 def test_distances_physical_units():
-    data_imagen = fits.open(TEST_DATA / "SDSS_image_0_filter_g.fits")
-    header = data_imagen[0].header
+    image = fits.open(TEST_DATA / "SDSS_g.fits")
+    header = image[0].header
     cosmology = asc.Planck15
 
     [ra1, dec1, z1, ra2, dec2, z2] = [
@@ -302,8 +298,8 @@ def test_distances_physical_units():
 
 
 def test_distances_in_pixels():
-    data_imagen = fits.open(TEST_DATA / "SDSS_image_0_filter_g.fits")
-    header = data_imagen[0].header
+    image = fits.open(TEST_DATA / "SDSS_g.fits")
+    header = image[0].header
     cosmology = asc.Planck15
 
     [ra1, dec1, z1, ra2, dec2, z2] = [

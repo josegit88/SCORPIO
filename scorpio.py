@@ -449,7 +449,8 @@ def stack_pair(
     glx_array = np.array([glx1, glx2])
 
     # ------- download images data fits in diferent filters: --------
-    g1g2 = [np.empty(shape=(plx, plx)), np.empty(shape=(plx, plx))]
+    stamp0 = None
+    g1g2 = [np.zeros(shape=(plx, plx)), np.zeros(shape=(plx, plx))]
 
     for ff in range(len(filters)):
         for ii in range(len(g1g2)):
@@ -461,22 +462,19 @@ def stack_pair(
                 stamp = download_data(
                     pos=pos, survey=survey, filters=filters[ff], plx=plx
                 )
-
+                if ii == 0:
+                    stamp0 = stamp
             except urllib.error.HTTPError as err:
                 if err.code != 404:
                     raise err
                 logger.warning(f"No data filter '{filters[ff]}' in gal {ii}")
             else:
-                if ii == 0:
-                    stamp_g1 = stamp
-                else:
-                    g1g2[ii] += stamp[0][0].data
+                g1g2[ii] += stamp[0][0].data
 
     if np.all(g1g2[0] == 0):
         raise NoFilterToStackError("Empty array for galaxy1")
 
-    # header = stamp_g1[0][0].header
-    header = stamp_g1[0][0].header
+    header = stamp0[0][0].header
     return g1g2, header, plx
 
 
