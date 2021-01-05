@@ -14,7 +14,6 @@ Test about the scorpio functions
 import os
 import pathlib
 import urllib
-from unittest import mock
 
 import astropy.cosmology as asc
 from astropy.io import fits
@@ -69,7 +68,7 @@ def mget_images():
 # =============================================================================
 
 
-def test_download_and_stack_data(mget_images):
+def test_download_and_stack_data(mget_images, monkeypatch):
 
     ra1, dec1, z1, ra2, dec2, z2 = [
         126.39162693999999,
@@ -96,10 +95,11 @@ def test_download_and_stack_data(mget_images):
         ]
     )
 
-    with mock.patch("astroquery.skyview.SkyView.get_images", mget_images):
-        data_stack = scorpio.stack_pair(
-            ra1=ra1, dec1=dec1, ra2=ra2, dec2=dec2, z1=z1, z2=z2, resolution=3
-        )
+    monkeypatch.setattr(SkyView, "get_images", mget_images)
+
+    data_stack = scorpio.stack_pair(
+        ra1=ra1, dec1=dec1, ra2=ra2, dec2=dec2, z1=z1, z2=z2, resolution=3
+    )
 
     stack_g1 = data_stack[0][0]
     stack_g2 = data_stack[0][1]
@@ -327,8 +327,11 @@ def test_distances_in_pixels():
     np.testing.assert_allclose(pixel_dist, expected_dist, rtol=1e-5)
 
 
-def test_plot_size_fig_axes():
-    [ra1, dec1, z1, ra2, dec2, z2] = [
+def test_plot_size_fig_axes(mget_images, monkeypatch):
+
+    monkeypatch.setattr(SkyView, "get_images", mget_images)
+
+    ra1, dec1, z1, ra2, dec2, z2 = [
         126.39162693999999,
         47.296980665521900,
         0.12573827000000001,
@@ -344,8 +347,7 @@ def test_plot_size_fig_axes():
         dec2=dec2,
         z1=z1,
         z2=z2,
-        survey="2MASS",
-        resolution=500,
+        resolution=3,
     )
 
     with pytest.raises(AttributeError):
@@ -355,9 +357,13 @@ def test_plot_size_fig_axes():
 
 
 @check_figures_equal(extensions=["png"])
-def test_download_and_generate_equal_plots(fig_test, fig_ref, monkeypatch):
+def test_download_and_generate_equal_plots(
+    fig_test, fig_ref, mget_images, monkeypatch
+):
 
-    [ra1, dec1, z1, ra2, dec2, z2] = [
+    monkeypatch.setattr(SkyView, "get_images", mget_images)
+
+    ra1, dec1, z1, ra2, dec2, z2 = [
         126.39162693999999,
         47.296980665521900,
         0.12573827000000001,
@@ -367,8 +373,15 @@ def test_download_and_generate_equal_plots(fig_test, fig_ref, monkeypatch):
     ]
 
     data_img1 = scorpio.gpair(
-        ra1=ra1, dec1=dec1, ra2=ra2, dec2=dec2, z1=z1, z2=z2, survey="2MASS"
+        ra1=ra1,
+        dec1=dec1,
+        ra2=ra2,
+        dec2=dec2,
+        z1=z1,
+        z2=z2,
+        resolution=3,
     )
+
     data_img2 = scorpio.gpair(
         ra1=ra1,
         dec1=dec1,
@@ -376,7 +389,7 @@ def test_download_and_generate_equal_plots(fig_test, fig_ref, monkeypatch):
         dec2=dec2,
         z1=z1,
         z2=z2,
-        survey="2MASS",
+        resolution=3,
     )
 
     # test plot 1:
@@ -388,9 +401,14 @@ def test_download_and_generate_equal_plots(fig_test, fig_ref, monkeypatch):
     data_img2.plot(ax=test_ax2)
 
 
-@check_figures_equal(extensions=["png"])
-def test_compare_plots_generation_methods(fig_test, fig_ref):
-    [ra1, dec1, z1, ra2, dec2, z2] = [
+@check_figures_equal()
+def test_compare_plots_generation_methods(
+    fig_test, fig_ref, mget_images, monkeypatch
+):
+
+    monkeypatch.setattr(SkyView, "get_images", mget_images)
+
+    ra1, dec1, z1, ra2, dec2, z2 = [
         126.39162693999999,
         47.296980665521900,
         0.12573827000000001,
@@ -406,8 +424,7 @@ def test_compare_plots_generation_methods(fig_test, fig_ref):
         dec2=dec2,
         z1=z1,
         z2=z2,
-        survey="2MASS",
-        resolution=500,
+        resolution=3,
     )
 
     # >>>>>>>>> fig test
