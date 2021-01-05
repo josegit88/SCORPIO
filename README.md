@@ -1,6 +1,6 @@
 # SCORPIO
 
-Sky COllector of galaxy Pairs and Image Output (Scorpio) Is a tool to quick generate images of galaxy pairs, using data from different surveys.
+Sky COllector of galaxy Pairs and Image Output (Scorpio) Is a tool to quick analyze and generate images of galaxy pairs, using data from different surveys.
 
 ![logo-scorpio](https://github.com/josegit88/SCORPIO/raw/master/res/scorpio.png)
 
@@ -20,10 +20,11 @@ The interacting galaxies are one of the most interesting events in the area of e
 
 ## Features
 
-The essential input parameters are AR, DEC, redshift (and other optional data such as survey and filters) for each of the galaxies of interest.
+The essential input parameters are RA, DEC, redshift (and other optional data such as survey and filters) for each of the galaxies of interest.
 
 Based on these, the application has several functions that:
-- Check and download the .fits files in each survey and filter, using astroquery tools.
+
+- Check and download the `.fits` files in each survey and filter, using astroquery tools.
 - stack and generate a single array with the information
 - Calculate the distance in physical units and in pixels.
 - Export the image in the desired format and directory.

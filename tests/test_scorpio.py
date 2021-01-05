@@ -20,19 +20,17 @@ from astropy.io import fits
 
 from astroquery.skyview import SkyView
 
-import matplotlib as mpl
 import matplotlib.pyplot as plt
-import matplotlib.ticker as ticker
 from matplotlib.colors import LogNorm
 from matplotlib.testing.decorators import check_figures_equal
-
-from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 
 import numpy as np
 
 import pytest
 
 import scorpio
+
+import seaborn as sns
 
 # =============================================================================
 # CONSTANTS
@@ -43,12 +41,36 @@ PATH = pathlib.Path(os.path.abspath(os.path.dirname(__file__)))
 TEST_DATA = PATH / "test_data"
 
 # =============================================================================
+# FIXTURE
+# =============================================================================
+
+
+@pytest.fixture(scope="session")
+def mget_images():
+    def _mock(position, survey, **kwargs):
+        pos = str([position.ra.value, position.dec.value])
+
+        call_str = (
+            f"SkyView.get_images(position={pos}, survey='{survey}', "
+            f"radius='{kwargs['radius']}', pixels={kwargs['pixels']}, "
+            f"coordinates='{kwargs['coordinates']}', "
+            f"show_progress={kwargs['show_progress']})"
+        )
+        full_path = TEST_DATA / "mget_images" / call_str / "return.fits"
+
+        return [fits.open(full_path)]
+
+    return _mock
+
+
+# =============================================================================
 # TESTS
 # =============================================================================
 
 
-def test_download_and_stack_data(monkeypatch):
-    [ra1, dec1, z1, ra2, dec2, z2] = [
+def test_download_and_stack_data(mget_images, monkeypatch):
+
+    ra1, dec1, z1, ra2, dec2, z2 = [
         126.39162693999999,
         47.296980665521900,
         0.12573827000000001,
@@ -56,22 +78,6 @@ def test_download_and_stack_data(monkeypatch):
         47.305200665521902,
         0.12554201000000001,
     ]
-
-    def mock_func_g1g2(position, survey, **kwargs):
-        pos = [position.ra.value, position.dec.value]
-
-        if pos == [ra1, dec1] and survey == "SDSSg":
-            path = [fits.open(TEST_DATA / "SDSS_image_0_filter_g.fits")]
-        elif pos == [ra1, dec1] and survey == "SDSSi":
-            path = [fits.open(TEST_DATA / "SDSS_image_0_filter_i.fits")]
-        elif pos == [ra2, dec2] and survey == "SDSSg":
-            path = [fits.open(TEST_DATA / "SDSS_image_1_filter_g.fits")]
-        elif pos == [ra2, dec2] and survey == "SDSSi":
-            path = [fits.open(TEST_DATA / "SDSS_image_1_filter_i.fits")]
-
-        return path
-
-    monkeypatch.setattr(SkyView, "get_images", mock_func_g1g2)
 
     expected_g1 = np.array(
         [
@@ -89,6 +95,8 @@ def test_download_and_stack_data(monkeypatch):
         ]
     )
 
+    monkeypatch.setattr(SkyView, "get_images", mget_images)
+
     data_stack = scorpio.stack_pair(
         ra1=ra1, dec1=dec1, ra2=ra2, dec2=dec2, z1=z1, z2=z2, resolution=3
     )
@@ -96,8 +104,8 @@ def test_download_and_stack_data(monkeypatch):
     stack_g1 = data_stack[0][0]
     stack_g2 = data_stack[0][1]
 
-    np.testing.assert_allclose(stack_g1, expected_g1, rtol=1e300)
-    np.testing.assert_allclose(stack_g2, expected_g2, rtol=1e300)
+    np.testing.assert_allclose(stack_g1, expected_g1)
+    np.testing.assert_allclose(stack_g2, expected_g2)
 
 
 # test for SDSS filters:
@@ -175,7 +183,6 @@ def test_download_invalid_filter_WISE():
         )
 
 
-# new:
 def test_download_invalid_survey():
     [ra1, dec1, z1, ra2, dec2, z2] = [
         126.39162693999999,
@@ -234,8 +241,8 @@ def test_stack_code_error(monkeypatch):
 
 
 def test_distances_error_Cosmology():
-    data_imagen = fits.open(TEST_DATA / "SDSS_image_0_filter_g.fits")
-    header = data_imagen[0].header
+    image = fits.open(TEST_DATA / "SDSS_g.fits")
+    header = image[0].header
     cosmology = {"H0": 70, "Om0": 0.3, "Ode0": 0.7}
 
     [ra1, dec1, z1, ra2, dec2, z2] = [
@@ -261,8 +268,8 @@ def test_distances_error_Cosmology():
 
 
 def test_distances_physical_units():
-    data_imagen = fits.open(TEST_DATA / "SDSS_image_0_filter_g.fits")
-    header = data_imagen[0].header
+    image = fits.open(TEST_DATA / "SDSS_g.fits")
+    header = image[0].header
     cosmology = asc.Planck15
 
     [ra1, dec1, z1, ra2, dec2, z2] = [
@@ -291,8 +298,8 @@ def test_distances_physical_units():
 
 
 def test_distances_in_pixels():
-    data_imagen = fits.open(TEST_DATA / "SDSS_image_0_filter_g.fits")
-    header = data_imagen[0].header
+    image = fits.open(TEST_DATA / "SDSS_g.fits")
+    header = image[0].header
     cosmology = asc.Planck15
 
     [ra1, dec1, z1, ra2, dec2, z2] = [
@@ -320,9 +327,11 @@ def test_distances_in_pixels():
     np.testing.assert_allclose(pixel_dist, expected_dist, rtol=1e-5)
 
 
-# test kwargs:
-def test_plot_error_kwargs():
-    [ra1, dec1, z1, ra2, dec2, z2] = [
+def test_plot_size_fig_axes(mget_images, monkeypatch):
+
+    monkeypatch.setattr(SkyView, "get_images", mget_images)
+
+    ra1, dec1, z1, ra2, dec2, z2 = [
         126.39162693999999,
         47.296980665521900,
         0.12573827000000001,
@@ -338,39 +347,7 @@ def test_plot_error_kwargs():
         dec2=dec2,
         z1=z1,
         z2=z2,
-        survey="2MASS",
-        resolution=500,
-    )
-
-    with pytest.raises(AttributeError):
-        test_img.plot("./dir_test_images")
-
-    with pytest.raises(AttributeError):
-        test_img.plot("y")
-
-    with pytest.raises(AttributeError):
-        test_img.plot("img_test.png")
-
-
-def test_plot_size_fig_axes():
-    [ra1, dec1, z1, ra2, dec2, z2] = [
-        126.39162693999999,
-        47.296980665521900,
-        0.12573827000000001,
-        126.38991429000001,
-        47.305200665521902,
-        0.12554201000000001,
-    ]
-
-    test_img = scorpio.gpair(
-        ra1=ra1,
-        dec1=dec1,
-        ra2=ra2,
-        dec2=dec2,
-        z1=z1,
-        z2=z2,
-        survey="2MASS",
-        resolution=500,
+        resolution=3,
     )
 
     with pytest.raises(AttributeError):
@@ -380,8 +357,13 @@ def test_plot_size_fig_axes():
 
 
 @check_figures_equal(extensions=["png"])
-def test_download_and_generate_equal_plots(fig_test, fig_ref):
-    [ra1, dec1, z1, ra2, dec2, z2] = [
+def test_download_and_generate_equal_plots(
+    fig_test, fig_ref, mget_images, monkeypatch
+):
+
+    monkeypatch.setattr(SkyView, "get_images", mget_images)
+
+    ra1, dec1, z1, ra2, dec2, z2 = [
         126.39162693999999,
         47.296980665521900,
         0.12573827000000001,
@@ -397,8 +379,9 @@ def test_download_and_generate_equal_plots(fig_test, fig_ref):
         dec2=dec2,
         z1=z1,
         z2=z2,
-        survey="2MASS",
+        resolution=3,
     )
+
     data_img2 = scorpio.gpair(
         ra1=ra1,
         dec1=dec1,
@@ -406,25 +389,26 @@ def test_download_and_generate_equal_plots(fig_test, fig_ref):
         dec2=dec2,
         z1=z1,
         z2=z2,
-        survey="2MASS",
+        resolution=3,
     )
 
     # test plot 1:
     test_ax1 = fig_test.subplots()
-    ax1 = data_img1.plot(ax=test_ax1)
-    ax1.set_ylabel("DEC")
-    ax1.set_xlabel("RA")
+    data_img1.plot(ax=test_ax1)
 
     # test plot 2
     test_ax2 = fig_ref.subplots()
-    ax2 = data_img2.plot(ax=test_ax2)
-    ax2.set_ylabel("DEC")
-    ax2.set_xlabel("RA")
+    data_img2.plot(ax=test_ax2)
 
 
-@check_figures_equal(extensions=["png"])
-def test_compare_plots_generation_methods(fig_test, fig_ref):
-    [ra1, dec1, z1, ra2, dec2, z2] = [
+@check_figures_equal()
+def test_compare_plots_generation_methods(
+    fig_test, fig_ref, mget_images, monkeypatch
+):
+
+    monkeypatch.setattr(SkyView, "get_images", mget_images)
+
+    ra1, dec1, z1, ra2, dec2, z2 = [
         126.39162693999999,
         47.296980665521900,
         0.12573827000000001,
@@ -440,111 +424,108 @@ def test_compare_plots_generation_methods(fig_test, fig_ref):
         dec2=dec2,
         z1=z1,
         z2=z2,
-        survey="2MASS",
-        resolution=500,
+        resolution=3,
     )
 
-    # fig test
+    # >>>>>>>>> fig test
     test_ax = fig_test.subplots()
-    ax1 = data_img.plot(ax=test_ax)
-    ax1.set_ylabel("DEC")
-    ax1.set_xlabel("RA")
+    data_img.plot(ax=test_ax)
 
-    # fig expect
-    final_image_a = data_img.mtx[0]
-    plx = data_img.resolution
-    c1 = data_img.pos1
-    c2 = data_img.pos2
-    dis_c1_c2 = data_img.dist_pix
-    s_ab = data_img.dist_physic
-
+    # >>>>>>>>> fig expect
     expect_ax = fig_ref.subplots()
-    fig = plt.gcf()
+    survey = data_img.survey
+    cosmology = data_img.cosmology
 
-    xx = plx / 2.0
-    yy = plx / 2.0
+    final_image_a = np.copy(data_img.mtx_[0])
+    plx = data_img.resolution
+    c1, c2 = data_img.pos1_, data_img.pos2_
+    dis_c1_c2 = data_img.dist_pix_
+    s_ab = data_img.dist_physic_.value
 
-    expect_ax.axis([-xx * 0.8, xx * 0.8, -yy * 0.8, yy * 0.8])
-    expect_ax.xaxis.set_major_locator(ticker.NullLocator())
-    expect_ax.yaxis.set_major_locator(ticker.NullLocator())
+    # Normalization part 1
+    max_value = np.max(final_image_a)
+    min_value = np.min(final_image_a)
 
-    extent = [-xx, xx, -yy, yy]
+    # Normalization part 2 (remove negatives)
+    llimit = 0.0005 * max_value
+    final_image_a[final_image_a <= llimit] = llimit
 
-    max_values_col = []
-    min_values_col = []
-    for mm in range(len(final_image_a)):
-        max_in_column = max(final_image_a[:, mm])
-        max_values_col.append(max_in_column)
-        min_in_column = min(final_image_a[:, mm])
-        min_values_col.append(min_in_column)
+    max_value = np.max(final_image_a)
+    min_value = np.min(final_image_a)
 
-    max_value = max(max_values_col)
-    min_value = min(min_values_col)
-
-    for vv in range(len(final_image_a)):
-        for hh in range(len(final_image_a)):
-            if final_image_a[vv, hh] <= 0.0005 * max_value:
-                final_image_a[vv, hh] = 0.0005 * max_value
-
-    max_values_col = []
-    min_values_col = []
-    for mm in range(len(final_image_a)):
-        max_in_column = max(final_image_a[:, mm])
-        max_values_col.append(max_in_column)
-        min_in_column = min(final_image_a[:, mm])
-        min_values_col.append(min_in_column)
-
-    max_value = max(max_values_col)
-    min_value = min(min_values_col)
-
-    norm_color = mpl.colors.Normalize(vmin=min_value, vmax=max_value)
-    cmap = mpl.cm.ScalarMappable(norm=norm_color, cmap=mpl.cm.inferno)
-    axins1 = inset_axes(
-        expect_ax,
-        width="5%",
-        height="30%",
-        loc="lower right",
-    )
-    cb = fig.colorbar(cmap, ax=expect_ax, cax=axins1, orientation="vertical")
-    cb.set_ticks([])
-    expect_ax.imshow(
+    # plot the image
+    sns.heatmap(
         final_image_a,
-        extent=extent,
-        cmap="inferno",
+        ax=expect_ax,
+        cmap="magma",
+        square=True,
+        cbar=False,
         norm=LogNorm(vmin=min_value, vmax=max_value),
-    )
-    expect_ax.plot(
-        c1[0] - yy,
-        -(c1[1] - xx),
-        color="cyan",
-        marker="o",
-        markersize=20,
-        mew=2,
-        fillstyle="none",
-    )
-    expect_ax.plot(
-        c2[0] - yy,
-        -(c2[1] - xx),
-        color="cyan",
-        marker="o",
-        markersize=20,
-        mew=2,
-        fillstyle="none",
+        xticklabels=False,
+        yticklabels=False,
     )
 
+    # Markers of the galaxy centers
+    fmt = ".4g"
+    ra1, dec1, z1 = [
+        format(v, fmt) for v in (data_img.ra1, data_img.dec1, data_img.z1)
+    ]
+    ra2, dec2, z2 = [
+        format(v, fmt) for v in (data_img.ra2, data_img.dec2, data_img.z2)
+    ]
+
+    center_kws = {
+        "color": "cyan",
+        "marker": "o",
+        "markersize": 20,
+        "mew": 2,
+        "fillstyle": "none",
+    }
+    label_g1 = f"G1: $RA={ra1}$, $Dec={dec1}$, $Z={z1}$"
+    expect_ax.plot(c1[0], c1[1], label=label_g1, **center_kws)
+
+    label_g2 = f"G2: $RA={ra2}$, $Dec={dec2}$, $Z={z2}$"
+    expect_ax.plot(c2[0], c2[1], label=label_g2, **center_kws)
+
+    center_text_kws = {"color": "cyan", "fontsize": 15}
+
+    offset = 20
+    expect_ax.text(c1[0] + offset, c1[1], "G1", **center_text_kws)
+    expect_ax.text(c2[0] + offset, c2[1], "G2", **center_text_kws)
+    expect_ax.legend(framealpha=1)
+
+    # scalebar
     len_bar = 50.0 * dis_c1_c2 / s_ab
-    expect_ax.broken_barh(
-        [(-plx / 2.5, len_bar + plx / 7.5)],
-        (-plx / 2.5, plx / 7.5),
+
+    # Scale bar background
+    expect_ax.broken_barh(  # expect_ax.broken_barh(**scalebar_bg_kws)
+        xranges=[(0, len_bar * 1.2)],
+        yrange=(plx * 0.9 - 15, plx),
         facecolors="w",
     )
+
+    # Scale bar kwargs itself
     expect_ax.hlines(
-        y=-plx / 2.72,
-        xmin=-plx / 3.0,
-        xmax=-plx / 3.0 + len_bar,
+        y=plx - 15 * 1.1,
+        xmin=15,
+        xmax=len_bar,
         color="k",
         linewidth=3,
     )
-    expect_ax.text(-plx / 3.0, -plx / 3.0, "50 kpc", fontsize=20, color="k")
-    expect_ax.set_ylabel("DEC")
+
+    expect_ax.text(
+        fontsize=15,
+        x=15,
+        y=plx - 15 * 2,
+        s="50 kpc",
+        color="k",
+    )
+
+    expect_ax.set_title(
+        f"Interaction - Survey: {survey} - " f"Cosmology: {cosmology.name}"
+    )
     expect_ax.set_xlabel("RA")
+    expect_ax.set_ylabel("Dec")
+
+    expect_ax.patch.set_edgecolor("black")
+    expect_ax.patch.set_linewidth("3")
