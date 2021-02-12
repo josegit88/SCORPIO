@@ -1,4 +1,4 @@
-name: SCORPIO py38
+name: SCORPIO py39
 
 on: [push]
 
@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.8]
+        python-version: [3.9]
         env:
           - TOXENV: style 
           - TOXENV: docstyle
