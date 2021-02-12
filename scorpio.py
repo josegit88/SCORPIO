@@ -26,7 +26,7 @@ surveys.
 import logging
 import urllib
 
-import astropy.cosmology as asc
+import astropy.cosmology as apc
 from astropy import units as apu
 from astropy import wcs
 from astropy.coordinates import SkyCoord
@@ -68,6 +68,9 @@ SURVEYS = {
     },
 }
 
+#: The default cosmology.
+COSMOLOGY = apc.default_cosmology.get()
+
 #: The default coordinate system.
 DOWNLOAD_COORDINATE_SYSTEM = "J2000"
 
@@ -91,6 +94,12 @@ class NoFilterToStackError(ValueError):
 
 class NoSurveyInListToStackError(ValueError):
     """Error generated when survey of stack galaxies not in our list."""
+
+    pass
+
+
+class InvalidCosmologyError(TypeError):
+    """Error generated when `cosmology` is an invalid astropy cosmology."""
 
     pass
 
@@ -478,7 +487,7 @@ def stack_pair(
     return g1g2, header, plx
 
 
-def distances(ra1, dec1, ra2, dec2, z1, z2, header, cosmology=asc.Planck15):
+def distances(ra1, dec1, ra2, dec2, z1, z2, header, cosmology=None):
     """Receives the RA, DEC, redshift parameters for the two galaxies.
 
     As well as header information for the primary galaxy and
@@ -486,12 +495,6 @@ def distances(ra1, dec1, ra2, dec2, z1, z2, header, cosmology=asc.Planck15):
 
     Calculate the physical and pixel distances of the two galaxies necessary
     for their location in the final image.
-
-    WMAP5        Komatsu et al. 2009            70.2    0.277
-    WMAP7        Komatsu et al. 2011            70.4    0.272
-    WMAP9        Hinshaw et al. 2013            69.3    0.287
-    Planck13     Planck Collab 2013, Paper XVI  67.8    0.307
-    Planck15     Planck Collab 2015, Paper XIII 67.7    0.307
 
     Parameters
     ----------
@@ -512,53 +515,42 @@ def distances(ra1, dec1, ra2, dec2, z1, z2, header, cosmology=asc.Planck15):
     survey : string
         Survey for query and download data, by default it is "SDSS".
     cosmology: astropy.cosmology.core.FlatLambdaCDM
-        Instance of class ``astropy.cosmology.FLRW``,
-        by default it is asc.Planck15.
+        Instance of class ``astropy.cosmology.FLRW``, by default it uses
+        astropy's default cosmology (Planck18 since v4.2).
 
     Returns
     -------
-    s_ab : float
+    dist_phys : float
         physical distance between the pair in kpc.
-    dis_c1_c2 : float
+    dist_pxl : float
         physical distance to pixels in the image.
     c1, c2 : array_like
         Arrays with coordinates of both galaxies in pixels.
     """
-    if cosmology not in [
-        asc.WMAP5,
-        asc.WMAP7,
-        asc.WMAP9,
-        asc.Planck13,
-        asc.Planck15,
-    ]:
-        raise TypeError(f"cosmology `{cosmology}` not allowed")
+    # cosmology validation
+    if cosmology is None:
+        cosmology = COSMOLOGY
+    if not isinstance(cosmology, apc.FLRW):
+        raise InvalidCosmologyError(f"Cosmology `{cosmology}` not allowed")
 
-    glx1 = [ra1, dec1, z1]
-    glx2 = [ra2, dec2, z2]
+    z_mean = (z1 + z2) / 2
+    scale_factor = 1 / (1 + z_mean)
 
-    glx_array = np.array([glx1, glx2])
-    z_glx = glx_array[:, 2]
-    scale_factor = 1.0 / (1.0 + np.mean(z_glx))
+    dist_comv = cosmology.comoving_distance(z_mean).value
 
-    dist_comv = cosmology.comoving_distance(np.mean(z_glx)).value
-
-    coord_a = SkyCoord(
-        ra=glx_array[0, 0] * apu.deg, dec=glx_array[0, 1] * apu.deg
-    )
-    coord_b = SkyCoord(
-        ra=glx_array[1, 0] * apu.deg, dec=glx_array[1, 1] * apu.deg
-    )
+    coord_a = SkyCoord(ra=ra1 * apu.deg, dec=dec1 * apu.deg)
+    coord_b = SkyCoord(ra=ra2 * apu.deg, dec=dec2 * apu.deg)
 
     theta_rad = coord_a.separation(coord_b).rad
-    s_ab = (dist_comv * theta_rad) * 1000.0 * scale_factor
+    dist_phys = (dist_comv * theta_rad) * 1000.0 * scale_factor
 
     data_wcs = wcs.WCS(header)
 
-    c1 = data_wcs.wcs_world2pix(glx_array[0, 0], glx_array[0, 1], 0)
-    c2 = data_wcs.wcs_world2pix(glx_array[1, 0], glx_array[1, 1], 0)
-    dis_c1_c2 = np.sqrt((c1[0] - c2[0]) ** 2 + (c1[1] - c2[1]) ** 2)
+    c1 = data_wcs.wcs_world2pix(ra1, dec1, 0)
+    c2 = data_wcs.wcs_world2pix(ra2, dec2, 0)
+    dist_pxl = np.sqrt((c1[0] - c2[0]) ** 2 + (c1[1] - c2[1]) ** 2)
 
-    return s_ab, dis_c1_c2, c1, c2
+    return dist_phys, dist_pxl, c1, c2
 
 
 def gpair(
@@ -569,8 +561,9 @@ def gpair(
     z1,
     z2,
     survey="SDSS",
+    filters=None,
     resolution=1000,
-    cosmology=asc.Planck15,
+    cosmology=None,
 ):
     """Receives the RA, DEC, redshift parameters for the two galaxies.
 
@@ -593,18 +586,30 @@ def gpair(
         Redshift of secondary galaxy.
     survey : string, optional (default='SDSS')
         Survey for query and download data.
+    filters: list of strings
+        Filters for respective survey, by default it is ["g", "i"] for "SDSS".
     resolution : int, optional (default=1000)
         Size resolution value in pixels.
-    cosmology: astropy.cosmology.core.FlatLambdaCDM, optional
+    cosmology: optional
         Instance of class ``astropy.cosmology.FLRW``.
-        default `asc.Planck15`.
+        Defaults to astropy's default cosmology (Planck18 since v4.2).
 
     Returns
     -------
     GPInteraction :
         An object with information about the two interacting galaxies.
 
+    Notes
+    -----
+    For a complete list of astropy predefined cosmologies see:
+    https://docs.astropy.org/en/latest/cosmology/index.html#built-in-cosmologies
     """
+    # cosmology validation
+    if cosmology is None:
+        cosmology = COSMOLOGY
+    if not isinstance(cosmology, apc.FLRW):
+        raise InvalidCosmologyError(f"Cosmology `{cosmology}` not allowed")
+
     g1g2, header, plx = stack_pair(
         ra1,
         dec1,
@@ -614,6 +619,7 @@ def gpair(
         z2=z2,
         resolution=resolution,
         survey=survey,
+        filters=filters,
     )
 
     dist_physic, dist_pix, pos1, pos2 = distances(

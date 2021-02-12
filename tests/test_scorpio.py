@@ -15,7 +15,7 @@ import os
 import pathlib
 import urllib
 
-import astropy.cosmology as asc
+import astropy.cosmology as apc
 from astropy.io import fits
 
 from astroquery.skyview import SkyView
@@ -270,7 +270,7 @@ def test_distances_error_Cosmology():
 def test_distances_physical_units():
     image = fits.open(TEST_DATA / "SDSS_g.fits")
     header = image[0].header
-    cosmology = asc.Planck15
+    cosmology = apc.Planck15
 
     [ra1, dec1, z1, ra2, dec2, z2] = [
         126.39162693999999,
@@ -300,7 +300,7 @@ def test_distances_physical_units():
 def test_distances_in_pixels():
     image = fits.open(TEST_DATA / "SDSS_g.fits")
     header = image[0].header
-    cosmology = asc.Planck15
+    cosmology = apc.Planck15
 
     [ra1, dec1, z1, ra2, dec2, z2] = [
         126.39162693999999,
