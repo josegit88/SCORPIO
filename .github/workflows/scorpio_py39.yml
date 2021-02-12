@@ -14,8 +14,6 @@ jobs:
           - TOXENV: docstyle
           - TOXENV: check-manifest
           - TOXENV: py39
-          - TOXENV: py38
-          - TOXENV: py37
           - TOXENV: coverage
           - TOXENV: docs
 
