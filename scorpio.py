@@ -536,13 +536,15 @@ def distances(ra1, dec1, ra2, dec2, z1, z2, header, cosmology=None):
     z_mean = (z1 + z2) / 2
     scale_factor = 1 / (1 + z_mean)
 
-    dist_comv = cosmology.comoving_distance(z_mean).value
+    # comoving distance in kpc
+    dist_comv = cosmology.comoving_distance(z_mean)
+    dist_comv = dist_comv.to(apu.kpc).value
 
     coord_a = SkyCoord(ra=ra1 * apu.deg, dec=dec1 * apu.deg)
     coord_b = SkyCoord(ra=ra2 * apu.deg, dec=dec2 * apu.deg)
 
     theta_rad = coord_a.separation(coord_b).rad
-    dist_phys = (dist_comv * theta_rad) * 1000.0 * scale_factor
+    dist_phys = (dist_comv * theta_rad) * scale_factor
 
     data_wcs = wcs.WCS(header)
 
