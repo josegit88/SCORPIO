@@ -70,13 +70,11 @@ def mget_images():
 
 def test_download_and_stack_data(mget_images, monkeypatch):
 
-    ra1, dec1, z1, ra2, dec2, z2 = [
+    ra1, dec1, ra2, dec2 = [
         126.39162693999999,
         47.296980665521900,
-        0.12573827000000001,
         126.38991429000001,
         47.305200665521902,
-        0.12554201000000001,
     ]
 
     expected_g1 = np.array(
@@ -98,7 +96,7 @@ def test_download_and_stack_data(mget_images, monkeypatch):
     monkeypatch.setattr(SkyView, "get_images", mget_images)
 
     data_stack = scorpio.stack_pair(
-        ra1=ra1, dec1=dec1, ra2=ra2, dec2=dec2, z1=z1, z2=z2, resolution=3
+        ra1=ra1, dec1=dec1, ra2=ra2, dec2=dec2, resolution=3
     )
 
     stack_g1 = data_stack[0][0]
@@ -110,13 +108,11 @@ def test_download_and_stack_data(mget_images, monkeypatch):
 
 # test for SDSS filters:
 def test_download_invalid_filter_SDSS():
-    [ra1, dec1, z1, ra2, dec2, z2] = [
+    [ra1, dec1, ra2, dec2] = [
         126.39162693999999,
         47.296980665521900,
-        0.12573827000000001,
         126.38991429000001,
         47.305200665521902,
-        0.12554201000000001,
     ]
 
     with pytest.raises(ValueError):
@@ -125,8 +121,6 @@ def test_download_invalid_filter_SDSS():
             dec1=dec1,
             ra2=ra2,
             dec2=dec2,
-            z1=z1,
-            z2=z2,
             resolution=200,
             survey="SDSS",
             filters=["u", "t"],
@@ -135,13 +129,11 @@ def test_download_invalid_filter_SDSS():
 
 # test for 2MASS filters:
 def test_download_invalid_filter_2MASS():
-    [ra1, dec1, z1, ra2, dec2, z2] = [
+    [ra1, dec1, ra2, dec2] = [
         126.39162693999999,
         47.296980665521900,
-        0.12573827000000001,
         126.38991429000001,
         47.305200665521902,
-        0.12554201000000001,
     ]
 
     with pytest.raises(ValueError):
@@ -150,8 +142,6 @@ def test_download_invalid_filter_2MASS():
             dec1=dec1,
             ra2=ra2,
             dec2=dec2,
-            z1=z1,
-            z2=z2,
             resolution=200,
             survey="2MASS",
             filters=["u", "t"],
@@ -160,13 +150,11 @@ def test_download_invalid_filter_2MASS():
 
 # test for WISE filters:
 def test_download_invalid_filter_WISE():
-    [ra1, dec1, z1, ra2, dec2, z2] = [
+    [ra1, dec1, ra2, dec2] = [
         126.39162693999999,
         47.296980665521900,
-        0.12573827000000001,
         126.38991429000001,
         47.305200665521902,
-        0.12554201000000001,
     ]
 
     with pytest.raises(ValueError):
@@ -175,8 +163,6 @@ def test_download_invalid_filter_WISE():
             dec1=dec1,
             ra2=ra2,
             dec2=dec2,
-            z1=z1,
-            z2=z2,
             resolution=200,
             survey="WISE",
             filters=["u", "t"],
@@ -184,13 +170,11 @@ def test_download_invalid_filter_WISE():
 
 
 def test_download_invalid_survey():
-    [ra1, dec1, z1, ra2, dec2, z2] = [
+    [ra1, dec1, ra2, dec2] = [
         126.39162693999999,
         47.296980665521900,
-        0.12573827000000001,
         126.38991429000001,
         47.305200665521902,
-        0.12554201000000001,
     ]
 
     with pytest.raises(ValueError):
@@ -199,8 +183,6 @@ def test_download_invalid_survey():
             dec1=dec1,
             ra2=ra2,
             dec2=dec2,
-            z1=z1,
-            z2=z2,
             resolution=200,
             survey="JABB",
         )
@@ -218,13 +200,11 @@ def test_stack_code_error(monkeypatch):
 
     monkeypatch.setattr(SkyView, "get_images", mock_func)
 
-    [ra1, dec1, z1, ra2, dec2, z2] = [
+    [ra1, dec1, ra2, dec2] = [
         229.38791793999997,
         -15.1525941155219059,
-        0.12589231000000001,
         229.38705890000003,
         -15.1513408255219060,
-        0.12634666999999999,
     ]
 
     with pytest.raises(urllib.error.HTTPError):
@@ -233,8 +213,6 @@ def test_stack_code_error(monkeypatch):
             dec1=dec1,
             ra2=ra2,
             dec2=dec2,
-            z1=z1,
-            z2=z2,
             resolution=450,
             filters=["g"],
         )

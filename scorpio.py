@@ -398,8 +398,6 @@ def stack_pair(
     dec1,
     ra2,
     dec2,
-    z1=None,
-    z2=None,
     resolution=1000,
     survey="SDSS",
     filters=None,
@@ -414,14 +412,10 @@ def stack_pair(
         Right ascension of primary galaxy.
     dec1 : float
         Declination of primary galaxy.
-    z1: float
-        Redshift of secondary galaxy.
     ra2 : float
         Right ascension of secondary galaxy.
     dec2 : float
         Declination of secondary galaxy.
-    z2 : float
-        Redshift of secondary galaxy.
     resolution : int
         Size resolution value in pixels, by default it is 1000.
     survey : string
@@ -436,8 +430,6 @@ def stack_pair(
         the selected filters.
     header: string
         Header from the primary galaxy .fits file.
-    pxl : int
-        Size resolution value in pixels.
     """
     # survey validation
     survey_conf = SURVEYS.get(survey)
@@ -445,46 +437,40 @@ def stack_pair(
         raise NoSurveyInListToStackError(f"Survey '{survey}' not supported")
 
     filters = survey_conf["default"] if filters is None else filters
-    for ff in filters:
-        if ff not in survey_conf["filters"]:
-            raise NoFilterToStackError(f"{ff} is not a valid filter")
+    for filter in filters:
+        if filter not in survey_conf["filters"]:
+            raise NoFilterToStackError(f"{filter} is not a valid filter")
 
     # preprocess
-    pxl = resolution
+    glx1 = SkyCoord(ra=ra1 * apu.degree, dec=dec1 * apu.degree)
+    glx2 = SkyCoord(ra=ra2 * apu.degree, dec=dec2 * apu.degree)
+    glx_pos = [glx1, glx2]
 
-    glx1 = [ra1, dec1, z1]
-    glx2 = [ra2, dec2, z2]
+    # download images data fits in diferent filters: --------
+    g1g2 = [
+        np.zeros(shape=(resolution, resolution)),
+        np.zeros(shape=(resolution, resolution)),
+    ]
 
-    glx_array = np.array([glx1, glx2])
-
-    # ------- download images data fits in diferent filters: --------
-    stamp0 = None
-    g1g2 = [np.zeros(shape=(pxl, pxl)), np.zeros(shape=(pxl, pxl))]
-
-    for ff in range(len(filters)):
-        for ii in range(len(g1g2)):
-            pos = SkyCoord(
-                ra=glx_array[ii, 0] * apu.degree,
-                dec=glx_array[ii, 1] * apu.degree,
-            )
+    for filter in filters:
+        for i, pos in enumerate(glx_pos):
             try:
                 stamp = download_data(
-                    pos=pos, survey=survey, filters=filters[ff], pxl=pxl
+                    pos=pos, survey=survey, filters=filter, pxl=resolution
                 )
-                if ii == 0:
-                    stamp0 = stamp
+                if i == 0:
+                    header = stamp[0][0].header
             except urllib.error.HTTPError as err:
                 if err.code != 404:
                     raise err
-                logger.warning(f"No data filter '{filters[ff]}' in gal {ii}")
+                logger.warning(f"No data filter '{filter}' in galaxy {i}.")
             else:
-                g1g2[ii] += stamp[0][0].data
+                g1g2[i] += stamp[0][0].data
 
     if np.all(g1g2[0] == 0):
-        raise NoFilterToStackError("Empty array for galaxy1")
+        raise NoFilterToStackError("Empty array for galaxy 1.")
 
-    header = stamp0[0][0].header
-    return g1g2, header, pxl
+    return g1g2, header
 
 
 def distances(ra1, dec1, ra2, dec2, z1, z2, header, cosmology=None):
@@ -612,13 +598,11 @@ def gpair(
     if not isinstance(cosmology, apc.FLRW):
         raise InvalidCosmologyError(f"Cosmology `{cosmology}` not allowed")
 
-    g1g2, header, pxl = stack_pair(
+    g1g2, header = stack_pair(
         ra1,
         dec1,
         ra2,
         dec2,
-        z1=z1,
-        z2=z2,
         resolution=resolution,
         survey=survey,
         filters=filters,
