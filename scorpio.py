@@ -23,7 +23,6 @@ surveys.
 # IMPORTS
 # =============================================================================
 
-import logging
 import urllib
 
 import astropy.cosmology as apc
@@ -55,8 +54,6 @@ __version__ = "0.3"
 # =============================================================================
 # CONSTANTS
 # =============================================================================
-
-logger = logging.getLogger("scorpio")
 
 #: SURVEYS
 SURVEYS = {
@@ -461,7 +458,6 @@ def stack_pair(
             except urllib.error.HTTPError as err:
                 if err.code != 404:
                     raise err
-                logger.warning(f"No data filter '{filter}' in galaxy {i}.")
             else:
                 g1g2[i] += stamp[0][0].data
 
