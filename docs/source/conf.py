@@ -30,7 +30,11 @@ copyright = "2020, Jose Benavides"
 author = "Jose Benavides"
 
 # The full version, including alpha/beta/rc tags
-release = "0.0.1"
+with open(SCORPIO_PATH / "scorpio.py") as fp:
+    for line in fp.readlines():
+        if line.startswith("__version__ = "):
+            release = line.split("=", 1)[-1].replace('"', '').strip()
+            break
 
 
 # -- General configuration ---------------------------------------------------
