@@ -498,9 +498,9 @@ def distances(ra1, dec1, ra2, dec2, z1, z2, header, cosmology=None):
         Header from the primary galaxy .fits file.
     survey : string
         Survey for query and download data, by default it is "SDSS".
-    cosmology: astropy.cosmology.core.FlatLambdaCDM
-        Instance of class ``astropy.cosmology.FLRW``, by default it uses
-        astropy's default cosmology (Planck18 since v4.2).
+    cosmology: optional
+        Instance of class ``astropy.cosmology.FLRW``.
+        Defaults to astropy's default cosmology (Planck18 since v4.2).
 
     Returns
     -------
