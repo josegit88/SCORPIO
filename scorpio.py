@@ -116,15 +116,15 @@ class GPInteraction:
     Parameters
     ----------
     ra1 : float
-        Right ascension of primary galaxy.
+        Right ascension of primary galaxy in degrees.
     dec1 : float
-        Declination of primary galaxy.
+        Declination of primary galaxy in degrees.
     z1: float
         Redshift of secondary galaxy.
     ra2 : float
-        Right ascension of secondary galaxy.
+        Right ascension of secondary galaxy in degrees.
     dec2 : float
-        Declination of secondary galaxy.
+        Declination of secondary galaxy in degrees.
     z2 : float
         Redshift of secondary galaxy.
     resolution : int
@@ -402,20 +402,18 @@ def stack_pair(
     survey="SDSS",
     filters=None,
 ):
-    """Generate a individual image from list (RA, DEC, z) data of galaxy pair.
-
-    for default pixles: pxl = 1000 and g, i filters.
+    """Generate a individual image from RA, DEC data of galaxy pair.
 
     Parameters
     ----------
     ra1 : float
-        Right ascension of primary galaxy.
+        Right ascension of primary galaxy in degrees.
     dec1 : float
-        Declination of primary galaxy.
+        Declination of primary galaxy in degrees.
     ra2 : float
-        Right ascension of secondary galaxy.
+        Right ascension of secondary galaxy in degrees.
     dec2 : float
-        Declination of secondary galaxy.
+        Declination of secondary galaxy in degrees.
     resolution : int
         Size resolution value in pixels, by default it is 1000.
     survey : string
@@ -485,15 +483,15 @@ def distances(ra1, dec1, ra2, dec2, z1, z2, header, cosmology=None):
     Parameters
     ----------
     ra1 : float
-        Right ascension of primary galaxy.
+        Right ascension of primary galaxy in degrees.
     dec1 : float
-        Declination of primary galaxy.
+        Declination of primary galaxy in degrees.
     z1: float
         Redshift of secondary galaxy.
     ra2 : float
-        Right ascension of secondary galaxy.
+        Right ascension of secondary galaxy in degrees.
     dec2 : float
-        Declination of secondary galaxy.
+        Declination of secondary galaxy in degrees.
     z2 : float
         Redshift of secondary galaxy.
     header : string
@@ -561,15 +559,15 @@ def gpair(
     Parameters
     ----------
     ra1 : float
-        Right ascension of primary galaxy.
+        Right ascension of primary galaxy in degrees.
     dec1 : float
-        Declination of primary galaxy.
+        Declination of primary galaxy in degrees.
     z1: float
         Redshift of secondary galaxy.
     ra2 : float
-        Right ascension of secondary galaxy.
+        Right ascension of secondary galaxy in degrees.
     dec2 : float
-        Declination of secondary galaxy.
+        Declination of secondary galaxy in degrees.
     z2 : float
         Redshift of secondary galaxy.
     survey : string, optional (default='SDSS')
