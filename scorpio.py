@@ -141,7 +141,7 @@ class GPInteraction:
     header_ :
         header information of image fits file.
     dist_physic_ :
-        Estimation of physical distance to the observer in Mpc,
+        Estimation of physical distance to the observer in kpc,
         from a given cosmology
     dist_pix_ :
         Physical distance as pixels in the image.
@@ -248,7 +248,7 @@ class GPInteraction:
         cosmology = self.cosmology
 
         final_image_a = np.copy(self.mtx_[0])
-        plx = self.resolution
+        pxl = self.resolution
         c1, c2 = self.pos1_, self.pos2_
         dis_c1_c2 = self.dist_pix_
         s_ab = self.dist_physic_.value
@@ -317,13 +317,13 @@ class GPInteraction:
             )
             scale_fontsize = scalebar_text_kws.setdefault("fontsize", 15)
             scalebar_text_kws.setdefault("x", scale_fontsize)
-            scalebar_text_kws.setdefault("y", plx - scale_fontsize * 2)
+            scalebar_text_kws.setdefault("y", pxl - scale_fontsize * 2)
             scalebar_text_kws.setdefault("s", "50 kpc")
             scalebar_text_kws.setdefault("color", "k")
 
             # Scale bar kwargs itself
             scalebar_kws = {} if scalebar_kws is None else dict(scalebar_kws)
-            scalebar_kws.setdefault("y", plx - scale_fontsize * 1.1)
+            scalebar_kws.setdefault("y", pxl - scale_fontsize * 1.1)
             scalebar_kws.setdefault("xmin", scale_fontsize)
             scalebar_kws.setdefault("xmax", len_bar)
             scalebar_kws.setdefault("color", "k")
@@ -335,7 +335,7 @@ class GPInteraction:
             )
             scalebar_bg_kws.setdefault("xranges", [(0, len_bar * 1.2)])
             scalebar_bg_kws.setdefault(
-                "yrange", (plx * 0.9 - scale_fontsize, plx)
+                "yrange", (pxl * 0.9 - scale_fontsize, pxl)
             )
             scalebar_bg_kws.setdefault("facecolors", "w")
 
@@ -361,7 +361,7 @@ class GPInteraction:
 
 
 @retry(stop_max_attempt_number=4)
-def download_data(pos, survey, filters, plx):
+def download_data(pos, survey, filters, pxl):
     """Proxy to astroquery SkyviewService.
 
     This functions is mostly for internal use.
@@ -374,7 +374,7 @@ def download_data(pos, survey, filters, plx):
         The data to download the survey.
     filters: list
         Specific astronomical filters of the data.
-    plx:
+    pxl:
         Selects the pixel dimensions of the image to be produced.
 
     Returns
@@ -386,7 +386,7 @@ def download_data(pos, survey, filters, plx):
         position=pos,
         survey=survey + str(filters),
         radius=2 * apu.arcmin,
-        pixels=(plx, plx),
+        pixels=(pxl, pxl),
         coordinates=DOWNLOAD_COORDINATE_SYSTEM,
         show_progress=DOWNLOAD_SHOW_PROGRESS,
     )
@@ -406,7 +406,7 @@ def stack_pair(
 ):
     """Generate a individual image from list (RA, DEC, z) data of galaxy pair.
 
-    for default pixles: plx = 1000 and g, i filters.
+    for default pixles: pxl = 1000 and g, i filters.
 
     Parameters
     ----------
@@ -436,7 +436,7 @@ def stack_pair(
         the selected filters.
     header: string
         Header from the primary galaxy .fits file.
-    plx : int
+    pxl : int
         Size resolution value in pixels.
     """
     # survey validation
@@ -450,7 +450,7 @@ def stack_pair(
             raise NoFilterToStackError(f"{ff} is not a valid filter")
 
     # preprocess
-    plx = resolution
+    pxl = resolution
 
     glx1 = [ra1, dec1, z1]
     glx2 = [ra2, dec2, z2]
@@ -459,7 +459,7 @@ def stack_pair(
 
     # ------- download images data fits in diferent filters: --------
     stamp0 = None
-    g1g2 = [np.zeros(shape=(plx, plx)), np.zeros(shape=(plx, plx))]
+    g1g2 = [np.zeros(shape=(pxl, pxl)), np.zeros(shape=(pxl, pxl))]
 
     for ff in range(len(filters)):
         for ii in range(len(g1g2)):
@@ -469,7 +469,7 @@ def stack_pair(
             )
             try:
                 stamp = download_data(
-                    pos=pos, survey=survey, filters=filters[ff], plx=plx
+                    pos=pos, survey=survey, filters=filters[ff], pxl=pxl
                 )
                 if ii == 0:
                     stamp0 = stamp
@@ -484,7 +484,7 @@ def stack_pair(
         raise NoFilterToStackError("Empty array for galaxy1")
 
     header = stamp0[0][0].header
-    return g1g2, header, plx
+    return g1g2, header, pxl
 
 
 def distances(ra1, dec1, ra2, dec2, z1, z2, header, cosmology=None):
@@ -520,9 +520,9 @@ def distances(ra1, dec1, ra2, dec2, z1, z2, header, cosmology=None):
 
     Returns
     -------
-    dist_phys : float
+    dist_physic : float
         physical distance between the pair in kpc.
-    dist_pxl : float
+    dist_pix : float
         physical distance to pixels in the image.
     c1, c2 : array_like
         Arrays with coordinates of both galaxies in pixels.
@@ -544,15 +544,15 @@ def distances(ra1, dec1, ra2, dec2, z1, z2, header, cosmology=None):
     coord_b = SkyCoord(ra=ra2 * apu.deg, dec=dec2 * apu.deg)
 
     theta_rad = coord_a.separation(coord_b).rad
-    dist_phys = (dist_comv * theta_rad) * scale_factor
+    dist_physic = (dist_comv * theta_rad) * scale_factor
 
     data_wcs = wcs.WCS(header)
 
     c1 = data_wcs.wcs_world2pix(ra1, dec1, 0)
     c2 = data_wcs.wcs_world2pix(ra2, dec2, 0)
-    dist_pxl = np.sqrt((c1[0] - c2[0]) ** 2 + (c1[1] - c2[1]) ** 2)
+    dist_pix = np.sqrt((c1[0] - c2[0]) ** 2 + (c1[1] - c2[1]) ** 2)
 
-    return dist_phys, dist_pxl, c1, c2
+    return dist_physic, dist_pix, c1, c2
 
 
 def gpair(
@@ -612,7 +612,7 @@ def gpair(
     if not isinstance(cosmology, apc.FLRW):
         raise InvalidCosmologyError(f"Cosmology `{cosmology}` not allowed")
 
-    g1g2, header, plx = stack_pair(
+    g1g2, header, pxl = stack_pair(
         ra1,
         dec1,
         ra2,
@@ -641,7 +641,7 @@ def gpair(
         # properties
         mtx_=g1g2,
         header_=header,
-        dist_physic_=dist_physic * apu.Mpc,
+        dist_physic_=dist_physic * apu.kpc,
         dist_pix_=dist_pix,
         pos1_=pos1,
         pos2_=pos2,
