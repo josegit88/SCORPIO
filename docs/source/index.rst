@@ -17,6 +17,11 @@ Sky COllector of galaxy Pairs and Image Output (Scorpio) Is a tool to quick anal
 ----
 
 
+.. image:: https://github.com/josegit88/SCORPIO/workflows/SCORPIO%20py38/badge.svg
+   :target: https://github.com/josegit88/SCORPIO/workflows/SCORPIO%20py38/badge.svg
+   :alt: SCORPIO py38
+
+
 .. image:: https://travis-ci.com/josegit88/SCORPIO.svg?branch=master
    :target: https://travis-ci.com/josegit88/SCORPIO
    :alt: Build Status
