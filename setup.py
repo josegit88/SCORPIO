@@ -42,7 +42,6 @@ REQUIREMENTS = [
     "attrs",
     "seaborn",
     "retrying",
-    "scipy",
 ]
 
 PATH = pathlib.Path(os.path.abspath(os.path.dirname(__file__)))
