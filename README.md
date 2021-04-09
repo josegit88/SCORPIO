@@ -6,7 +6,7 @@ Sky COllector of galaxy Pairs and Image Output (Scorpio) Is a tool to quick anal
 
 ----
 
-![SCORPIO py38](https://github.com/josegit88/SCORPIO/workflows/SCORPIO%20py38/badge.svg)
+[![Build Status](https://github.com/josegit88/SCORPIO/actions/workflows/scorpio_ci.yml/badge.svg)](https://github.com/josegit88/SCORPIO/actions/workflows/scorpio_ci.yml)
 [![Build Status](https://travis-ci.com/josegit88/SCORPIO.svg?branch=master)](https://travis-ci.com/josegit88/SCORPIO)
 [![Build Status](https://readthedocs.org/projects/scorpio-rdd/badge/?version=latest)](https://scorpio-rdd.readthedocs.io/en/latest/?badge=latest)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
